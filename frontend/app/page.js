@@ -1,66 +1,106 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'; 
 
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+import { useState } from 'react';
+import ImageModal from '../components/ImageModal'; 
+
+export default function Dashboard() {
+	const [modalImageSrc, setModalImageSrc] = useState(null);
+
+	const graphs = [
+		{
+			src: '/assets/graph1.jpg',
+			alt: 'Gráfico de Gasto e Idade do Cliente',
+			caption: 'Gráfico 1: Gasto e Idade do Cliente.',
+		},
+		{
+			src: '/assets/graph2.jpg',
+			alt: 'Gráfico de Satisfação e Gasto',
+			caption: 'Gráfico 2: Satisfação e Gasto.',
+		},
+		{
+			src: '/assets/graph3.jpg',
+			alt: 'Gráfico de Distância e Frequência de Visitas',
+			caption: 'Gráfico 3: Distância e Frequência de Visitas.',
+		},
+		{
+			src: '/assets/graph4.jpg',
+			alt: 'Gráfico de Peso e Idade do Pet',
+			caption: 'Gráfico 4: Peso e Idade do Pet.',
+		},
+		{
+			src: '/assets/graph5.jpg',
+			alt: 'Gráfico de Gasto e Frequência de Visitas',
+			caption: 'Gráfico 5: Gasto e Frequência de Visitas.',
+		},
+		{
+			src: '/assets/graph6.jpg',
+			alt: 'Gráfico de Distribuição das Idades dos Clientes',
+			caption: 'Gráfico 6: Distribuição das Idades dos Clientes (Histograma).',
+		},
+		{
+			src: '/assets/graph7.jpg',
+			alt: 'Gráfico de Distribuição dos Gastos Mensais',
+			caption: 'Gráfico 7: Distribuição dos Gastos Mensais (Histograma).',
+		},
+		{
+			src: '/assets/graph8.jpg',
+			alt: 'Gráfico de Contagem por Tipo de Pet',
+			caption: 'Gráfico 8: Contagem por Tipo de Pet (Gráfico de Barras).',
+		},
+		{
+			src: '/assets/graph9.jpg',
+			alt: 'Gráfico de Satisfação por Serviço',
+			caption: 'Gráfico 9: Satisfação por Serviço (Gráfico de Barras).',
+		},
+		{
+			src: '/assets/graph10.jpg',
+			alt: 'Gráfico de Gasto Médio por Gênero',
+			caption: 'Gráfico 10: Gasto Médio por Gênero (Gráfico de Barras).',
+		},
+		{
+			src: '/assets/graph11.jpg',
+			alt: 'Gráfico de Proporção de Clientes por Gênero',
+			caption: 'Gráfico 11: Proporção de Clientes por Gênero.',
+		},
+		{
+			src: '/assets/graph12.jpg',
+			alt: 'Gráfico de Porcentagem de Clientes com Segundo Pet',
+			caption: 'Gráfico 12: Porcentagem de Clientes com Segundo Pet.',
+		},
+		{
+			src: '/assets/graph13.jpg',
+			alt: 'Gráfico de Proporção do Gasto Total por Tipo de Pet',
+			caption: 'Gráfico 13: Proporção do Gasto Total por Tipo de Pet.',
+		},
+		{
+			src: '/assets/graph14.jpg',
+			alt: 'Gráfico de Relação entre Gasto, Frequência e Satisfação',
+			caption:
+				'Gráfico 14: Relação entre Gasto, Frequência e Satisfação (Bubble Chart).',
+		},
+	];
+
+	return (
+		<>
+			<section id="dashboard-section" className="content-section">
+				<h2>Dashboard de Estatística</h2>
+
+				<div className="charts-container">
+					{graphs.map((graph, index) => (
+						<figure key={index}>
+							<img
+								src={graph.src}
+								alt={graph.alt}
+								onClick={() => setModalImageSrc(graph.src)} 
+								style={{ cursor: 'pointer' }} 
+							/>
+							<figcaption>{graph.caption}</figcaption>
+						</figure>
+					))}
+				</div>
+			</section>
+
+			<ImageModal src={modalImageSrc} onClose={() => setModalImageSrc(null)} />
+		</>
+	);
 }
