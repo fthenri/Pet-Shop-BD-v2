@@ -3,23 +3,33 @@ package com.pet_shop.pet_shop.Model;
 import java.time.LocalDate;
 
 public class Pet {
-    private String cpfCliente;
+    private Integer cod_pet;
     private String nomePet;
     private String especie;
     private String raca;
     private LocalDate dataNascimento;
     private String observacoes;
+    private String cpfCliente;
 
     public Pet() {
     }
 
-    public Pet(String cpfCliente, String nomePet, String especie, String raca, LocalDate dataNascimento, String observacoes) {
+    public Pet(Integer cod_pet, String cpfCliente, String nomePet, String especie, String raca, LocalDate dataNascimento, String observacoes) {
+        this.cod_pet = cod_pet; // <-- ADICIONADO
         this.cpfCliente = cpfCliente;
         this.nomePet = nomePet;
         this.especie = especie;
         this.raca = raca;
         this.dataNascimento = dataNascimento;
         this.observacoes = observacoes;
+    }
+
+    public Integer getCod_pet() {
+        return cod_pet;
+    }
+
+    public void setCod_pet(Integer cod_pet) {
+        this.cod_pet = cod_pet;
     }
 
     public String getCpfCliente() {

@@ -1,5 +1,7 @@
 'use client'; 
 
+import Link from 'next/link';
+
 import { useState, useEffect } from 'react';
 import ClienteModal from '../../components/ClienteModal'; 
 
@@ -96,6 +98,14 @@ export default function GerenciarClientes() {
 					<tbody id="corpo-tabela-clientes">
 						{clientes.map((cliente) => (
 							<tr key={cliente.cpf}>
+                                <td>
+                                    <Link 
+                                        href={`/clientes/${cliente.cpf}`} 
+                                        style={{ color: 'var(--primary-color)', textDecoration: 'underline', cursor: 'pointer' }}
+                                    >
+                                        {cliente.nome}
+                                    </Link>
+                                </td>
 								<td>{cliente.cpf}</td>
 								<td>{cliente.nome}</td>
 								<td>

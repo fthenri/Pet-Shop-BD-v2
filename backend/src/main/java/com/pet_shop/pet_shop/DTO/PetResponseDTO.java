@@ -2,16 +2,23 @@ package com.pet_shop.pet_shop.DTO;
 
 import java.time.LocalDate;
 
-import com.pet_shop.pet_shop.Model.Pet;
-
 public class PetResponseDTO {
 
+    private Integer cod_pet; 
     private String cpfCliente;
     private String nomePet;
     private String especie;
     private String raca;
     private LocalDate dataNascimento;
     private String observacoes;
+
+    public Integer getCod_pet() {
+        return cod_pet;
+    }
+
+    public void setCod_pet(Integer cod_pet) {
+        this.cod_pet = cod_pet;
+    }
 
     public String getCpfCliente() {
         return cpfCliente;
