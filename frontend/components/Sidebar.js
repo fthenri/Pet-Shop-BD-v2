@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -15,12 +15,13 @@ import {
     FaStore, 
     FaTruck,
     FaChevronRight,
-    FaChevronDown
+    FaChevronDown,
+    FaPaw,
 } from 'react-icons/fa';
 
 
 export default function Sidebar() {
-    const [isGestaoOpen, setIsGestaoOpen] = useState(false);
+    const [isGestaoOpen, setIsGestaoOpen] = useState(true);
     const pathname = usePathname();
 
     const toggleGestao = () => {
@@ -29,6 +30,12 @@ export default function Sidebar() {
 
     const isActive = (path) => pathname === path;
     const isSubmenuActive = (paths) => paths.some(path => pathname.startsWith(path));
+
+    useEffect(() => {
+        if (isSubmenuActive(['/clientes', '/produtos', '/fornecedores', '/pets'])) {
+            setIsGestaoOpen(true);
+        }
+    }, [pathname]);
 
     return (
         <aside className="sidebar">
@@ -73,6 +80,11 @@ export default function Sidebar() {
                             <li>
                                 <Link href="/fornecedores" className={isActive('/fornecedores') ? 'active-sub' : ''}>
                                     <FaTruck /> Gerenciar Fornecedores
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/pets" className={isActive('/pets') ? 'active-sub' : ''}>
+                                    <FaPaw /> Gerenciar Pets
                                 </Link>
                             </li>
                         </ul>

@@ -1,6 +1,8 @@
 import './globals.css'; 
 import Sidebar from '../components/Sidebar'; 
 import { ThemeProvider } from '../contexts/ThemeContext';
+import { NotificationProvider } from '../contexts/NotificationContext'; 
+import NotificationToast from '../components/NotificationToast'; 
 
 export const metadata = {
   title: 'Sistema de Gerenciamento',
@@ -12,11 +14,14 @@ export default function RootLayout({ children }) {
     <html lang="pt-br">
       <body>
         <ThemeProvider> 
-          <Sidebar /> 
-          <main className="main-content">
-            {children} 
-          </main>
-        </ThemeProvider>
+          <NotificationProvider> 
+            <Sidebar /> 
+            <main className="main-content">
+              {children} 
+            </main>
+            <NotificationToast /> 
+          </NotificationProvider>
+        </ThemeProvider> 
       </body>
     </html>
   );

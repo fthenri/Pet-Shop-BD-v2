@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 
-export default function PetModal({ pet, onClose, onSave }) {
+export default function PetModal({ pet, onClose, onSave, cpfClientePadrao }) {
     
     const [formData, setFormData] = useState({
+        cpfCliente: cpfClientePadrao || '', 
         nomePet: '',
         especie: '',
         raca: '',
@@ -15,6 +16,7 @@ export default function PetModal({ pet, onClose, onSave }) {
     useEffect(() => {
         if (pet) {
             setFormData({
+                cpfCliente: pet.cpfCliente || '',
                 nomePet: pet.nomePet || '',
                 especie: pet.especie || '',
                 raca: pet.raca || '',
@@ -23,6 +25,7 @@ export default function PetModal({ pet, onClose, onSave }) {
             });
         } else {
             setFormData({
+                cpfCliente: cpfClientePadrao || '', 
                 nomePet: '',
                 especie: '',
                 raca: '',
@@ -30,7 +33,7 @@ export default function PetModal({ pet, onClose, onSave }) {
                 observacoes: ''
             });
         }
-    }, [pet]);
+    }, [pet, cpfClientePadrao]); 
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -47,16 +50,33 @@ export default function PetModal({ pet, onClose, onSave }) {
         onSave(dataToSave);
     };
 
+    const isEditMode = Boolean(pet);
+
     return (
         <div className="modal-overlay active"> 
             <div className="modal-content">
                 <div className="modal-header">
-                    <h3>{pet ? 'Editar Pet' : 'Adicionar Novo Pet'}</h3>
+                    <h3>{isEditMode ? 'Editar Pet' : 'Adicionar Novo Pet'}</h3>
                     <span className="close-button" onClick={onClose}>&times;</span>
                 </div>
                 
                 <form id="form-pet" className="form-container" onSubmit={handleSubmit}>
                     <div className="form-grid">
+                        
+                        <div className="form-group grid-col-span-2">
+                            <label htmlFor="cpfCliente">CPF do Cliente*</label>
+                            <input
+                                type="text"
+                                id="cpfCliente"
+                                name="cpfCliente"
+                                maxLength="11"
+                                value={formData.cpfCliente}
+                                onChange={handleChange}
+                                required
+                                readOnly={isEditMode && pet.cpfCliente}
+                            />
+                        </div>
+                        
                         <div className="form-group">
                             <label htmlFor="nomePet">Nome do Pet*</label>
                             <input

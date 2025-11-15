@@ -33,6 +33,12 @@ public class PetService {
         return dto;
     }
 
+    public List<PetResponseDTO> getAllPets() {
+        return petRepository.findAll().stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<PetResponseDTO> getPetsByClienteCpf(String cpf) {
         if (clienteRepository.findByCpf(cpf) == null) {
             throw new ResourceNotFoundException("Cliente com CPF '" + cpf + "' não encontrado.");
@@ -45,6 +51,15 @@ public class PetService {
     public PetResponseDTO createPet(PetRequestDTO petDTO) {
         if (clienteRepository.findByCpf(petDTO.getCpfCliente()) == null) {
             throw new ResourceNotFoundException("Cliente com CPF '" + petDTO.getCpfCliente() + "' não encontrado.");
+        }
+
+        if (petRepository.findByCpfNameAndEspecie(
+            petDTO.getCpfCliente(), 
+            petDTO.getNomePet(), 
+            petDTO.getEspecie(),
+            0 
+        ).isPresent()) {
+            throw new RuntimeException("Já existe um pet da espécie '" + petDTO.getEspecie() + "' com o nome '" + petDTO.getNomePet() + "' cadastrado para este cliente.");
         }
 
         Pet pet = new Pet();
@@ -62,6 +77,15 @@ public class PetService {
     public PetResponseDTO updatePet(int codPet, PetRequestDTO petDTO) {
         Pet petExistente = petRepository.findByCodPet(codPet)
                 .orElseThrow(() -> new ResourceNotFoundException("Pet com código '" + codPet + "' não encontrado."));
+        
+        if (petRepository.findByCpfNameAndEspecie(
+            petDTO.getCpfCliente(), 
+            petDTO.getNomePet(), 
+            petDTO.getEspecie(),
+            codPet
+        ).isPresent()) {
+            throw new RuntimeException("Já existe um pet da espécie '" + petDTO.getEspecie() + "' com o nome '" + petDTO.getNomePet() + "' cadastrado para este cliente.");
+        }
 
         petExistente.setNomePet(petDTO.getNomePet());
         petExistente.setEspecie(petDTO.getEspecie());

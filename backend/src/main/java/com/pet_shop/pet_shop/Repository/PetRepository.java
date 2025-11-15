@@ -28,6 +28,11 @@ public class PetRepository {
         pet.setObservacoes(rs.getString("observacoes"));
         return pet;
     };
+
+    public List<Pet> findAll() {
+        final String sql = "SELECT * FROM Pet";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
     
     public List<Pet> findByCpfCliente(String cpf) {
         final String sql = "SELECT * FROM Pet WHERE cpfCliente = ?";
@@ -38,6 +43,16 @@ public class PetRepository {
         final String sql = "SELECT * FROM Pet WHERE cod_pet = ?";
         try {
             Pet pet = jdbcTemplate.queryForObject(sql, new Object[]{codPet}, rowMapper);
+            return Optional.ofNullable(pet);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Pet> findByCpfNameAndEspecie(String cpf, String nomePet, String especie, Integer codPetExcluido) {
+        final String sql = "SELECT * FROM Pet WHERE cpfCliente = ? AND nome_pet = ? AND especie = ? AND cod_pet != ?";
+        try {
+            Pet pet = jdbcTemplate.queryForObject(sql, new Object[]{cpf, nomePet, especie, codPetExcluido}, rowMapper);
             return Optional.ofNullable(pet);
         } catch (Exception e) {
             return Optional.empty();
