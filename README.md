@@ -1,86 +1,191 @@
-# Sistema de Gestão para Pet Shop
+# 🐾 Sistema de Gestão de Pet Shop (Full-Stack)
 
-![Status do Projeto](https://img.shields.io/badge/status-em--desenvolvimento-yellow)
-![Java](https://img.shields.io/badge/java-17%2B-blue)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen)
-![Maven](https://img.shields.io/badge/build-Maven-red)
+[![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-blue.svg)](https://github.com/fthenri/pet-shop-bd-v2/blob/main/LICENSE)
+[![Stars](https://img.shields.io/github/stars/fthenri/pet-shop-bd-v2?style=social)](https://github.com/fthenri/pet-shop-bd-v2/stargazers)
 
-## 📄 Descrição do Projeto
+Um sistema de gerenciamento de Pet Shop full-stack (Java/Spring + React/Next.js) com dashboard de BI, módulos de gerenciamento (CRUDs) e executor de SQL. Perfeito para estudos, portfólio e como base para novos projetos.
 
-Este projeto consiste no desenvolvimento do backend para um sistema de gestão de Pet Shop. O objetivo é criar uma aplicação robusta para modelar e gerenciar as principais operações do negócio, como cadastro de clientes, pets, funcionários e controle de vendas e consultas.
+---
 
-O sistema está sendo construído com foco em uma arquitetura limpa, utilizando classes de modelo (POJOs) para representar as entidades do domínio, servindo como base para a implementação das regras de negócio e da camada de persistência.
+## 🚀 Em Ação
 
-## ✨ Entidades Modeladas
+Nada vende melhor o projeto do que vê-lo funcionando. Aqui está o Dashboard de Business Intelligence em ação:
 
-O núcleo do sistema é composto pelas seguintes entidades de domínio:
+> **[IMAGEM/GIF DO DASHBOARD DE BI AQUI]**
+> *(Recomendo um GIF mostrando a seleção de filtros e os gráficos mudando dinamicamente)*
 
-* **Cliente**: Donos dos animais de estimação.
-* **Pet**: Animais de estimação dos clientes.
-* **Funcionario**: Classe base para os colaboradores do Pet Shop.
-    * **Veterinario**: Funcionário com especialização veterinária (CRMV).
-    * **Atendente**: Funcionário responsável pelo atendimento geral.
-* **Fornecedor**: Empresas que fornecem produtos para o Pet Shop.
-* **Venda**: Registros de transações comerciais.
-* **Consulta**: Registros de atendimentos veterinários.
-* **Exame**: Exames solicitados durante uma consulta.
+---
 
-## 🛠️ Tecnologias Utilizadas
+## 📖 Sobre o Projeto
 
-* **Java 17**: Linguagem de programação principal.
-* **Spring Boot**: Framework para criação da aplicação e serviços web.
-* **Maven**: Ferramenta para gerenciamento de dependências e build do projeto.
+Este é um projeto full-stack completo que simula um sistema de gestão (ERP) para um Pet Shop. O diferencial deste repositório é que ele não foi apenas codificado, mas sim **projetado** seguindo um processo formal de modelagem de banco de dados.
 
-## 📁 Estrutura do Projeto
+O objetivo é servir como um *boilerplate* robusto ou um projeto de estudo para desenvolvedores interessados em:
 
-O projeto segue a estrutura padrão do Maven, com o código-fonte localizado em `src/main/java`. As principais pastas são:
+* Conectar um backend **Java (Spring Boot com JDBC)** a um banco de dados **MySQL**.
+* Consumir uma API REST em um frontend moderno **React (Next.js)**.
+* Implementar um **Dashboard de BI** com gráficos dinâmicos (Chart.js).
+* Ver na prática como um **Esquema Relacional** bem definido se traduz em uma aplicação funcional.
 
-* `com.pet_shop.pet_shop.Model`: Contém as classes de domínio (POJOs) que representam as entidades do sistema, como `Cliente`, `Pet`, `Funcionario`, etc.
-* `com.pet_shop.pet_shop.Controller`: (A ser criado) Responsável por expor os endpoints da API REST.
-* `com.pet_shop.pet_shop.Service`: (A ser criado) Onde a lógica de negócio será implementada.
-* `com.pet_shop.pet_shop.Repository`: (A ser criado) Camada de acesso a dados (interação com o banco de dados).
+---
 
-## 🚀 Como Começar
+## ✨ Funcionalidades (Features)
 
-Siga os passos abaixo para clonar e executar o projeto em seu ambiente local.
+### 📊 Dashboard de Business Intelligence (BI)
+
+A tela principal do sistema é um dashboard analítico que consome dados agregados diretamente do banco de dados para fornecer insights sobre o negócio.
+
+* **KPIs Dinâmicos:** Cards de resumo (Faturamento Total, Novos Clientes, etc.).
+* **Filtros Globais:** Filtre todos os gráficos por período (dia, mês, ano).
+* **Gráficos Interativos:**
+    * Faturamento (Diário, Mensal, Anual).
+    * Top 5 Clientes e Produtos.
+    * Novos Clientes por Mês.
+    * E muito mais...
+
+> **[IMAGEM DO DASHBOARD COM FILTROS APLICADOS AQUI]**
+
+### 🗃️ Módulos de Gerenciamento (CRUDs)
+
+O sistema possui módulos de gerenciamento completos (Criar, Ler, Atualizar, Excluir) para todas as entidades de "dados mestres" do negócio.
+
+* **Gerenciar Clientes**
+* **Gerenciar Funcionários** (com lógica de especialização para Veterinários, Atendentes e Funcionários Gerais)
+* **Gerenciar Produtos**
+* **Gerenciar Fornecedores**
+* **Gerenciar Pets** (associados aos seus donos)
+
+> **[GALERIA DE IMAGENS DAS TELAS DE GERENCIAMENTO (CRUDs)]**
+> *(Adicione screenshots das telas de `.../clientes`, `.../funcionarios` (mostrando as 3 abas), e `.../produtos`)*
+
+> **[IMAGEM DE UM MODAL DE EDIÇÃO/CRIAÇÃO ABERTO AQUI]**
+> *(Ex: O modal de "Editar Produto" ou "Novo Funcionário")*
+
+### 🛠️ Ferramentas de Admin e Auditoria
+
+Recursos avançados para gerenciamento e depuração do banco de dados.
+
+* **Executor de Consultas SQL:** Uma interface que permite executar queries `SELECT` (e outras consultas seguras) diretamente no banco de dados e ver o resultado em uma tabela dinâmica.
+* **Log de Auditoria:** Uma tela que exibe os logs de auditoria de alteração de preço, alimentada diretamente por uma `TRIGGER` no banco de dados.
+
+> **[IMAGEM DA TELA DO EXECUTOR SQL COM UMA QUERY E RESULTADO AQUI]**
+
+---
+
+## 🛠️ Tecnologias Utilizadas (Tech Stack)
+
+| Backend (Servidor) | Frontend (Cliente) | Banco de Dados |
+| :--- | :--- | :--- |
+| ![Java](https://img.shields.io/badge/Java-17-007396?logo=java) | ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react) | ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql) |
+| ![Spring](https://img.shields.io/badge/Spring_Boot-3.x-6DB33F?logo=spring) | ![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=nextdotjs) | `JDBC` |
+| ![Maven](https://img.shields.io/badge/Maven-3.8-C71A36?logo=apachemaven) | ![Chart.js](https://img.shields.io/badge/Chart.js-4.x-FF6384?logo=chartdotjs) | `Triggers` `Procedures` |
+| `Spring Web` | `CSS Modules` | `Views` `Functions` |
+| `Spring JDBC (Template)` | `React Icons` | `Índices` |
+
+---
+
+## 🚀 Como Executar (Getting Started)
+
+Siga estes passos para configurar e executar o projeto localmente.
 
 ### Pré-requisitos
 
-* **JDK 17** ou superior.
-* **Apache Maven** instalado e configurado.
-* Uma IDE de sua preferência (ex: IntelliJ IDEA, VS Code com extensões Java, Eclipse).
+* [Git](https://git-scm.com/)
+* [Java 17 (ou superior)](https://www.oracle.com/java/technologies/downloads/)
+* [Node.js 18 (ou superior)](https://nodejs.org/)
+* Um servidor MySQL (recomendo [XAMPP](https://www.apachefriends.org/index.html) ou [MySQL Workbench](https://www.mysql.com/products/workbench/))
 
-### Passos
+### 1. Banco de Dados (MySQL)
 
-1.  **Clone o repositório:**
+Este é o coração do projeto.
+
+1.  Crie um novo database (schema) no seu servidor MySQL (ex: `petshop_db`).
+2.  **IMPORTANTE:** Para facilitar os testes, estamos trabalhando em um script SQL unificado. Por enquanto, para ter a experiência completa (com dados robustos para o dashboard), execute os scripts SQL na seguinte ordem:
+    1.  `PetShop_Criacao_Insercao.sql` (Cria tabelas e insere dados)
+    2.  `Etapa04_Visoes.sql` (Cria as Views de BI)
+    3.  `3-Triggers.sql` (Adiciona os gatilhos de auditoria e estoque)
+    4.  `1-Funcoes.sql` (Adiciona as Funções de cálculo)
+    5.  `2-Procedimentos.sql` (Adiciona os Procedimentos de manutenção)
+
+### 2. Backend (Java/Spring)
+
+1.  Clone o repositório:
     ```bash
-    git clone [https://github.com/JuliaTBarros/Pet-Shop-BD.git](https://github.com/JuliaTBarros/Pet-Shop-BD.git)
+    git clone [https://github.com/fthenri/pet-shop-bd-v2.git](https://github.com/fthenri/pet-shop-bd-v2.git)
+    cd pet-shop-bd-v2
     ```
-
-2.  **Navegue até o diretório do projeto:**
+2.  **Configure o Acesso ao BD:**
+    Crie o arquivo `backend/src/main/resources/application.properties` (se não existir) e adicione suas credenciais do MySQL:
+    ```properties
+    spring.datasource.url=jdbc:mysql://localhost:3306/petshop_db
+    spring.datasource.username=seu_usuario_mysql
+    spring.datasource.password=sua_senha_mysql
+    ```
+3.  Navegue até a pasta do backend e execute:
     ```bash
-    cd Pet-Shop-BD
+    cd backend
+    ./mvnw spring-boot:run
     ```
+    O servidor estará rodando em `http://localhost:8080`.
 
-3.  **Compile o projeto com o Maven:**
-    (Este passo irá baixar todas as dependências)
+### 3. Frontend (React/Next)
+
+1.  Em um novo terminal, navegue até a pasta do frontend:
     ```bash
-    mvn clean install
+    cd frontend
     ```
-
-4.  **Execute a aplicação:**
+2.  Instale as dependências:
     ```bash
-    mvn spring-boot:run
+    npm install
     ```
+3.  Execute o servidor de desenvolvimento:
+    ```bash
+    npm run dev
+    ```
+    Abra `http://localhost:3000` no seu navegador para ver a aplicação.
 
-Após a execução, a aplicação estará rodando e pronta para receber requisições (assim que os Controllers forem implementados).
+---
 
-## 👩‍💻 Autores
+## 🏗️ Design e Artefatos do Banco de Dados
 
-**Julia T. Barros**
+Este projeto foi desenvolvido usando uma abordagem *Database-First*. Todo o design do sistema foi planejado antes da primeira linha de código, usando artefatos de modelagem.
 
-**Maria Clara Neves**
+Você pode encontrar todos os arquivos de design na raiz do projeto.
 
-**Vinícius Bernardo**
+### 1. Definição do Minimundo
+A descrição textual que deu origem ao projeto, definindo as regras de negócio.
+* **Arquivo:** `Definição do Minimundo (1).pdf`
 
-**Henrique Figueireido**
+### 2. Modelo Conceitual (MER)
+O diagrama Entidade-Relacionamento de alto nível.
+* **Arquivo:** `conceitual.png`
+* **Fonte (BRModelo):** `Modelo_Conceitual_PetShop.brM3.brm3`
+
+> **[IMAGEM DO MODELO CONCEITUAL AQUI (use o conceitual.png)]**
+
+### 3. Modelo Lógico
+A transição do modelo conceitual para um rascunho do esquema relacional.
+* **Arquivo:** `Lógico_1.png`
+* **Fonte (BRModelo):** `Lógico_1.brM3.brm3`
+
+> **[IMAGEM DO MODELO LÓGICO AQUI (use o Lógico_1.png)]**
+
+### 4. Esquema Relacional e Dicionário de Dados
+Os documentos finais que descrevem as tabelas, colunas, tipos de dados e restrições.
+* **Esquema:** `Esquema Relacional.pdf`
+* **Dicionário:** `Dicionário de Dados - Sistema Pet Shop (2).pdf`
+
+---
+
+## 🗺️ Roadmap (Próximas Features)
+
+O sistema de gestão (CRUDs e BI) está completo, mas a fundação do banco de dados permite a implementação de módulos operacionais:
+
+* [ ] **Módulo de Ponto de Venda (PDV):** Uma interface para registrar `Vendas` e `Consultas` em tempo real, interagindo com as tabelas transacionais (`Venda`, `contem`, `Consulta_Atende`).
+* [ ] **Módulo de Agenda e Prontuário:** Uma tela para veterinários visualizarem a agenda e preencherem diagnósticos (`Consulta_Atende`) e solicitarem `Exames`.
+
+---
+
+## 📄 Licença
+
+Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
