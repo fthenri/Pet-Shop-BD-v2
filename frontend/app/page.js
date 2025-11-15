@@ -2,6 +2,14 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage'; 
+import styles from './page.module.css';
+
+import { 
+    FaMoneyBillWave, 
+    FaBoxes, 
+    FaClipboardList, 
+    FaArchive 
+} from 'react-icons/fa';
 
 import DashboardGlobalFilters from '../components/charts/DashboardGlobalFilters';
 import FaturamentoAnualChart from '../components/charts/FaturamentoAnualChart';
@@ -110,15 +118,15 @@ export default function Dashboard() {
                 } else { setDiarioData([]); }
             } catch (e) { console.error("Erro Financeiro:", e); }
         };
-        // 2. Bloco Produtos
+        
         const fetchProductData = async () => {
             try {
                 const [resTopReceita, resTopQtd] = await Promise.all([
                     fetch(`${API_URL}/top-produtos-receita?${productQuery}`),
-                    fetch(`${API_URL}/top-produtos-quantidade?${productQuery}`) // <-- NOVO FETCH
+                    fetch(`${API_URL}/top-produtos-quantidade?${productQuery}`)
                 ]);
                 if (resTopReceita.ok) setTopProdutosReceita(await resTopReceita.json());
-                if (resTopQtd.ok) setTopProdutosQtd(await resTopQtd.json()); // <-- NOVO STATE
+                if (resTopQtd.ok) setTopProdutosQtd(await resTopQtd.json());
             } catch (e) { console.error("Erro Produtos:", e); }
         };
 
@@ -218,15 +226,16 @@ export default function Dashboard() {
       fetchLatestData(); 
     };
 
-
     if (isLoadingDefaults) {
-        return <p className="main-content">Carregando dashboard...</p>;
+        return <p>Carregando dashboard...</p>;
     }
 
 	return (
 		<>
             <section className="content-section">
-                <h2>Filtros Globais</h2>
+                <div className={styles.sectionHeader}>
+                    <h2>Filtros Globais</h2>
+                </div>
                 <DashboardGlobalFilters 
                     filters={filters} 
                     setFilters={handleGlobalFilterChange} 
@@ -234,99 +243,135 @@ export default function Dashboard() {
                 />
             </section>
 
-			<section id="financeiro-section" className="content-section" style={{ marginTop: '2rem' }}>
-				<h2>💰 Métricas Financeiras</h2>
-                <div className="charts-container" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
-                    <KpiCard
-                        title="Ticket Médio"
-                        value={ticketMedioData}
-                        formatAsCurrency={true}
-                    />
-                    <figure>
-                        <FaturamentoAnualChart 
-                            chartData={anualData} 
-                            onBarClick={(ano) => handleGraphClick({ ano: ano })}
+			<section id="financeiro-section" className="content-section">
+                <div className={styles.sectionHeader}>
+                    <FaMoneyBillWave />
+				    <h2>Métricas Financeiras</h2>
+                </div>
+                
+                <div className={`${styles.chartsGrid} ${styles.financeGrid}`}>
+                    <div className={styles.chartCard}>
+                        <KpiCard
+                            title="Ticket Médio"
+                            value={ticketMedioData}
+                            formatAsCurrency={true}
                         />
-                    </figure>
-                    <figure>
-                        <FaturamentoMensalChart 
-                            chartData={mensalData} 
-                            onBarClick={(mes) => handleGraphClick({ mes: mes })}
-                            selectedYear={filters.ano}
-                        />
-                    </figure>
-                    <figure style={{ gridColumn: 'span 3' }}>
-                        <FaturamentoDiarioChart 
-                            chartData={diarioData} 
-                            selectedMonth={filters.mes}
-                        />
-                    </figure>
+                    </div>
+                    <div className={styles.chartCard}>
+                        <div className={styles.chartContentWrapper}>
+                            <FaturamentoAnualChart 
+                                chartData={anualData} 
+                                onBarClick={(ano) => handleGraphClick({ ano: ano })}
+                            />
+                        </div>
+                    </div>
+                    <div className={styles.chartCard}>
+                        <div className={styles.chartContentWrapper}>
+                            <FaturamentoMensalChart 
+                                chartData={mensalData} 
+                                onBarClick={(mes) => handleGraphClick({ mes: mes })}
+                                selectedYear={filters.ano}
+                            />
+                        </div>
+                    </div>
+                    <div className={`${styles.chartCard} ${styles.fullWidthCard}`}>
+                        <div className={styles.lineChartWrapper}>
+                            <FaturamentoDiarioChart 
+                                chartData={diarioData} 
+                                selectedMonth={filters.mes}
+                            />
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <section id="produtos-clientes-section" className="content-section" style={{ marginTop: '2rem' }}>
-                <h2>🛍️ Métricas de Produtos e Clientes</h2>
-                <div className="charts-container" style={{ gridTemplateColumns: '1fr 1fr' }}>
+            <section id="produtos-clientes-section" className="content-section">
+                <div className={styles.sectionHeader}>
+                    <FaBoxes />
+                    <h2>Métricas de Produtos e Clientes</h2>
+                </div>
+                
+                <div className={`${styles.chartsGrid} ${styles.productGrid}`}>
                     
-                    <figure>
-                         <TopProdutosChart 
-                            chartData={topProdutosReceita}
-                            title="Top 5 Produtos por Receita (R$)"
-                            label="Receita (R$)"
-                            backgroundColor="rgba(255, 99, 132, 0.6)"
-                            onBarClick={(prodId) => handleGraphClick({ produtoId: prodId })}
-                            dataKey="receita_total" 
-                        />
-                    </figure>
+                    <div className={styles.chartCard}>
+                        <div className={styles.chartContentWrapper}>
+                            <TopProdutosChart 
+                                chartData={topProdutosReceita}
+                                title="Top 5 Produtos por Receita (R$)"
+                                label="Receita (R$)"
+                                backgroundColor="rgba(255, 99, 132, 0.6)"
+                                onBarClick={(prodId) => handleGraphClick({ produtoId: prodId })}
+                                dataKey="receita_total" 
+                            />
+                        </div>
+                    </div>
 
-                    <figure>
-                         <TopProdutosChart 
-                            chartData={topProdutosQtd} 
-                            title="Top 5 Produtos por Quantidade (Un.)" 
-                            label="Unidades Vendidas"
-                            backgroundColor="rgba(54, 162, 235, 0.6)" 
-                            onBarClick={(prodId) => handleGraphClick({ produtoId: prodId })}
-                            dataKey="unidades_vendidas" 
-                        />
-                    </figure>
+                    <div className={styles.chartCard}>
+                        <div className={styles.chartContentWrapper}>
+                            <TopProdutosChart 
+                                chartData={topProdutosQtd} 
+                                title="Top 5 Produtos por Quantidade (Un.)" 
+                                label="Unidades Vendidas"
+                                backgroundColor="rgba(54, 162, 235, 0.6)" 
+                                onBarClick={(prodId) => handleGraphClick({ produtoId: prodId })}
+                                dataKey="unidades_vendidas" 
+                            />
+                        </div>
+                    </div>
 
-                    <figure>
-                        <TopClientesChart chartData={topClientesData} />
-                    </figure>
-                    <figure>
-                        <PetsPorIdadeChart chartData={petsPorIdadeData} />
-                    </figure>
+                    <div className={styles.chartCard}>
+                        <div className={styles.chartContentWrapper}>
+                            <TopClientesChart chartData={topClientesData} />
+                        </div>
+                    </div>
 
+                    <div className={styles.chartCard}>
+                        <div className={styles.chartContentWrapper}>
+                            <PetsPorIdadeChart chartData={petsPorIdadeData} />
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <section id="operacional-section" className="content-section" style={{ marginTop: '2rem' }}>
-                <h2>🩺 Métricas Operacionais e de Equipe</h2>
-                <div className="charts-container" style={{ gridTemplateColumns: '1fr 1fr' }}>
-                    <figure>
-                        <VendasPorAtendenteChart 
-                            chartData={vendasPorAtendente}
-                            onSliceClick={(atendenteId) => handleGraphClick({ atendenteId: atendenteId })}
-                        />
-                    </figure>
-                    <figure>
-                        <ConsultasPorVetChart chartData={consultasPorVet} />
-                    </figure>
-                    <figure>
-                        <NovosClientesChart chartData={novosClientesData} />
-                    </figure>
+            <section id="operacional-section" className="content-section">
+                <div className={styles.sectionHeader}>
+                    <FaClipboardList />
+                    <h2>Métricas Operacionais e de Equipe</h2>
+                </div>
+
+                <div className={`${styles.chartsGrid} ${styles.opsGrid}`}>
+                    <div className={`${styles.chartCard} ${styles.pieCard}`}>
+                        <div className={styles.chartContentWrapper}>
+                            <VendasPorAtendenteChart 
+                                chartData={vendasPorAtendente}
+                                onSliceClick={(atendenteId) => handleGraphClick({ atendenteId: atendenteId })}
+                            />
+                        </div>
+                    </div>
+                    <div className={`${styles.chartCard} ${styles.barCard}`}>
+                        <div className={styles.chartContentWrapper}>
+                            <ConsultasPorVetChart chartData={consultasPorVet} />
+                        </div>
+                    </div>
+                    <div className={`${styles.chartCard} ${styles.barCard}`}>
+                        <div className={styles.chartContentWrapper}>
+                            <NovosClientesChart chartData={novosClientesData} />
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <section id="inventario-section" className="content-section" style={{ marginTop: '2rem' }}>
-                <h2>📦 Métricas de Inventário</h2>
-                 <div className="charts-container">
-                    <figure style={{ gridColumn: '1 / -1' }}> 
+            <section id="inventario-section" className="content-section">
+                <div className={styles.sectionHeader}>
+                    <FaArchive />
+                    <h2>Métricas de Inventário</h2>
+                </div>
+                 <div className={`${styles.chartsGrid} ${styles.inventoryGrid}`}>
+                    <div className={styles.chartCard}> 
                         <ProdutosEncalhadosTable tableData={produtosEncalhadosData} />
-                    </figure>
+                    </div>
                 </div>
             </section>
-
 		</>
 	);
 }

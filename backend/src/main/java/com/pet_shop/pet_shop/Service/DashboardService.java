@@ -311,4 +311,17 @@ public class DashboardService {
         sql.append(" GROUP BY f.cod_funcionario, f.nome ORDER BY total_consultas DESC");
         return jdbcTemplate.queryForList(sql.toString(), params.toArray());
     }
+
+    public List<Map<String, Object>> getFiltroAnos() {
+        String sql = "SELECT DISTINCT YEAR(data_hora) as ano FROM Venda ORDER BY ano DESC";
+        return jdbcTemplate.queryForList(sql);
+    }
+
+    public List<Map<String, Object>> getFiltroMeses(int ano) {
+        String sql = "SELECT DISTINCT DATE_FORMAT(data_hora, '%Y-%m') as mes " +
+                     "FROM Venda " +
+                     "WHERE YEAR(data_hora) = ? " +
+                     "ORDER BY mes ASC";
+        return jdbcTemplate.queryForList(sql, ano);
+    }
 }

@@ -71,6 +71,7 @@ body {
     border-radius: 8px;
     box-shadow: var(--shadow);
     transition: background-color 0.3s ease;
+    margin-bottom: 2rem;
 }
 
 .content-section h2 {
@@ -179,6 +180,7 @@ body {
     display: none;
     background-color: var(--secondary-color);
     padding-left: 0;
+    transition: background-color 0.3s ease;
 }
 
 .nav-submenu.open {

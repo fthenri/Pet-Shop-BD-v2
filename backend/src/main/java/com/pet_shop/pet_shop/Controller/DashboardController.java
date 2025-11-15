@@ -135,4 +135,16 @@ public class DashboardController {
         List<Map<String, Object>> data = dashboardService.getFiltroAtendentes();
         return ResponseEntity.ok(data);
     }
+
+    @GetMapping("/filtros/anos")
+    public ResponseEntity<List<Map<String, Object>>> getFiltroAnos() {
+        List<Map<String, Object>> data = dashboardService.getFiltroAnos();
+        return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/filtros/meses")
+    public ResponseEntity<List<Map<String, Object>>> getFiltroMeses(@RequestParam("ano") int ano) {
+        List<Map<String, Object>> data = dashboardService.getFiltroMeses(ano);
+        return ResponseEntity.ok(data);
+    }
 }
