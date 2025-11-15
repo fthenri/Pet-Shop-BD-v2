@@ -58,9 +58,10 @@ public class DashboardController {
     @GetMapping("/top-clientes-gasto")
     public ResponseEntity<List<Map<String, Object>>> getTopClientesPorGasto(
             @RequestParam(required = false) Integer ano,
-            @RequestParam(required = false) String mes) {
+            @RequestParam(required = false) String mes,
+            @RequestParam(required = false) Integer produtoId) {
         
-        List<Map<String, Object>> data = dashboardService.getTopClientesPorGasto(ano, mes);
+        List<Map<String, Object>> data = dashboardService.getTopClientesPorGasto(ano, mes, produtoId);
         return ResponseEntity.ok(data);
     }
 
@@ -79,6 +80,17 @@ public class DashboardController {
     @GetMapping("/produtos-encalhados")
     public ResponseEntity<List<Map<String, Object>>> getProdutosEncalhados() {
         List<Map<String, Object>> data = dashboardService.getProdutosEncalhados();
+        return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/ticket-medio")
+    public ResponseEntity<Map<String, Object>> getTicketMedio(
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(required = false) String mes,
+            @RequestParam(required = false) Integer produtoId,
+            @RequestParam(required = false) Integer atendenteId) {
+        
+        Map<String, Object> data = dashboardService.getTicketMedio(ano, mes, produtoId, atendenteId);
         return ResponseEntity.ok(data);
     }
 

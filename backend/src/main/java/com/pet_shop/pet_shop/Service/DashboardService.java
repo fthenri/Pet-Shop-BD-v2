@@ -14,99 +14,146 @@ public class DashboardService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private String buildWhereClause(Integer ano, String mes, Integer produtoId, Integer atendenteId) {
-        List<String> conditions = new ArrayList<>();
-        
-        if (ano != null) {
-            conditions.add("YEAR(v.data_hora) = " + ano);
-        }
-        if (mes != null) {
-            conditions.add("DATE_FORMAT(v.data_hora, '%Y-%m') = '" + mes + "'");
-        }
-        if (produtoId != null) {
-            conditions.add("co.cod_produto = " + produtoId);
-        }
-        if (atendenteId != null) {
-            conditions.add("v.cod_funcionario = " + atendenteId);
-        }
-
-        if (conditions.isEmpty()) {
-            return "";
-        }
-        return "WHERE " + String.join(" AND ", conditions);
-    }
-
     public List<Map<String, Object>> getFaturamentoAnual(Integer produtoId, Integer atendenteId) {
-        String joinClause = "";
-        String whereClause = "";
+        StringBuilder sql = new StringBuilder(
+            "SELECT YEAR(v.data_hora) as ano, SUM(v.valor_total) as faturamento " +
+            "FROM Venda v "
+        );
         List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
 
         if (produtoId != null) {
-            joinClause = "JOIN contem co ON v.num_venda = co.num_venda ";
-            whereClause = "WHERE co.cod_produto = ? ";
+            sql.append("JOIN contem co ON v.num_venda = co.num_venda ");
+            whereConditions.add("co.cod_produto = ?");
             params.add(produtoId);
         }
         if (atendenteId != null) {
-            whereClause = whereClause.isEmpty() ? "WHERE " : whereClause + "AND ";
-            whereClause += "v.cod_funcionario = ? ";
+            whereConditions.add("v.cod_funcionario = ?");
             params.add(atendenteId);
         }
-        
-        String sql = "SELECT YEAR(v.data_hora) as ano, SUM(v.valor_total) as faturamento " +
-                     "FROM Venda v " + joinClause + whereClause +
-                     "GROUP BY YEAR(v.data_hora) ORDER BY ano ASC";
 
-        return jdbcTemplate.queryForList(sql, params.toArray());
+        if (!whereConditions.isEmpty()) {
+            sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        }
+        
+        sql.append(" GROUP BY YEAR(v.data_hora) ORDER BY ano ASC");
+        return jdbcTemplate.queryForList(sql.toString(), params.toArray());
     }
 
     public List<Map<String, Object>> getFaturamentoMensal(int ano, Integer produtoId, Integer atendenteId) {
-        String joinClause = (produtoId != null) ? "JOIN contem co ON v.num_venda = co.num_venda " : "";
-        String whereClause = buildWhereClause(ano, null, produtoId, atendenteId);
+        StringBuilder sql = new StringBuilder(
+            "SELECT DATE_FORMAT(v.data_hora, '%Y-%m') as mes, SUM(v.valor_total) as faturamento " +
+            "FROM Venda v "
+        );
+        List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
+
+        // Filtro base obrigatório
+        whereConditions.add("YEAR(v.data_hora) = ?");
+        params.add(ano);
+
+        if (produtoId != null) {
+            sql.append("JOIN contem co ON v.num_venda = co.num_venda ");
+            whereConditions.add("co.cod_produto = ?");
+            params.add(produtoId);
+        }
+        if (atendenteId != null) {
+            whereConditions.add("v.cod_funcionario = ?");
+            params.add(atendenteId);
+        }
+
+        sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        sql.append(" GROUP BY mes ORDER BY mes ASC");
         
-        String sql = "SELECT DATE_FORMAT(v.data_hora, '%Y-%m') as mes, SUM(v.valor_total) as faturamento " +
-                     "FROM Venda v " + joinClause + whereClause +
-                     "GROUP BY mes ORDER BY mes ASC";
-        
-        return jdbcTemplate.queryForList(sql);
+        return jdbcTemplate.queryForList(sql.toString(), params.toArray());
     }
 
     public List<Map<String, Object>> getFaturamentoDiario(String mes, Integer produtoId, Integer atendenteId) {
-        String joinClause = (produtoId != null) ? "JOIN contem co ON v.num_venda = co.num_venda " : "";
-        String whereClause = buildWhereClause(null, mes, produtoId, atendenteId);
+        StringBuilder sql = new StringBuilder(
+            "SELECT DATE(v.data_hora) as dia, SUM(v.valor_total) as faturamento " +
+            "FROM Venda v "
+        );
+        List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
+
+        // Filtro base obrigatório
+        whereConditions.add("DATE_FORMAT(v.data_hora, '%Y-%m') = ?");
+        params.add(mes);
+
+        if (produtoId != null) {
+            sql.append("JOIN contem co ON v.num_venda = co.num_venda ");
+            whereConditions.add("co.cod_produto = ?");
+            params.add(produtoId);
+        }
+        if (atendenteId != null) {
+            whereConditions.add("v.cod_funcionario = ?");
+            params.add(atendenteId);
+        }
+
+        sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        sql.append(" GROUP BY dia ORDER BY dia ASC");
         
-        String sql = "SELECT DATE(v.data_hora) as dia, SUM(v.valor_total) as faturamento " +
-                     "FROM Venda v " + joinClause + whereClause +
-                     "GROUP BY dia ORDER BY dia ASC";
-        
-        return jdbcTemplate.queryForList(sql);
+        return jdbcTemplate.queryForList(sql.toString(), params.toArray());
     }
 
     public List<Map<String, Object>> getTopProdutosPorReceita(Integer ano, String mes, Integer atendenteId) {
-        String joinClause = "JOIN Venda v ON co.num_venda = v.num_venda ";
-        String whereClause = buildWhereClause(ano, mes, null, atendenteId);
+        StringBuilder sql = new StringBuilder(
+            "SELECT p.cod_produto, p.nome_produto, SUM(co.quantidade * p.preco_venda) as receita_total " +
+            "FROM contem co " +
+            "JOIN Produto p ON co.cod_produto = p.cod_produto " +
+            "JOIN Venda v ON co.num_venda = v.num_venda "
+        );
+        List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
 
-        String sql = "SELECT p.cod_produto, p.nome_produto, SUM(co.quantidade * p.preco_venda) as receita_total " +
-                     "FROM contem co " +
-                     "JOIN Produto p ON co.cod_produto = p.cod_produto " +
-                     joinClause + whereClause +
-                     "GROUP BY p.cod_produto, p.nome_produto ORDER BY receita_total DESC LIMIT 5";
-        
-        return jdbcTemplate.queryForList(sql);
-    }
-
-    public List<Map<String, Object>> getTopClientesPorGasto(Integer ano, String mes) {
-        String sql = "SELECT c.nome, SUM(v.valor_total) as total_gasto " +
-                     "FROM Venda v " +
-                     "JOIN Cliente c ON v.cpfCliente = c.cpf ";
-        
         if (mes != null) {
-            sql += "WHERE DATE_FORMAT(v.data_hora, '%Y-%m') = '" + mes + "' ";
+            whereConditions.add("DATE_FORMAT(v.data_hora, '%Y-%m') = ?");
+            params.add(mes);
         } else if (ano != null) {
-            sql += "WHERE YEAR(v.data_hora) = " + ano + " ";
+            whereConditions.add("YEAR(v.data_hora) = ?");
+            params.add(ano);
+        }
+        if (atendenteId != null) {
+            whereConditions.add("v.cod_funcionario = ?");
+            params.add(atendenteId);
         }
 
-        sql += "GROUP BY c.cpf, c.nome ORDER BY total_gasto DESC LIMIT 10";
-        return jdbcTemplate.queryForList(sql);
+        if (!whereConditions.isEmpty()) {
+            sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        }
+
+        sql.append(" GROUP BY p.cod_produto, p.nome_produto ORDER BY receita_total DESC LIMIT 5");
+        return jdbcTemplate.queryForList(sql.toString(), params.toArray());
+    }
+
+    public List<Map<String, Object>> getTopClientesPorGasto(Integer ano, String mes, Integer produtoId) {
+        StringBuilder sql = new StringBuilder(
+            "SELECT c.nome, SUM(v.valor_total) as total_gasto " +
+            "FROM Venda v " +
+            "JOIN Cliente c ON v.cpfCliente = c.cpf "
+        );
+        List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
+
+        if (produtoId != null) {
+            sql.append("JOIN contem co ON v.num_venda = co.num_venda ");
+            whereConditions.add("co.cod_produto = ?");
+            params.add(produtoId);
+        }
+        if (mes != null) {
+            whereConditions.add("DATE_FORMAT(v.data_hora, '%Y-%m') = ?");
+            params.add(mes);
+        } else if (ano != null) {
+            whereConditions.add("YEAR(v.data_hora) = ?");
+            params.add(ano);
+        }
+        
+        if (!whereConditions.isEmpty()) {
+            sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        }
+
+        sql.append(" GROUP BY c.cpf, c.nome ORDER BY total_gasto DESC LIMIT 10");
+        return jdbcTemplate.queryForList(sql.toString(), params.toArray());
     }
     
     public List<Map<String, Object>> getNovosClientesPorMes() {
@@ -127,7 +174,6 @@ public class DashboardService {
     }
 
     public List<Map<String, Object>> getProdutosEncalhados() {
-        // consulta anti-join
         String sql = "SELECT P.cod_produto, P.nome_produto, P.quantidade_estoque " +
                      "FROM Produto P " +
                      "LEFT JOIN contem co ON P.cod_produto = co.cod_produto " +
@@ -136,6 +182,37 @@ public class DashboardService {
         return jdbcTemplate.queryForList(sql);
     }
 
+    public Map<String, Object> getTicketMedio(Integer ano, String mes, Integer produtoId, Integer atendenteId) {
+         StringBuilder sql = new StringBuilder(
+            "SELECT AVG(v.valor_total) as ticket_medio " +
+            "FROM Venda v "
+        );
+        List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
+
+        if (produtoId != null) {
+            sql.append("JOIN contem co ON v.num_venda = co.num_venda ");
+            whereConditions.add("co.cod_produto = ?");
+            params.add(produtoId);
+        }
+        if (mes != null) {
+            whereConditions.add("DATE_FORMAT(v.data_hora, '%Y-%m') = ?");
+            params.add(mes);
+        } else if (ano != null) {
+            whereConditions.add("YEAR(v.data_hora) = ?");
+            params.add(ano);
+        }
+        if (atendenteId != null) {
+            whereConditions.add("v.cod_funcionario = ?");
+            params.add(atendenteId);
+        }
+        
+        if (!whereConditions.isEmpty()) {
+            sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        }
+        
+        return jdbcTemplate.queryForMap(sql.toString(), params.toArray());
+    }
 
     public List<Map<String, Object>> getFiltroProdutos() {
         String sql = "SELECT cod_produto, nome_produto FROM Produto ORDER BY nome_produto";
