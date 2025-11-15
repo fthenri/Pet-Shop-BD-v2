@@ -470,7 +470,6 @@ button {
 /* ========= NAVIGATION ========= */
 /* ============================== */
 
-/* Estilos do Cabeçalho e Navegação */
 .main-header {
     background-color: var(--header-bg);
     padding: 1rem 2rem;
@@ -507,4 +506,51 @@ button {
 .main-nav a.active {
     color: var(--primary-color);
     border-bottom: 2px solid var(--primary-color);
+}
+
+/* ========================= */
+/* ======= DASHBOARD ======= */
+/* ========================= */
+
+.kpi-card {
+    background-color: var(--secondary-color);
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.kpi-card h4 {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.kpi-card p {
+    color: var(--text-color);
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.global-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    align-items: flex-end;
+}
+
+.global-filters .form-group {
+    flex: 1 1 180px; 
+    margin: 0;
+}
+
+.global-filters button {
+    flex-shrink: 0; 
+    height: 44px; 
 }
