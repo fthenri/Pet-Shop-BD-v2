@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import FornecedorModal from '../../components/FornecedorModal'; 
+import { useNotification } from '../../contexts/NotificationContext';
 
 export default function GerenciarFornecedores() {
 	const [fornecedores, setFornecedores] = useState([]);
@@ -9,6 +10,8 @@ export default function GerenciarFornecedores() {
 	const [fornecedorEmEdicao, setFornecedorEmEdicao] = useState(null);
 
 	const API_URL = 'http://localhost:8080/api/fornecedores';
+	
+    const { showNotification, showConfirmation } = useNotification();
 
 	const carregarFornecedores = async () => {
 		try {
@@ -20,7 +23,7 @@ export default function GerenciarFornecedores() {
 			setFornecedores(data);
 		} catch (error) {
 			console.error('Falha ao carregar fornecedores:', error);
-			alert('Não foi possível carregar os fornecedores.');
+			showNotification({ message: 'Não foi possível carregar os fornecedores.', type: 'error' });
 		}
 	};
 
@@ -43,31 +46,30 @@ export default function GerenciarFornecedores() {
 		setFornecedorEmEdicao(null);
 	};
 
-	const handleExcluir = async (cnpj) => {
-		if (
-			confirm(
-				`Tem certeza que deseja excluir o fornecedor com CNPJ ${cnpj}?`
-			)
-		) {
-			try {
-				const response = await fetch(`${API_URL}/${cnpj}`, {
-					method: 'DELETE',
-				});
+	const handleExcluir = (fornecedor) => { 
+        showConfirmation({
+            message: `Tem certeza que deseja excluir o fornecedor ${fornecedor.razaoSocial} (${fornecedor.cnpj})?`,
+            onConfirm: async () => {
+                try {
+                    const response = await fetch(`${API_URL}/${fornecedor.cnpj}`, {
+                        method: 'DELETE',
+                    });
 
-				if (!response.ok && response.status !== 204) {
-					const errorData = await response.json().catch(() => ({}));
-					throw new Error(
-						errorData.message || 'Erro ao excluir fornecedor.'
-					);
-				}
+                    if (!response.ok && response.status !== 204) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(
+                            errorData.message || 'Erro ao excluir fornecedor.'
+                        );
+                    }
 
-				alert('Fornecedor excluído com sucesso!');
-				carregarFornecedores();
-			} catch (error) {
-				console.error('Falha ao excluir fornecedor:', error);
-				alert(`Não foi possível excluir o fornecedor: ${error.message}`);
-			}
-		}
+                    showNotification({ message: 'Fornecedor excluído com sucesso!', type: 'success' });
+                    carregarFornecedores();
+                } catch (error) {
+                    console.error('Falha ao excluir fornecedor:', error);
+                    showNotification({ message: `Não foi possível excluir o fornecedor: ${error.message}`, type: 'error', duration: 6000 }); 
+                }
+            }
+        });
 	};
 
 	return (
@@ -109,7 +111,7 @@ export default function GerenciarFornecedores() {
 									</button>
 									<button
 										className="btn-delete"
-										onClick={() => handleExcluir(fornecedor.cnpj)}
+										onClick={() => handleExcluir(fornecedor)}
 									>
 										Excluir
 									</button>
@@ -126,7 +128,7 @@ export default function GerenciarFornecedores() {
 					onClose={handleFecharModal}
 					onSave={() => {
 						handleFecharModal();
-						carregarFornecedores(); 
+						carregarFornecedores();
 					}}
 				/>
 			)}

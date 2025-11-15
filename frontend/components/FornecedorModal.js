@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useNotification } from '../contexts/NotificationContext';
 
 export default function FornecedorModal({ onClose, onSave, fornecedorParaEditar }) {
 	const API_URL = 'http://localhost:8080/api/fornecedores';
@@ -10,6 +11,8 @@ export default function FornecedorModal({ onClose, onSave, fornecedorParaEditar 
 		razaoSocial: '',
 		contatoPrincipal: '',
 	});
+
+	const { showNotification } = useNotification();
 
 	const isEditMode = Boolean(fornecedorParaEditar);
 	const modalTitle = isEditMode ? 'Editar Fornecedor' : 'Cadastrar Novo Fornecedor';
@@ -64,11 +67,17 @@ export default function FornecedorModal({ onClose, onSave, fornecedorParaEditar 
 				throw new Error(errorData.message || 'Erro ao salvar fornecedor');
 			}
 
-			alert(`Fornecedor ${isEditMode ? 'atualizado' : 'cadastrado'} com sucesso!`);
+			showNotification({ 
+                message: `Fornecedor ${isEditMode ? 'atualizado' : 'cadastrado'} com sucesso!`, 
+                type: 'success' 
+            });
 			onSave();
 		} catch (error) {
 			console.error('Falha ao salvar fornecedor:', error);
-			alert(`Não foi possível salvar o fornecedor: ${error.message}`);
+			showNotification({ 
+				message: `Não foi possível salvar o fornecedor: ${error.message}`, 
+				type: 'error', duration: 6000 
+			});
 		}
 	};
 
