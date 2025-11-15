@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import FornecedorModal from '../../components/FornecedorModal'; 
 import { useNotification } from '../../contexts/NotificationContext';
+import { FaTruck } from 'react-icons/fa';
 
 export default function GerenciarFornecedores() {
 	const [fornecedores, setFornecedores] = useState([]);
@@ -75,7 +76,10 @@ export default function GerenciarFornecedores() {
 	return (
 		<section id="fornecedores-section" className="content-section">
 			<div className="section-header">
-				<h2>Gerenciamento de Fornecedores</h2>
+				<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> 
+					<FaTruck style={{ fontSize: '1.75rem', color: 'var(--primary-color)' }}/>
+					<h2>Gerenciamento de Fornecedores</h2>
+				</div>
 				<button
 					id="open-fornecedor-modal"
 					className="btn btn-primary"

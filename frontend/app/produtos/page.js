@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import ProdutoModal from '../../components/ProdutoModal'; 
 import { useNotification } from '../../contexts/NotificationContext';
+import { FaStore } from 'react-icons/fa';
 
 export default function GerenciarProdutos() {
 	const [produtos, setProdutos] = useState([]);
@@ -75,7 +76,10 @@ export default function GerenciarProdutos() {
 	return (
 		<section id="produtos-section" className="content-section">
 			<div className="section-header">
-				<h2>Gerenciamento de Produtos</h2>
+				<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> 
+					<FaStore style={{ fontSize: '1.75rem', color: 'var(--primary-color)' }}/>
+					<h2>Gerenciamento de Produtos</h2>
+				</div>
 				<button
 					id="open-produto-modal"
 					className="btn btn-primary"

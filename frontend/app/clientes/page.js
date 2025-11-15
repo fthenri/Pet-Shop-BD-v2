@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import ClienteModal from '../../components/ClienteModal'; 
 import { useNotification } from '../../contexts/NotificationContext';
+import { FaUsers } from 'react-icons/fa';
 
 export default function GerenciarClientes() {
 	const [clientes, setClientes] = useState([]);
@@ -82,7 +83,10 @@ export default function GerenciarClientes() {
 	return (
 		<section id="tabela1-section" className="content-section">
 			<div className="section-header">
-				<h2>Gerenciamento de Clientes</h2>
+				<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> 
+					<FaUsers style={{ fontSize: '1.75rem', color: 'var(--primary-color)' }}/>
+					<h2>Gerenciamento de Clientes</h2>
+				</div>
 				<button
 					id="open-cliente-modal"
 					className="btn btn-primary"
