@@ -4,23 +4,24 @@ import { useState } from 'react';
 
 const consultasPredefinidas = [
 	{
-		nome: 'Produtos com Estoque Baixo',
+		nome: 'Veterinários e Atendentes (Simul. Full Join)',
 		query:
-			'SELECT cod_produto, nome_produto, quantidade_estoque FROM Produto WHERE quantidade_estoque < 10;',
+			"SELECT \n    F.nome,\n    F.cpf,\n    V.CRMV,\n    NULL AS 'Tipo_Atendente' \nFROM \n    Veterinario V\nJOIN \n    Funcionario F ON V.cod_funcionario = F.cod_funcionario\n\nUNION\n\nSELECT \n    F.nome,\n    F.cpf,\n    NULL AS 'CRMV', \n    A.cod_funcionario AS 'Tipo_Atendente'\nFROM \n    Atendente A\nJOIN \n    Funcionario F ON A.cod_funcionario = F.cod_funcionario;",
 	},
 	{
-		nome: 'Animais por Cliente (JOIN)',
+		nome: 'Clientes que Nunca Compraram (NOT IN)',
 		query:
-			"SELECT P.nome_pet AS nome_animal, P.especie, C.nome AS nome_dono FROM Pet AS P JOIN Cliente AS C ON P.cpfCliente = C.cpf WHERE C.cpf = '11122233344';",
+			"SELECT \n    cpf, \n    nome, \n    telefone1,\n    data_cadastro\nFROM \n    Cliente\nWHERE \n    cpf NOT IN (SELECT DISTINCT cpfCliente FROM Venda);",
 	},
 	{
-		nome: 'Contagem de Consultas por Veterinário',
+		nome: 'Vendas com Estoque Baixo (EXISTS)',
 		query:
-			'SELECT cod_funcionario, COUNT(*) AS quantidade FROM Consulta_Atende GROUP BY cod_funcionario;',
+			"SELECT \n    V.num_venda, \n    V.data_hora, \n    C.nome AS nome_cliente,\n    V.valor_total\nFROM \n    Venda V\nJOIN \n    Cliente C ON V.cpfCliente = C.cpf\nWHERE \n    EXISTS (\n        SELECT 1 \n        FROM contem co\n        JOIN Produto P ON co.cod_produto = P.cod_produto\n        WHERE \n            co.num_venda = V.num_venda \n            AND P.quantidade_estoque < 20\n    );",
 	},
 	{
-		nome: "Buscar Cliente por Nome",
-		query: "SELECT cpf, nome, cidade FROM Cliente WHERE nome LIKE '%Silva%';",
+        nome: 'Produtos Encalhados (Anti-Join)',
+		query:
+			"SELECT\n  P.cod_produto,\n  P.nome_produto,\n  P.preco_venda,\n  P.quantidade_estoque,\n  F.razao_social AS nome_fornecedor\nFROM\n  Produto P\nLEFT JOIN\n  contem co ON P.cod_produto = co.cod_produto\nJOIN\n  Fornecedor F ON P.cnpjFornecedor = F.cnpj\nWHERE\n  co.num_venda IS NULL \nORDER BY\n  P.nome_produto;",
 	},
 ];
 
