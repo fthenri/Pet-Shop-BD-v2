@@ -1,10 +1,171 @@
 'use client'; 
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ImageModal from '../components/ImageModal'; 
+import { useLocalStorage } from '../hooks/useLocalStorage'; 
+
+import DashboardGlobalFilters from '../components/charts/DashboardGlobalFilters';
+import FaturamentoAnualChart from '../components/charts/FaturamentoAnualChart';
+import FaturamentoMensalChart from '../components/charts/FaturamentoMensalChart';
+import FaturamentoDiarioChart from '../components/charts/FaturamentoDiarioChart';
+import TopProdutosChart from '../components/charts/TopProdutosChart';
+import ProdutosEncalhadosTable from '../components/charts/ProdutosEncalhadosTable';
+import TopClientesChart from '../components/charts/TopClientesChart';
+import NovosClientesChart from '../components/charts/NovosClientesChart';
+import PetsPorIdadeChart from '../components/charts/PetsPorIdadeChart';
+
 
 export default function Dashboard() {
-	const [modalImageSrc, setModalImageSrc] = useState(null);
+    const API_URL = 'http://localhost:8080/api/dashboard';
+
+    const [filters, setFilters] = useLocalStorage('dashboardFilters', {
+      ano: null,
+      mes: null,
+      produtoId: null,
+      atendenteId: null,
+    });
+
+    const [anualData, setAnualData] = useState([]);
+    const [mensalData, setMensalData] = useState([]);
+    const [diarioData, setDiarioData] = useState([]);
+    const [topProdutosData, setTopProdutosData] = useState(null);
+    const [topClientesData, setTopClientesData] = useState(null);
+    const [novosClientesData, setNovosClientesData] = useState(null);
+    const [petsPorIdadeData, setPetsPorIdadeData] = useState(null);
+    const [produtosEncalhadosData, setProdutosEncalhadosData] = useState(null);
+
+	const [modalImageSrc, setModalImageSrc] = useState(null); 
+    const [isLoadingDefaults, setIsLoadingDefaults] = useState(true);
+
+    const buildQueryString = (params) => {
+        const query = new URLSearchParams();
+        if (params.ano) query.append('ano', params.ano);
+        if (params.mes) query.append('mes', params.mes);
+        if (params.produtoId) query.append('produtoId', params.produtoId);
+        if (params.atendenteId) query.append('atendenteId', params.atendenteId);
+        return query.toString();
+    };
+
+
+    useEffect(() => {
+        const financeQuery = buildQueryString(filters);
+        const productQuery = buildQueryString({ ano: filters.ano, mes: filters.mes, atendenteId: filters.atendenteId });
+        const clientQuery = buildQueryString({ ano: filters.ano, mes: filters.mes });
+
+        // bloco financeiro (ano/mes/dia)
+        const fetchFinanceData = async () => {
+            try {
+                const qAnual = buildQueryString({ produtoId: filters.produtoId, atendenteId: filters.atendenteId });
+                const resAnual = await fetch(`${API_URL}/faturamento-anual?${qAnual}`);
+                if (resAnual.ok) setAnualData(await resAnual.json());
+
+                if (filters.ano) {
+                    const qMensal = buildQueryString(filters); 
+                    const resMensal = await fetch(`${API_URL}/faturamento-mensal?${qMensal}`);
+                    if (resMensal.ok) setMensalData(await resMensal.json());
+                } else {
+                    setMensalData([]);
+                }
+
+                if (filters.mes) {
+                    const qDiario = buildQueryString(filters);
+                    const resDiario = await fetch(`${API_URL}/faturamento-diario?${qDiario}`);
+                    if (resDiario.ok) setDiarioData(await resDiario.json());
+                } else {
+                    setDiarioData([]);
+                }
+            } catch (e) { console.error("Erro Financeiro:", e); }
+        };
+
+        const fetchProductData = async () => {
+            try {
+                const resTopProd = await fetch(`${API_URL}/top-produtos-receita?${productQuery}`);
+                if (resTopProd.ok) setTopProdutosData(await resTopProd.json());
+            } catch (e) { console.error("Erro Produtos:", e); }
+        };
+
+        const fetchClientData = async () => {
+             try {
+                const [resTopCli, resNovosCli, resPetsIdade] = await Promise.all([
+                    fetch(`${API_URL}/top-clientes-gasto?${clientQuery}`),
+                    fetch(`${API_URL}/novos-clientes-mes`), 
+                    fetch(`${API_URL}/pets-por-idade`)
+                ]);
+                if (resTopCli.ok) setTopClientesData(await resTopCli.json());
+                if (resNovosCli.ok) setNovosClientesData(await resNovosCli.json());
+                if (resPetsIdade.ok) setPetsPorIdadeData(await resPetsIdade.json());
+             } catch (e) { console.error("Erro Clientes:", e); }
+        };
+
+        const fetchInventoryData = async () => {
+            if (produtosEncalhadosData === null) { 
+                try {
+                    const res = await fetch(`${API_URL}/produtos-encalhados`);
+                    if (res.ok) setProdutosEncalhadosData(await res.json());
+                } catch (e) { console.error("Erro Inventário:", e); }
+            }
+        };
+
+        fetchFinanceData();
+        fetchProductData();
+        fetchClientData();
+        fetchInventoryData();
+
+    }, [filters]); 
+
+    
+    useEffect(() => {
+        const hasSavedFilters = localStorage.getItem('dashboardFilters') !== null;
+
+        if (!hasSavedFilters) {
+            setIsLoadingDefaults(true);
+            const fetchLatestData = async () => {
+                try {
+                    const resAnual = await fetch(`${API_URL}/faturamento-anual`);
+                    const dataAnual = await resAnual.json();
+                    if (dataAnual.length > 0) {
+                        const ultimoAno = dataAnual[dataAnual.length - 1].ano;
+
+                        const resMensal = await fetch(`${API_URL}/faturamento-mensal?ano=${ultimoAno}`);
+                        const dataMensal = await resMensal.json();
+                        if (dataMensal.length > 0) {
+                            const ultimoMes = dataMensal[dataMensal.length - 1].mes;
+                            
+                            setFilters({
+                                ano: ultimoAno,
+                                mes: ultimoMes,
+                                produtoId: null,
+                                atendenteId: null,
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.error("Erro ao buscar dados padrão:", e);
+                } finally {
+                    setIsLoadingDefaults(false);
+                }
+            };
+            fetchLatestData();
+        } else {
+            setIsLoadingDefaults(false); 
+        }
+    }, []); 
+
+	
+    const handleFilterChange = (newFilters) => {
+      setFilters(prev => ({ ...prev, ...newFilters }));
+    };
+
+    const handleClearFilters = () => {
+      localStorage.removeItem('dashboardFilters');
+      setFilters({
+        ano: null,
+        mes: null,
+        produtoId: null,
+        atendenteId: null,
+      });
+    };
+
 
 	const graphs = [
 		{
@@ -80,11 +241,78 @@ export default function Dashboard() {
 		},
 	];
 
+    if (isLoadingDefaults) {
+        return <p className="main-content">Carregando dashboard...</p>;
+    }
+
 	return (
 		<>
-			<section id="dashboard-section" className="content-section">
-				<h2>Dashboard de Estatística</h2>
+            <section className="content-section">
+                <h2>Filtros Globais</h2>
+                <DashboardGlobalFilters filters={filters} setFilters={handleFilterChange} />
+            </section>
 
+            {/* bloco 1 - metricas financeiras */}
+			<section id="financeiro-section" className="content-section" style={{ marginTop: '2rem' }}>
+				<h2>💰 Métricas Financeiras</h2>
+                <div className="charts-container">
+                    <figure>
+                        <FaturamentoAnualChart 
+                            chartData={anualData} 
+                            onBarClick={(ano) => handleFilterChange({ ano: filters.ano === ano ? null : ano, mes: null })}
+                        />
+                    </figure>
+                    <figure>
+                        <FaturamentoMensalChart 
+                            chartData={mensalData} 
+                            onBarClick={(mes) => handleFilterChange({ mes: filters.mes === mes ? null : mes })}
+                            selectedYear={filters.ano}
+                        />
+                    </figure>
+                    <figure style={{ gridColumn: 'span 2' }}>
+                        <FaturamentoDiarioChart 
+                            chartData={diarioData} 
+                            selectedMonth={filters.mes}
+                        />
+                    </figure>
+                </div>
+            </section>
+
+            {/* bloco 2 - produtos e clientes */}
+            <section id="produtos-clientes-section" className="content-section" style={{ marginTop: '2rem' }}>
+                <h2>🛍️ Métricas de Produtos e Clientes</h2>
+                <div className="charts-container">
+                    <figure>
+                         <TopProdutosChart 
+                            chartData={topProdutosData}
+                            onBarClick={(prodId) => handleFilterChange({ produtoId: filters.produtoId === prodId ? null : prodId })}
+                        />
+                    </figure>
+                    <figure>
+                        <TopClientesChart chartData={topClientesData} />
+                    </figure>
+                    <figure>
+                        <PetsPorIdadeChart chartData={petsPorIdadeData} />
+                    </figure>
+                     <figure>
+                        <NovosClientesChart chartData={novosClientesData} />
+                    </figure>
+                </div>
+            </section>
+
+             {/* bloco 3 - inventario (consulta anti-join) */}
+            <section id="inventario-section" className="content-section" style={{ marginTop: '2rem' }}>
+                <h2>📦 Métricas de Inventário</h2>
+                 <div className="charts-container">
+                    <figure style={{ gridColumn: '1 / -1' }}>
+                        <ProdutosEncalhadosTable tableData={produtosEncalhadosData} />
+                    </figure>
+                </div>
+            </section>
+
+
+			<section id="dashboard-section" className="content-section" style={{ marginTop: '2rem' }}>
+				<h2>Análises Estatísticas (Imagens Estáticas)</h2>
 				<div className="charts-container">
 					{graphs.map((graph, index) => (
 						<figure key={index}>
