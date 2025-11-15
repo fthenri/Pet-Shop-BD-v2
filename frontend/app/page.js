@@ -351,6 +351,7 @@ export default function Dashboard() {
                             label="Receita (R$)"
                             backgroundColor="rgba(255, 99, 132, 0.6)"
                             onBarClick={(prodId) => handleGraphClick({ produtoId: prodId })}
+                            dataKey="receita_total" 
                         />
                     </figure>
 
@@ -361,6 +362,7 @@ export default function Dashboard() {
                             label="Unidades Vendidas"
                             backgroundColor="rgba(54, 162, 235, 0.6)" 
                             onBarClick={(prodId) => handleGraphClick({ produtoId: prodId })}
+                            dataKey="unidades_vendidas" 
                         />
                     </figure>
 

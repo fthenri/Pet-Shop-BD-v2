@@ -4,7 +4,15 @@ import { registerChartComponents } from './ChartConfig';
 
 registerChartComponents();
 
-export default function TopProdutosChart({ chartData, onBarClick }) {
+export default function TopProdutosChart({ 
+  chartData, 
+  onBarClick, 
+  title,
+  label,
+  backgroundColor,
+  dataKey
+}) {
+  
   if (!chartData) {
     return <p>Carregando dados de produtos...</p>;
   }
@@ -18,9 +26,9 @@ export default function TopProdutosChart({ chartData, onBarClick }) {
     labels: chartData.map(item => item.nome_produto),
     datasets: [
       {
-        label: 'Receita (R$)',
-        data: chartData.map(item => item.receita_total),
-        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+        label: label || 'Valor',
+        data: chartData.map(item => item[dataKey]), 
+        backgroundColor: backgroundColor || 'rgba(255, 99, 132, 0.6)', 
       },
     ],
   };
@@ -32,7 +40,7 @@ export default function TopProdutosChart({ chartData, onBarClick }) {
       legend: { display: false },
       title: {
         display: true,
-        text: 'Top 5 Produtos por Receita (Clique para filtrar)',
+        text: title || 'Top 5 Produtos (Clique para filtrar)', 
       },
     },
     onClick: (event, elements) => {
