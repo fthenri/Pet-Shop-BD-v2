@@ -12,6 +12,7 @@ export default function Header() {
           <li><Link href="/clientes">Gerenciar Clientes</Link></li>
           <li><Link href="/produtos">Gerenciar Produtos</Link></li>
           <li><Link href="/consultas">Consultas SQL</Link></li>
+          <li><Link href="/auditoria">Auditoria</Link></li>
         </ul>
       </nav>
     </header>
