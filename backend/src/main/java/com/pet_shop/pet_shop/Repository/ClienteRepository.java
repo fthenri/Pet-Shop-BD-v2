@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.JdbcTemplate;
+import java.math.BigDecimal;
 
 import com.pet_shop.pet_shop.DTO.ClienteResponseDTO;
 import com.pet_shop.pet_shop.Model.Cliente;
@@ -32,11 +33,13 @@ public class ClienteRepository {
             cliente.setCep(rs.getString("cep"));
             cliente.setTelefone1(rs.getString("telefone1"));
             cliente.setTelefone2(rs.getString("telefone2"));
+            BigDecimal totalGasto = rs.getBigDecimal("total_gasto");
+            cliente.setTotalGasto(totalGasto != null ? totalGasto : BigDecimal.ZERO);
+
             return cliente;
         }
     }
 
-    // Criar um novo cliete - Bernardo
     public Cliente save(Cliente cliente) {
         String sql = "INSERT INTO Cliente (cpf, nome, logradouro, numero, bairro, cidade, estado, cep, telefone1, telefone2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, cliente.getCpf(), cliente.getNome(), cliente.getLogradouro(), cliente.getNumero(),
@@ -45,15 +48,13 @@ public class ClienteRepository {
         return cliente;
     }
 
-    // Ler (Find all) um novo cliente - Bernardo
     public List<Cliente> findAll() {
-        String sql = "SELECT * FROM Cliente";
+        String sql = "SELECT *, FN_TotalGastoCliente(cpf) as total_gasto FROM Cliente";
         return jdbcTemplate.query(sql, new ClienteRowMapper());
     }
 
-    // Ler (find by CPF) - Bernardo
     public Cliente findByCpf(String cpf) {
-        String sql = "SELECT * FROM Cliente WHERE cpf = ?";
+        String sql = "SELECT *, FN_TotalGastoCliente(cpf) as total_gasto FROM Cliente WHERE cpf = ?";
         try {
             return jdbcTemplate.queryForObject(sql, new Object[] { cpf }, new ClienteRowMapper());
         } catch (Exception e) {
@@ -76,7 +77,6 @@ public class ClienteRepository {
         });
     }
 
-    // Atualizar - Bernardo
     public int update(Cliente cliente) {
         String sql = "UPDATE Cliente SET nome = ?, logradouro = ?, numero = ?, bairro = ?, cidade = ?, estado = ?, cep = ?, telefone1 = ?, telefone2 = ? WHERE cpf = ?";
         return jdbcTemplate.update(sql, cliente.getNome(), cliente.getLogradouro(), cliente.getNumero(),
@@ -84,7 +84,6 @@ public class ClienteRepository {
                 cliente.getTelefone2(), cliente.getCpf());
     }
 
-    // Deletar - Bernardo
     public int deleteByCpf(String cpf) {
         String sql = "DELETE FROM Cliente WHERE cpf = ?";
         return jdbcTemplate.update(sql, cpf);

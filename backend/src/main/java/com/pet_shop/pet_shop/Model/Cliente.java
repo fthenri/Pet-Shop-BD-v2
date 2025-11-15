@@ -1,5 +1,6 @@
 package com.pet_shop.pet_shop.Model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class Cliente {
@@ -14,6 +15,7 @@ public class Cliente {
     private String cep;
     private String telefone1;
     private String telefone2;
+    private BigDecimal totalGasto;
 
     public Cliente(String cpf, String nome, LocalDateTime dataCadastro, String logradouro, String numero, String bairro,
             String cidade, String estado, String cep, String telefone1, String telefone2) {
@@ -119,5 +121,13 @@ public class Cliente {
 
     public void setTelefone2(String telefone2) {
         this.telefone2 = telefone2;
+    }
+
+    public BigDecimal getTotalGasto() {
+        return totalGasto;
+    }
+
+    public void setTotalGasto(BigDecimal totalGasto) {
+        this.totalGasto = totalGasto;
     }
 }

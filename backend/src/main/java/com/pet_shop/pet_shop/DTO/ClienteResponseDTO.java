@@ -1,6 +1,7 @@
 package com.pet_shop.pet_shop.DTO;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 import com.pet_shop.pet_shop.Model.Cliente;
 
@@ -16,6 +17,8 @@ public class ClienteResponseDTO {
     private String cidade;
     private String estado;
     private String cep;
+    private BigDecimal totalGasto;
+    
 
     public ClienteResponseDTO(Cliente cliente) {
         this.cpf = cliente.getCpf();
@@ -29,6 +32,7 @@ public class ClienteResponseDTO {
         this.cidade = cliente.getCidade();
         this.estado = cliente.getEstado();
         this.cep = cliente.getCep();
+        this.totalGasto = cliente.getTotalGasto();
     }
 
     public String getCpf() {
@@ -73,5 +77,9 @@ public class ClienteResponseDTO {
 
     public String getCep() {
         return cep;
+    }
+
+    public BigDecimal getTotalGasto() {
+        return totalGasto;
     }
 }
