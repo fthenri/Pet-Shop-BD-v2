@@ -1,18 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useNotification } from '../contexts/NotificationContext';
 
 export default function ProdutoModal({ onClose, onSave, produtoParaEditar }) {
 	const API_URL = 'http://localhost:8080/api/produtos';
-
-	const { showNotification } = useNotification();
+    const { showNotification } = useNotification(); 
 
 	const [formData, setFormData] = useState({
 		nomeProduto: '',
 		descricao: '',
 		precoVenda: '',
 		quantidadeEstoque: '',
-		cnpjFornecedor: '',
+		cnpjFornecedor: '', 
 	});
 
 	const isEditMode = Boolean(produtoParaEditar);
@@ -76,14 +76,14 @@ export default function ProdutoModal({ onClose, onSave, produtoParaEditar }) {
 				throw new Error(errorData.message || 'Erro ao salvar produto');
 			}
 
-			showNotification({ 
+            showNotification({ 
                 message: `Produto ${isEditMode ? 'atualizado' : 'cadastrado'} com sucesso!`, 
                 type: 'success' 
-            });
+            }); 
 			onSave();
 		} catch (error) {
 			console.error('Falha ao salvar produto:', error);
-			showNotification({ message: `Não foi possível salvar o produto: ${error.message}`, type: 'error', duration: 6000 });
+            showNotification({ message: `Não foi possível salvar o produto: ${error.message}`, type: 'error', duration: 6000 });
 		}
 	};
 

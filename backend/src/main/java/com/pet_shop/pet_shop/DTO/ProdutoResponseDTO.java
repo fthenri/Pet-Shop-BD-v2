@@ -9,6 +9,7 @@ public class ProdutoResponseDTO {
     private String descricao;
     private BigDecimal preco_venda;
     private int quantidade_estoque;
+    private String cnpjFornecedor;
 
     public ProdutoResponseDTO(Produto produto) {
         this.cod_produto = produto.getCod_produto();
@@ -16,6 +17,7 @@ public class ProdutoResponseDTO {
         this.descricao = produto.getDescricao();
         this.preco_venda = produto.getPreco_venda();
         this.quantidade_estoque = produto.getQuantidade_estoque();
+        this.cnpjFornecedor = produto.getCnpjFornecedor();
     }
 
     // Getters
@@ -37,5 +39,9 @@ public class ProdutoResponseDTO {
 
     public int getQuantidade_estoque() {
         return quantidade_estoque;
+    }
+    
+    public String getCnpjFornecedor() {
+        return cnpjFornecedor;
     }
 }

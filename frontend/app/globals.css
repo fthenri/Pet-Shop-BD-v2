@@ -445,6 +445,10 @@ button {
     border-bottom: 1px solid var(--table-border);
 }
 
+.data-table td.action-buttons {
+    vertical-align: middle; 
+}
+
 .data-table thead th {
     background-color: var(--secondary-color);
 }

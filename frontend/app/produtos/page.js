@@ -46,7 +46,7 @@ export default function GerenciarProdutos() {
 		setProdutoEmEdicao(null);
 	};
 
-	const handleExcluir = (produto) => { 
+	const handleExcluir = (produto) => {
         showConfirmation({
             message: `Tem certeza que deseja excluir o produto ${produto.nome_produto} (Cód. ${produto.cod_produto})?`,
             onConfirm: async () => {
@@ -66,7 +66,7 @@ export default function GerenciarProdutos() {
                     carregarProdutos(); 
                 } catch (error) {
                     console.error('Falha ao excluir produto:', error);
-                    showNotification({ message: `Não foi possível excluir o produto: ${error.message}`, type: 'error', duration: 6000 }); 
+                    showNotification({ message: `Não foi possível excluir o produto: ${error.message}`, type: 'error', duration: 6000 });
                 }
             }
         });
@@ -92,7 +92,6 @@ export default function GerenciarProdutos() {
 						<tr>
 							<th>Cód. Produto</th>
 							<th>Nome do Produto</th>
-							<th>Descrição</th>
 							<th>Preço Venda</th>
 							<th>Qtd. Estoque</th>
 							<th>CNPJ Fornecedor</th>
@@ -104,7 +103,6 @@ export default function GerenciarProdutos() {
 							<tr key={produto.cod_produto}>
 								<td>{produto.cod_produto}</td>
 								<td>{produto.nome_produto}</td>
-								<td>{produto.descricao || '-'}</td>
 								<td>
 									{parseFloat(produto.preco_venda).toLocaleString('pt-BR', {
 										style: 'currency',
@@ -122,7 +120,7 @@ export default function GerenciarProdutos() {
 									</button>
 									<button
 										className="btn-delete"
-										onClick={() => handleExcluir(produto.cod_produto)}
+										onClick={() => handleExcluir(produto)}
 									>
 										Excluir
 									</button>

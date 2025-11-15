@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import PetModal from '../../components/PetModal'; 
 import { useNotification } from '../../contexts/NotificationContext'; 
+import { FaPaw } from 'react-icons/fa';
 
 export default function GerenciarPets() {
 	const [pets, setPets] = useState([]);
@@ -108,18 +109,30 @@ export default function GerenciarPets() {
             }
         });
 	};
-
+	
     const petsFiltrados = pets.filter(pet =>
         (pet.nomePet && pet.nomePet.toLowerCase().includes(filtro.toLowerCase())) ||
         (pet.cpfCliente && pet.cpfCliente.includes(filtro)) ||
         (pet.especie && pet.especie.toLowerCase().includes(filtro.toLowerCase()))
     );
+	
+	const formatDate = (dateString) => {
+		if (!dateString) return 'N/A';
+		try {
+			return new Date(dateString + 'T00:00:00-03:00').toLocaleDateString('pt-BR');
+		} catch (e) {
+			return 'Inválida';
+		}
+	};
 
-
+	
 	return (
 		<section id="pets-section" className="content-section">
 			<div className="section-header">
-				<h2>Gerenciamento de Pets</h2>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <FaPaw style={{ marginRight: '0.5rem' }}/>
+                    <h2>Gerenciamento de Pets</h2>
+                </div>
 				<button
 					id="open-pet-modal"
 					className="btn btn-primary"
@@ -129,8 +142,8 @@ export default function GerenciarPets() {
 				</button>
 			</div>
 
-            <div className="form-group" style={{ maxWidth: '600px', marginBottom: '1.5rem' }}>
-                <label htmlFor="filtro-pet" style={{ fontWeight: '500' }}>Filtrar por Nome, CPF do Cliente ou Espécie:</label>
+            <div className="form-group" style={{ maxWidth: '400px', marginBottom: '1.5rem' }}>
+                <label htmlFor="filtro-pet" style={{ fontWeight: '500' }}>Filtrar por Nome, CPF ou Espécie:</label>
                 <input
                     type="text"
                     id="filtro-pet"
@@ -146,24 +159,23 @@ export default function GerenciarPets() {
 					
                     <thead>
 						<tr>
-							<th>Cód.</th>
-							<th>Nome do Pet</th>
-                            <th>Espécie</th>
-                            <th>Raça</th>
-                            <th>Data Nasc.</th>
-							<th>CPF Cliente</th>
-							<th>Ações</th>
+                            {/* CÓD. ALINHADO À DIREITA */}
+                            <th style={{ width: '5%', textAlign: 'right' }}>Cód.</th> 
+							<th style={{ width: '25%' }}>Nome do Pet</th>
+                            <th style={{ width: '25%' }}>Espécie / Raça</th> 
+                            <th style={{ width: '15%' }}>Nascimento</th> 
+							<th style={{ width: '15%' }}>CPF Cliente</th>
+							<th style={{ width: '15%' }}>Ações</th>
 						</tr>
 					</thead>
 					
                     <tbody id="corpo-tabela-pets">
 						{petsFiltrados.map((pet) => (
 							<tr key={pet.cod_pet}>
-                                <td>{pet.cod_pet}</td>
+                                <td style={{ textAlign: 'right' }}>{pet.cod_pet}</td> 
 								<td>{pet.nomePet}</td>
-                                <td>{pet.especie}</td>
-                                <td>{pet.raca}</td>
-                                <td>{pet.dataNascimento ? new Date(pet.dataNascimento + 'T00:00:00-03:00').toLocaleDateString('pt-BR') : 'N/A'}</td>
+                                <td>{pet.especie} / {pet.raca}</td> 
+                                <td>{formatDate(pet.dataNascimento)}</td> 
                                 <td>
                                     <Link 
                                         href={`/clientes/${pet.cpfCliente}`} 
@@ -181,7 +193,7 @@ export default function GerenciarPets() {
 									</button>
 									<button
 										className="btn-delete"
-										onClick={() => handleExcluir(pet)} 
+										onClick={() => handleExcluir(pet)}
 									>
 										Excluir
 									</button>
