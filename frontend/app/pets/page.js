@@ -184,19 +184,21 @@ export default function GerenciarPets() {
                                         {pet.cpfCliente}
                                     </Link>
                                 </td>
-								<td className="action-buttons" style={{ verticalAlign: 'middle', display: 'table-cell', alignItems: 'center' }}>
-									<button
-										className="btn-edit"
-										onClick={() => handleAbrirModalEditar(pet)}
-									>
-										Editar
-									</button>
-									<button
-										className="btn-delete"
-										onClick={() => handleExcluir(pet)}
-									>
-										Excluir
-									</button>
+								<td>
+									<div className="action-buttons">
+										<button
+											className="btn-edit"
+											onClick={() => handleAbrirModalEditar(pet)}
+										>
+											Editar
+										</button>
+										<button
+											className="btn-delete"
+											onClick={() => handleExcluir(pet)}
+										>
+											Excluir
+										</button>
+									</div>
 								</td>
 							</tr>
 						))}

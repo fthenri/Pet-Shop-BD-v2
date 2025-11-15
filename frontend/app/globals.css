@@ -462,7 +462,9 @@ button {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    justify-content: left;
     height: 100%;
+    /* display: table-cell; */
 }
 
 

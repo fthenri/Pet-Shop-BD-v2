@@ -115,19 +115,21 @@ export default function GerenciarProdutos() {
 								</td>
 								<td>{produto.quantidade_estoque}</td>
 								<td>{produto.cnpjFornecedor}</td>
-								<td className="action-buttons">
-									<button
-										className="btn-edit"
-										onClick={() => handleAbrirModalEditar(produto)}
-									>
-										Editar
-									</button>
-									<button
-										className="btn-delete"
-										onClick={() => handleExcluir(produto)}
-									>
-										Excluir
-									</button>
+								<td>
+									<div className="action-buttons">
+										<button
+											className="btn-edit"
+											onClick={() => handleAbrirModalEditar(produto)}
+										>
+											Editar
+										</button>
+										<button
+											className="btn-delete"
+											onClick={() => handleExcluir(produto)}
+										>
+											Excluir
+										</button>
+									</div>
 								</td>
 							</tr>
 						))}

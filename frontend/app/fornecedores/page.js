@@ -106,19 +106,21 @@ export default function GerenciarFornecedores() {
 								<td>{fornecedor.cnpj}</td>
 								<td>{fornecedor.razaoSocial}</td>
 								<td>{fornecedor.contatoPrincipal || '-'}</td>
-								<td className="action-buttons">
-									<button
-										className="btn-edit"
-										onClick={() => handleAbrirModalEditar(fornecedor)}
-									>
-										Editar
-									</button>
-									<button
-										className="btn-delete"
-										onClick={() => handleExcluir(fornecedor)}
-									>
-										Excluir
-									</button>
+								<td>
+									<div className="action-buttons">
+										<button
+											className="btn-edit"
+											onClick={() => handleAbrirModalEditar(fornecedor)}
+										>
+											Editar
+										</button>
+										<button
+											className="btn-delete"
+											onClick={() => handleExcluir(fornecedor)}
+										>
+											Excluir
+										</button>
+									</div>
 								</td>
 							</tr>
 						))}

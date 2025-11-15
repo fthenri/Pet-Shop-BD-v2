@@ -146,19 +146,21 @@ export default function GerenciarClientes() {
                                 <td>
 									{new Date(cliente.dataCadastro).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })}
 								</td>
-								<td className="action-buttons">
-									<button
-										className="btn-edit"
-										onClick={() => handleAbrirModalEditar(cliente)}
-									>
-										Editar
-									</button>
-									<button
-										className="btn-delete"
-										onClick={() => handleExcluir(cliente.cpf)}
-									>
-										Excluir
-									</button>
+								<td>
+									<div className="action-buttons">
+										<button
+											className="btn-edit"
+											onClick={() => handleAbrirModalEditar(cliente)}
+										>
+											Editar
+										</button>
+										<button
+											className="btn-delete"
+											onClick={() => handleExcluir(cliente.cpf)}
+										>
+											Excluir
+										</button>
+									</div>
 								</td>
 							</tr>
 						))}
