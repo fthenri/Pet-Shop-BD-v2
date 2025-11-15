@@ -1,6 +1,6 @@
 'use client'; 
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import ImageModal from '../components/ImageModal'; 
 import { useLocalStorage } from '../hooks/useLocalStorage'; 
 
@@ -8,12 +8,14 @@ import DashboardGlobalFilters from '../components/charts/DashboardGlobalFilters'
 import FaturamentoAnualChart from '../components/charts/FaturamentoAnualChart';
 import FaturamentoMensalChart from '../components/charts/FaturamentoMensalChart';
 import FaturamentoDiarioChart from '../components/charts/FaturamentoDiarioChart';
-import KpiCard from '../components/charts/KpiCard';
+import KpiCard from '../components/charts/KpiCard'; 
 import TopProdutosChart from '../components/charts/TopProdutosChart';
 import ProdutosEncalhadosTable from '../components/charts/ProdutosEncalhadosTable';
 import TopClientesChart from '../components/charts/TopClientesChart';
 import NovosClientesChart from '../components/charts/NovosClientesChart';
 import PetsPorIdadeChart from '../components/charts/PetsPorIdadeChart';
+import VendasPorAtendenteChart from '../components/charts/VendasPorAtendenteChart';
+import ConsultasPorVetChart from '../components/charts/ConsultasPorVetChart';
 
 
 export default function Dashboard() {
@@ -29,12 +31,15 @@ export default function Dashboard() {
     const [anualData, setAnualData] = useState([]);
     const [mensalData, setMensalData] = useState([]);
     const [diarioData, setDiarioData] = useState([]);
-    const [ticketMedioData, setTicketMedioData] = useState(null);
-    const [topProdutosData, setTopProdutosData] = useState(null);
+    const [ticketMedioData, setTicketMedioData] = useState(null); 
+    const [topProdutosReceita, setTopProdutosReceita] = useState(null);
     const [topClientesData, setTopClientesData] = useState(null);
     const [novosClientesData, setNovosClientesData] = useState(null);
     const [petsPorIdadeData, setPetsPorIdadeData] = useState(null);
     const [produtosEncalhadosData, setProdutosEncalhadosData] = useState(null);
+    const [topProdutosQtd, setTopProdutosQtd] = useState(null);
+    const [vendasPorAtendente, setVendasPorAtendente] = useState(null);
+    const [consultasPorVet, setConsultasPorVet] = useState(null);
 
 	const [modalImageSrc, setModalImageSrc] = useState(null); 
     const [isLoadingDefaults, setIsLoadingDefaults] = useState(true);
@@ -48,10 +53,42 @@ export default function Dashboard() {
         return query.toString();
     };
 
+
+    const fetchLatestData = useCallback(async () => {
+        setIsLoadingDefaults(true);
+        try {
+            const resAnual = await fetch(`${API_URL}/faturamento-anual`);
+            const dataAnual = await resAnual.json();
+            if (dataAnual.length > 0) {
+                const ultimoAno = dataAnual[dataAnual.length - 1].ano;
+                const resMensal = await fetch(`${API_URL}/faturamento-mensal?ano=${ultimoAno}`);
+                const dataMensal = await resMensal.json();
+                if (dataMensal.length > 0) {
+                    const ultimoMes = dataMensal[dataMensal.length - 1].mes;
+                    setFilters({
+                        ano: ultimoAno,
+                        mes: ultimoMes,
+                        produtoId: null,
+                        atendenteId: null,
+                    });
+                }
+            }
+        } catch (e) {
+            console.error("Erro ao buscar dados padrão:", e);
+        } finally {
+            setIsLoadingDefaults(false);
+        }
+    }, [setFilters]); 
+
+
     useEffect(() => {
+        if (isLoadingDefaults) return;
+
         const financeQuery = buildQueryString(filters);
         const productQuery = buildQueryString({ ano: filters.ano, mes: filters.mes, atendenteId: filters.atendenteId });
         const clientQuery = buildQueryString({ ano: filters.ano, mes: filters.mes, produtoId: filters.produtoId });
+        const opsQuery = buildQueryString({ ano: filters.ano, mes: filters.mes, produtoId: filters.produtoId });
+        const vetQuery = buildQueryString({ ano: filters.ano, mes: filters.mes });
 
         const fetchFinanceData = async () => {
             try {
@@ -60,37 +97,30 @@ export default function Dashboard() {
                 if (resAnual.ok) setAnualData(await resAnual.json());
 
                 const resTicket = await fetch(`${API_URL}/ticket-medio?${financeQuery}`);
-                if (resTicket.ok) {
-                    const data = await resTicket.json();
-                    setTicketMedioData(data.ticket_medio);
-                }
+                if (resTicket.ok) setTicketMedioData((await resTicket.json()).ticket_medio);
 
                 if (filters.ano) {
-                    const qMensal = buildQueryString({
-                        ano: filters.ano,
-                        produtoId: filters.produtoId,
-                        atendenteId: filters.atendenteId
-                    });
+                    const qMensal = buildQueryString({ ano: filters.ano, produtoId: filters.produtoId, atendenteId: filters.atendenteId });
                     const resMensal = await fetch(`${API_URL}/faturamento-mensal?${qMensal}`);
                     if (resMensal.ok) setMensalData(await resMensal.json());
-                } else {
-                    setMensalData([]);
-                }
+                } else { setMensalData([]); }
 
                 if (filters.mes) {
                     const qDiario = buildQueryString(filters);
                     const resDiario = await fetch(`${API_URL}/faturamento-diario?${qDiario}`);
                     if (resDiario.ok) setDiarioData(await resDiario.json());
-                } else {
-                    setDiarioData([]);
-                }
+                } else { setDiarioData([]); }
             } catch (e) { console.error("Erro Financeiro:", e); }
         };
-
+        // 2. Bloco Produtos
         const fetchProductData = async () => {
             try {
-                const resTopProd = await fetch(`${API_URL}/top-produtos-receita?${productQuery}`);
-                if (resTopProd.ok) setTopProdutosData(await resTopProd.json());
+                const [resTopReceita, resTopQtd] = await Promise.all([
+                    fetch(`${API_URL}/top-produtos-receita?${productQuery}`),
+                    fetch(`${API_URL}/top-produtos-quantidade?${productQuery}`) // <-- NOVO FETCH
+                ]);
+                if (resTopReceita.ok) setTopProdutosReceita(await resTopReceita.json());
+                if (resTopQtd.ok) setTopProdutosQtd(await resTopQtd.json()); // <-- NOVO STATE
             } catch (e) { console.error("Erro Produtos:", e); }
         };
 
@@ -110,6 +140,17 @@ export default function Dashboard() {
              } catch (e) { console.error("Erro Clientes:", e); }
         };
 
+        const fetchOpsData = async () => {
+            try {
+                 const [resVendasAtendente, resConsultasVet] = await Promise.all([
+                    fetch(`${API_URL}/vendas-por-atendente?${opsQuery}`),
+                    fetch(`${API_URL}/consultas-por-veterinario?${vetQuery}`) 
+                ]);
+                if (resVendasAtendente.ok) setVendasPorAtendente(await resVendasAtendente.json());
+                if (resConsultasVet.ok) setConsultasPorVet(await resConsultasVet.json());
+             } catch (e) { console.error("Erro Operacional:", e); }
+        };
+
         const fetchInventoryData = async () => {
             if (produtosEncalhadosData === null) { 
                 try {
@@ -122,9 +163,10 @@ export default function Dashboard() {
         fetchFinanceData();
         fetchProductData();
         fetchClientData();
+        fetchOpsData(); 
         fetchInventoryData();
 
-    }, [filters]); 
+    }, [filters, isLoadingDefaults, novosClientesData, petsPorIdadeData, produtosEncalhadosData]); 
     
     useEffect(() => {
         const savedFiltersRaw = localStorage.getItem('dashboardFilters');
@@ -133,49 +175,33 @@ export default function Dashboard() {
                                 Object.values(JSON.parse(savedFiltersRaw)).some(v => v !== null);
 
         if (!hasSavedFilters) {
-            setIsLoadingDefaults(true);
-            const fetchLatestData = async () => {
-                try {
-                    const resAnual = await fetch(`${API_URL}/faturamento-anual`);
-                    const dataAnual = await resAnual.json();
-                    if (dataAnual.length > 0) {
-                        const ultimoAno = dataAnual[dataAnual.length - 1].ano;
-                        const resMensal = await fetch(`${API_URL}/faturamento-mensal?ano=${ultimoAno}`);
-                        const dataMensal = await resMensal.json();
-                        if (dataMensal.length > 0) {
-                            const ultimoMes = dataMensal[dataMensal.length - 1].mes;
-                            setFilters({
-                                ano: ultimoAno,
-                                mes: ultimoMes,
-                                produtoId: null,
-                                atendenteId: null,
-                            });
-                        }
-                    }
-                } catch (e) {
-                    console.error("Erro ao buscar dados padrão:", e);
-                } finally {
-                    setIsLoadingDefaults(false);
-                }
-            };
-            fetchLatestData();
+            fetchLatestData(); 
         } else {
             setIsLoadingDefaults(false); 
         }
-    }, []); 
+    }, [fetchLatestData]); 
 
-	
-    
+	    
     const handleGraphClick = (newFilters) => {
-        setFilters(prev => ({
-            ...prev,
-            ano: newFilters.ano !== undefined ? (prev.ano === newFilters.ano ? null : newFilters.ano) : prev.ano,
-            mes: newFilters.mes !== undefined ? (prev.mes === newFilters.mes ? null : newFilters.mes) : prev.mes,
-            produtoId: newFilters.produtoId !== undefined ? (prev.produtoId === newFilters.produtoId ? null : newFilters.produtoId) : prev.produtoId,
-            atendenteId: newFilters.atendenteId !== undefined ? (prev.atendenteId === newFilters.atendenteId ? null : newFilters.atendenteId) : prev.atendenteId,
+        setFilters(prev => {
+            const updated = { ...prev };
 
-            ...(newFilters.ano !== undefined && { mes: null }), 
-        }));
+            if (newFilters.ano !== undefined) {
+                updated.ano = prev.ano === newFilters.ano ? null : newFilters.ano;
+                updated.mes = null; 
+            }
+            if (newFilters.mes !== undefined) {
+                updated.mes = prev.mes === newFilters.mes ? null : newFilters.mes;
+            }
+            if (newFilters.produtoId !== undefined) {
+                updated.produtoId = prev.produtoId === newFilters.produtoId ? null : newFilters.produtoId;
+            }
+            if (newFilters.atendenteId !== undefined) {
+                updated.atendenteId = prev.atendenteId === newFilters.atendenteId ? null : newFilters.atendenteId;
+            }
+            
+            return updated;
+        });
     };
 
     const handleGlobalFilterChange = (key, value) => {
@@ -190,14 +216,8 @@ export default function Dashboard() {
 
     const handleClearFilters = () => {
       localStorage.removeItem('dashboardFilters');
-      setIsLoadingDefaults(true); 
-      
-      setFilters({
-        ano: null,
-        mes: null,
-        produtoId: null,
-        atendenteId: null,
-      });
+      setFilters({ ano: null, mes: null, produtoId: null, atendenteId: null });
+      fetchLatestData(); 
     };
 
 
@@ -301,7 +321,7 @@ export default function Dashboard() {
                     <figure>
                         <FaturamentoAnualChart 
                             chartData={anualData} 
-                            onBarClick={(ano) => handleGraphClick({ ano: ano, mes: null })}
+                            onBarClick={(ano) => handleGraphClick({ ano: ano })}
                         />
                     </figure>
                     <figure>
@@ -322,20 +342,51 @@ export default function Dashboard() {
 
             <section id="produtos-clientes-section" className="content-section" style={{ marginTop: '2rem' }}>
                 <h2>🛍️ Métricas de Produtos e Clientes</h2>
-                <div className="charts-container">
+                <div className="charts-container" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                    
                     <figure>
                          <TopProdutosChart 
-                            chartData={topProdutosData}
+                            chartData={topProdutosReceita}
+                            title="Top 5 Produtos por Receita (R$)"
+                            label="Receita (R$)"
+                            backgroundColor="rgba(255, 99, 132, 0.6)"
                             onBarClick={(prodId) => handleGraphClick({ produtoId: prodId })}
                         />
                     </figure>
+
+                    <figure>
+                         <TopProdutosChart 
+                            chartData={topProdutosQtd} 
+                            title="Top 5 Produtos por Quantidade (Un.)" 
+                            label="Unidades Vendidas"
+                            backgroundColor="rgba(54, 162, 235, 0.6)" 
+                            onBarClick={(prodId) => handleGraphClick({ produtoId: prodId })}
+                        />
+                    </figure>
+
                     <figure>
                         <TopClientesChart chartData={topClientesData} />
                     </figure>
                     <figure>
                         <PetsPorIdadeChart chartData={petsPorIdadeData} />
                     </figure>
-                     <figure>
+
+                </div>
+            </section>
+
+            <section id="operacional-section" className="content-section" style={{ marginTop: '2rem' }}>
+                <h2>🩺 Métricas Operacionais e de Equipe</h2>
+                <div className="charts-container" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                    <figure>
+                        <VendasPorAtendenteChart 
+                            chartData={vendasPorAtendente}
+                            onSliceClick={(atendenteId) => handleGraphClick({ atendenteId: atendenteId })}
+                        />
+                    </figure>
+                    <figure>
+                        <ConsultasPorVetChart chartData={consultasPorVet} />
+                    </figure>
+                    <figure>
                         <NovosClientesChart chartData={novosClientesData} />
                     </figure>
                 </div>

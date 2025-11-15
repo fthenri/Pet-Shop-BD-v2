@@ -226,4 +226,89 @@ public class DashboardService {
                      "ORDER BY f.nome";
         return jdbcTemplate.queryForList(sql);
     }
+
+    public List<Map<String, Object>> getTopProdutosPorQuantidade(Integer ano, String mes, Integer atendenteId) {
+        StringBuilder sql = new StringBuilder(
+            "SELECT p.cod_produto, p.nome_produto, SUM(co.quantidade) as unidades_vendidas " +
+            "FROM contem co " +
+            "JOIN Produto p ON co.cod_produto = p.cod_produto " +
+            "JOIN Venda v ON co.num_venda = v.num_venda "
+        );
+        List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
+
+        if (mes != null) {
+            whereConditions.add("DATE_FORMAT(v.data_hora, '%Y-%m') = ?");
+            params.add(mes);
+        } else if (ano != null) {
+            whereConditions.add("YEAR(v.data_hora) = ?");
+            params.add(ano);
+        }
+        if (atendenteId != null) {
+            whereConditions.add("v.cod_funcionario = ?");
+            params.add(atendenteId);
+        }
+
+        if (!whereConditions.isEmpty()) {
+            sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        }
+
+        sql.append(" GROUP BY p.cod_produto, p.nome_produto ORDER BY unidades_vendidas DESC LIMIT 5");
+        return jdbcTemplate.queryForList(sql.toString(), params.toArray());
+    }
+
+    public List<Map<String, Object>> getVendasPorAtendente(Integer ano, String mes, Integer produtoId) {
+        StringBuilder sql = new StringBuilder(
+            "SELECT f.cod_funcionario, f.nome, SUM(v.valor_total) as total_vendido " +
+            "FROM Venda v " +
+            "JOIN Funcionario f ON v.cod_funcionario = f.cod_funcionario "
+        );
+        List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
+
+        if (produtoId != null) {
+            sql.append("JOIN contem co ON v.num_venda = co.num_venda ");
+            whereConditions.add("co.cod_produto = ?");
+            params.add(produtoId);
+        }
+        if (mes != null) {
+            whereConditions.add("DATE_FORMAT(v.data_hora, '%Y-%m') = ?");
+            params.add(mes);
+        } else if (ano != null) {
+            whereConditions.add("YEAR(v.data_hora) = ?");
+            params.add(ano);
+        }
+        
+        if (!whereConditions.isEmpty()) {
+            sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        }
+
+        sql.append(" GROUP BY f.cod_funcionario, f.nome ORDER BY total_vendido DESC");
+        return jdbcTemplate.queryForList(sql.toString(), params.toArray());
+    }
+
+    public List<Map<String, Object>> getConsultasPorVeterinario(Integer ano, String mes) {
+        StringBuilder sql = new StringBuilder(
+            "SELECT f.nome, COUNT(*) as total_consultas " +
+            "FROM Consulta_Atende ca " +
+            "JOIN Funcionario f ON ca.cod_funcionario = f.cod_funcionario "
+        );
+        List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
+
+        if (mes != null) {
+            whereConditions.add("DATE_FORMAT(ca.data_hora, '%Y-%m') = ?");
+            params.add(mes);
+        } else if (ano != null) {
+            whereConditions.add("YEAR(ca.data_hora) = ?");
+            params.add(ano);
+        }
+        
+        if (!whereConditions.isEmpty()) {
+            sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        }
+
+        sql.append(" GROUP BY f.cod_funcionario, f.nome ORDER BY total_consultas DESC");
+        return jdbcTemplate.queryForList(sql.toString(), params.toArray());
+    }
 }

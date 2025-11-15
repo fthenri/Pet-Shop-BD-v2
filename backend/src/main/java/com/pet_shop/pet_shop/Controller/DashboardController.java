@@ -94,6 +94,35 @@ public class DashboardController {
         return ResponseEntity.ok(data);
     }
 
+    @GetMapping("/top-produtos-quantidade")
+    public ResponseEntity<List<Map<String, Object>>> getTopProdutosPorQuantidade(
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(required = false) String mes,
+            @RequestParam(required = false) Integer atendenteId) {
+        
+        List<Map<String, Object>> data = dashboardService.getTopProdutosPorQuantidade(ano, mes, atendenteId);
+        return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/vendas-por-atendente")
+    public ResponseEntity<List<Map<String, Object>>> getVendasPorAtendente(
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(required = false) String mes,
+            @RequestParam(required = false) Integer produtoId) {
+        
+        List<Map<String, Object>> data = dashboardService.getVendasPorAtendente(ano, mes, produtoId);
+        return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/consultas-por-veterinario")
+    public ResponseEntity<List<Map<String, Object>>> getConsultasPorVeterinario(
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(required = false) String mes) {
+        
+        List<Map<String, Object>> data = dashboardService.getConsultasPorVeterinario(ano, mes);
+        return ResponseEntity.ok(data);
+    }
+
 
     @GetMapping("/filtros/produtos")
     public ResponseEntity<List<Map<String, Object>>> getFiltroProdutos() {
