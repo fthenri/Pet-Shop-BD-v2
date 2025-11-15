@@ -55,7 +55,7 @@ export default function Sidebar() {
                     {/* gestão (dropdown) */}
                     <li className="nav-item">
                         <a 
-                            className={`nav-link nav-toggle ${isSubmenuActive(['/clientes', '/produtos', '/fornecedores']) ? 'active' : ''}`} 
+                            className={`nav-link nav-toggle ${isSubmenuActive(['/clientes', '/produtos', '/fornecedores', '/pets']) ? 'active' : ''}`} 
                             onClick={toggleGestao}
                             style={{ cursor: 'pointer' }}
                         >
