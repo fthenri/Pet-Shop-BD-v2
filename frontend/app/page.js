@@ -65,7 +65,11 @@ export default function Dashboard() {
 
                 // mensal
                 if (filters.ano) {
-                    const qMensal = buildQueryString(filters); 
+                    const qMensal = buildQueryString({
+                        ano: filters.ano,
+                        produtoId: filters.produtoId,
+                        atendenteId: filters.atendenteId
+                    });
                     const resMensal = await fetch(`${API_URL}/faturamento-mensal?${qMensal}`);
                     if (resMensal.ok) setMensalData(await resMensal.json());
                 } else {
