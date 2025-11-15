@@ -443,6 +443,7 @@ button {
     padding: 0.75rem;
     text-align: left;
     border-bottom: 1px solid var(--table-border);
+    vertical-align: middle; 
 }
 
 .data-table td.action-buttons {

@@ -129,8 +129,8 @@ export default function GerenciarPets() {
 	return (
 		<section id="pets-section" className="content-section">
 			<div className="section-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <FaPaw style={{ marginRight: '0.5rem' }}/>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> 
+                    <FaPaw style={{ fontSize: '1.75rem', color: 'var(--primary-color)' }}/>
                     <h2>Gerenciamento de Pets</h2>
                 </div>
 				<button
@@ -184,7 +184,7 @@ export default function GerenciarPets() {
                                         {pet.cpfCliente}
                                     </Link>
                                 </td>
-								<td className="action-buttons">
+								<td className="action-buttons" style={{ verticalAlign: 'middle', display: 'table-cell', alignItems: 'center' }}>
 									<button
 										className="btn-edit"
 										onClick={() => handleAbrirModalEditar(pet)}
