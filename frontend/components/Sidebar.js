@@ -4,15 +4,19 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-// tarefa: importar icones (SVGs ou uma biblioteca como react-icons)
-// usando placeholders por enquanto
-const IconDashboard = () => <span>🏠</span>;
-const IconGestao = () => <span>🗂️</span>;
-const IconGraficos = () => <span>📊</span>;
-const IconSQL = () => <span>🗃️</span>;
-const IconAuditoria = () => <span>🔎</span>;
-const IconConfig = () => <span>⚙️</span>;
-const IconSubmenu = () => <span>-</span>;
+import { 
+    FaHome, 
+    FaBoxOpen, 
+    FaChartBar, 
+    FaDatabase, 
+    FaSearch, 
+    FaCog, 
+    FaUsers, 
+    FaStore, 
+    FaTruck,
+    FaChevronRight,
+    FaChevronDown
+} from 'react-icons/fa';
 
 
 export default function Sidebar() {
@@ -36,7 +40,7 @@ export default function Sidebar() {
                     {/* dashboard */}
                     <li className="nav-item">
                         <Link href="/" className={`nav-link ${isActive('/') ? 'active' : ''}`}>
-                            <IconDashboard />
+                            <FaHome />
                             <span>Dashboard</span>
                         </Link>
                     </li>
@@ -48,24 +52,27 @@ export default function Sidebar() {
                             onClick={toggleGestao}
                             style={{ cursor: 'pointer' }}
                         >
-                            <IconGestao />
+                            <FaBoxOpen />
                             <span>Gestão</span>
-                            <span className={`arrow ${isGestaoOpen ? 'open' : ''}`}>▼</span>
+                            
+                            {/* seta */}
+                            {isGestaoOpen ? <FaChevronDown /> : <FaChevronRight />}
                         </a>
+                        
                         <ul className={`nav-submenu ${isGestaoOpen ? 'open' : ''}`}>
                             <li>
                                 <Link href="/clientes" className={isActive('/clientes') ? 'active-sub' : ''}>
-                                    <IconSubmenu /> Gerenciar Clientes
+                                    <FaUsers /> Gerenciar Clientes
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/produtos" className={isActive('/produtos') ? 'active-sub' : ''}>
-                                    <IconSubmenu /> Gerenciar Produtos
+                                    <FaStore /> Gerenciar Produtos
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/fornecedores" className={isActive('/fornecedores') ? 'active-sub' : ''}>
-                                    <IconSubmenu /> Gerenciar Fornecedores
+                                    <FaTruck /> Gerenciar Fornecedores
                                 </Link>
                             </li>
                         </ul>
@@ -74,7 +81,7 @@ export default function Sidebar() {
                     {/* graficos estaticos */}
                     <li className="nav-item">
                         <Link href="/graficos" className={`nav-link ${isActive('/graficos') ? 'active' : ''}`}>
-                            <IconGraficos />
+                            <FaChartBar />
                             <span>Gráficos (Est)</span>
                         </Link>
                     </li>
@@ -82,7 +89,7 @@ export default function Sidebar() {
                     {/* consultas SQL */}
                     <li className="nav-item">
                         <Link href="/consultas" className={`nav-link ${isActive('/consultas') ? 'active' : ''}`}>
-                            <IconSQL />
+                            <FaDatabase />
                             <span>Consultas SQL</span>
                         </Link>
                     </li>
@@ -90,7 +97,7 @@ export default function Sidebar() {
                     {/* auditoria */}
                     <li className="nav-item">
                         <Link href="/auditoria" className={`nav-link ${isActive('/auditoria') ? 'active' : ''}`}>
-                            <IconAuditoria />
+                            <FaSearch />
                             <span>Auditoria</span>
                         </Link>
                     </li>
@@ -98,7 +105,7 @@ export default function Sidebar() {
                     {/* configurações */}
                     <li className="nav-item">
                         <Link href="/configuracoes" className={`nav-link ${isActive('/configuracoes') ? 'active' : ''}`}>
-                            <IconConfig />
+                            <FaCog />
                             <span>Configurações</span>
                         </Link>
                     </li>
