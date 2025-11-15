@@ -35,7 +35,7 @@ public class ProdutoService {
         produto.setQuantidade_estoque(produtoDTO.getQuantidade_estoque());
         produto.setCnpjFornecedor(produtoDTO.getCnpjFornecedor());
 
-        produtoRepository.save(produto);
+        produtoRepository.update(produto);
         return new ProdutoResponseDTO(produto);
     }
 
