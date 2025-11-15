@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import ProdutoModal from '../../components/ProdutoModal'; 
+import { useNotification } from '../../contexts/NotificationContext';
 
 export default function GerenciarProdutos() {
 	const [produtos, setProdutos] = useState([]);
@@ -9,6 +10,8 @@ export default function GerenciarProdutos() {
 	const [produtoEmEdicao, setProdutoEmEdicao] = useState(null);
 
 	const API_URL = 'http://localhost:8080/api/produtos';
+
+	const { showNotification, showConfirmation } = useNotification();
 
 	const carregarProdutos = async () => {
 		try {
@@ -20,7 +23,7 @@ export default function GerenciarProdutos() {
 			setProdutos(data);
 		} catch (error) {
 			console.error('Falha ao carregar produtos:', error);
-			alert('Não foi possível carregar os produtos.');
+			showNotification({ message: 'Não foi possível carregar os produtos.', type: 'error' });
 		}
 	};
 
@@ -43,31 +46,30 @@ export default function GerenciarProdutos() {
 		setProdutoEmEdicao(null);
 	};
 
-	const handleExcluir = async (codProduto) => {
-		if (
-			confirm(
-				`Tem certeza que deseja excluir o produto com código ${codProduto}?`
-			)
-		) {
-			try {
-				const response = await fetch(`${API_URL}/${codProduto}`, {
-					method: 'DELETE',
-				});
+	const handleExcluir = (produto) => { 
+        showConfirmation({
+            message: `Tem certeza que deseja excluir o produto ${produto.nome_produto} (Cód. ${produto.cod_produto})?`,
+            onConfirm: async () => {
+                try {
+                    const response = await fetch(`${API_URL}/${produto.cod_produto}`, {
+                        method: 'DELETE',
+                    });
 
-				if (!response.ok && response.status !== 204) {
-					const errorData = await response.json().catch(() => ({}));
-					throw new Error(
-						errorData.message || 'Erro ao excluir produto.'
-					);
-				}
+                    if (!response.ok && response.status !== 204) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(
+                            errorData.message || 'Erro ao excluir produto.'
+                        );
+                    }
 
-				alert('Produto excluído com sucesso!');
-				carregarProdutos();
-			} catch (error) {
-				console.error('Falha ao excluir produto:', error);
-				alert(`Não foi possível excluir o produto: ${error.message}`);
-			}
-		}
+                    showNotification({ message: 'Produto excluído com sucesso!', type: 'success' });
+                    carregarProdutos(); 
+                } catch (error) {
+                    console.error('Falha ao excluir produto:', error);
+                    showNotification({ message: `Não foi possível excluir o produto: ${error.message}`, type: 'error', duration: 6000 }); 
+                }
+            }
+        });
 	};
 
 	return (

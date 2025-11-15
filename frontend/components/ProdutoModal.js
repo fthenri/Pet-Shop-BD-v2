@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 export default function ProdutoModal({ onClose, onSave, produtoParaEditar }) {
 	const API_URL = 'http://localhost:8080/api/produtos';
 
+	const { showNotification } = useNotification();
+
 	const [formData, setFormData] = useState({
 		nomeProduto: '',
 		descricao: '',
@@ -74,11 +76,14 @@ export default function ProdutoModal({ onClose, onSave, produtoParaEditar }) {
 				throw new Error(errorData.message || 'Erro ao salvar produto');
 			}
 
-			alert(`Produto ${isEditMode ? 'atualizado' : 'cadastrado'} com sucesso!`);
+			showNotification({ 
+                message: `Produto ${isEditMode ? 'atualizado' : 'cadastrado'} com sucesso!`, 
+                type: 'success' 
+            });
 			onSave();
 		} catch (error) {
 			console.error('Falha ao salvar produto:', error);
-			alert(`Não foi possível salvar o produto: ${error.message}`);
+			showNotification({ message: `Não foi possível salvar o produto: ${error.message}`, type: 'error', duration: 6000 });
 		}
 	};
 
