@@ -76,6 +76,12 @@ public class DashboardController {
         return ResponseEntity.ok(data);
     }
 
+    @GetMapping("/produtos-encalhados")
+    public ResponseEntity<List<Map<String, Object>>> getProdutosEncalhados() {
+        List<Map<String, Object>> data = dashboardService.getProdutosEncalhados();
+        return ResponseEntity.ok(data);
+    }
+
 
     @GetMapping("/filtros/produtos")
     public ResponseEntity<List<Map<String, Object>>> getFiltroProdutos() {

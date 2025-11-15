@@ -126,6 +126,16 @@ public class DashboardService {
         return jdbcTemplate.queryForList(sql);
     }
 
+    public List<Map<String, Object>> getProdutosEncalhados() {
+        // consulta anti-join
+        String sql = "SELECT P.cod_produto, P.nome_produto, P.quantidade_estoque " +
+                     "FROM Produto P " +
+                     "LEFT JOIN contem co ON P.cod_produto = co.cod_produto " +
+                     "WHERE co.num_venda IS NULL " +
+                     "ORDER BY P.nome_produto";
+        return jdbcTemplate.queryForList(sql);
+    }
+
 
     public List<Map<String, Object>> getFiltroProdutos() {
         String sql = "SELECT cod_produto, nome_produto FROM Produto ORDER BY nome_produto";

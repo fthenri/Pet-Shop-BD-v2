@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 const API_URL = 'http://localhost:8080/api/dashboard';
 
-export default function DashboardGlobalFilters({ filters, setFilters }) {
+export default function DashboardGlobalFilters({ filters, setFilters, onClearFilters }) {
   const [produtos, setProdutos] = useState([]);
   const [atendentes, setAtendentes] = useState([]);
 
@@ -24,19 +24,7 @@ export default function DashboardGlobalFilters({ filters, setFilters }) {
   }, []);
 
   const handleFilterChange = (key, value) => {
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [key]: value || null, 
-    }));
-  };
-
-  const clearFilters = () => {
-    setFilters({
-      ano: null,
-      mes: null,
-      produtoId: null,
-      atendenteId: null,
-    });
+    setFilters(key, value || null); 
   };
 
   return (
@@ -91,7 +79,7 @@ export default function DashboardGlobalFilters({ filters, setFilters }) {
         </select>
       </div>
 
-      <button className="btn btn-secondary" onClick={clearFilters}>
+      <button className="btn btn-secondary" onClick={onClearFilters}>
         Limpar Filtros
       </button>
     </div>

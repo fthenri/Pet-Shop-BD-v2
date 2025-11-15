@@ -2,14 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import ImageModal from '../components/ImageModal'; 
-import { useLocalStorage } from '../hooks/useLocalStorage'; 
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
+// componentes
 import DashboardGlobalFilters from '../components/charts/DashboardGlobalFilters';
+// bloco financeiro
 import FaturamentoAnualChart from '../components/charts/FaturamentoAnualChart';
 import FaturamentoMensalChart from '../components/charts/FaturamentoMensalChart';
 import FaturamentoDiarioChart from '../components/charts/FaturamentoDiarioChart';
+// bloco produtos
 import TopProdutosChart from '../components/charts/TopProdutosChart';
 import ProdutosEncalhadosTable from '../components/charts/ProdutosEncalhadosTable';
+// bloco clientese pets
 import TopClientesChart from '../components/charts/TopClientesChart';
 import NovosClientesChart from '../components/charts/NovosClientesChart';
 import PetsPorIdadeChart from '../components/charts/PetsPorIdadeChart';
@@ -48,17 +52,18 @@ export default function Dashboard() {
 
 
     useEffect(() => {
-        const financeQuery = buildQueryString(filters);
         const productQuery = buildQueryString({ ano: filters.ano, mes: filters.mes, atendenteId: filters.atendenteId });
         const clientQuery = buildQueryString({ ano: filters.ano, mes: filters.mes });
 
-        // bloco financeiro (ano/mes/dia)
+        // bloco financeiro (ano / mes / dia)
         const fetchFinanceData = async () => {
             try {
+                // anual
                 const qAnual = buildQueryString({ produtoId: filters.produtoId, atendenteId: filters.atendenteId });
                 const resAnual = await fetch(`${API_URL}/faturamento-anual?${qAnual}`);
                 if (resAnual.ok) setAnualData(await resAnual.json());
 
+                // mensal
                 if (filters.ano) {
                     const qMensal = buildQueryString(filters); 
                     const resMensal = await fetch(`${API_URL}/faturamento-mensal?${qMensal}`);
@@ -67,6 +72,7 @@ export default function Dashboard() {
                     setMensalData([]);
                 }
 
+                // diario
                 if (filters.mes) {
                     const qDiario = buildQueryString(filters);
                     const resDiario = await fetch(`${API_URL}/faturamento-diario?${qDiario}`);
@@ -77,6 +83,7 @@ export default function Dashboard() {
             } catch (e) { console.error("Erro Financeiro:", e); }
         };
 
+        // bloco produtos
         const fetchProductData = async () => {
             try {
                 const resTopProd = await fetch(`${API_URL}/top-produtos-receita?${productQuery}`);
@@ -84,12 +91,13 @@ export default function Dashboard() {
             } catch (e) { console.error("Erro Produtos:", e); }
         };
 
+        // bloco clientes e pets
         const fetchClientData = async () => {
              try {
                 const [resTopCli, resNovosCli, resPetsIdade] = await Promise.all([
                     fetch(`${API_URL}/top-clientes-gasto?${clientQuery}`),
-                    fetch(`${API_URL}/novos-clientes-mes`), 
-                    fetch(`${API_URL}/pets-por-idade`)
+                    fetch(`${API_URL}/novos-clientes-mes`), // infiltravel
+                    fetch(`${API_URL}/pets-por-idade`)      // infiltravel
                 ]);
                 if (resTopCli.ok) setTopClientesData(await resTopCli.json());
                 if (resNovosCli.ok) setNovosClientesData(await resNovosCli.json());
@@ -97,6 +105,7 @@ export default function Dashboard() {
              } catch (e) { console.error("Erro Clientes:", e); }
         };
 
+        // bloco inventario (nao tem filtros)
         const fetchInventoryData = async () => {
             if (produtosEncalhadosData === null) { 
                 try {
@@ -109,13 +118,16 @@ export default function Dashboard() {
         fetchFinanceData();
         fetchProductData();
         fetchClientData();
-        fetchInventoryData();
+        if (produtosEncalhadosData === null) {
+            fetchInventoryData();
+        }
 
     }, [filters]); 
 
     
     useEffect(() => {
-        const hasSavedFilters = localStorage.getItem('dashboardFilters') !== null;
+        const savedFiltersRaw = localStorage.getItem('dashboardFilters');
+        const hasSavedFilters = savedFiltersRaw && savedFiltersRaw !== 'null';
 
         if (!hasSavedFilters) {
             setIsLoadingDefaults(true);
@@ -151,9 +163,16 @@ export default function Dashboard() {
         }
     }, []); 
 
-	
-    const handleFilterChange = (newFilters) => {
+	    
+    const handleGraphClick = (newFilters) => {
       setFilters(prev => ({ ...prev, ...newFilters }));
+    };
+
+    const handleGlobalFilterChange = (key, value) => {
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            [key]: value || null,
+        }));
     };
 
     const handleClearFilters = () => {
@@ -164,6 +183,7 @@ export default function Dashboard() {
         produtoId: null,
         atendenteId: null,
       });
+      setIsLoadingDefaults(true);
     };
 
 
@@ -249,23 +269,27 @@ export default function Dashboard() {
 		<>
             <section className="content-section">
                 <h2>Filtros Globais</h2>
-                <DashboardGlobalFilters filters={filters} setFilters={handleFilterChange} />
+                <DashboardGlobalFilters 
+                    filters={filters} 
+                    setFilters={handleGlobalFilterChange} 
+                    onClearFilters={handleClearFilters}
+                />
             </section>
 
-            {/* bloco 1 - metricas financeiras */}
+            {/* bloco metricas financeiras  */}
 			<section id="financeiro-section" className="content-section" style={{ marginTop: '2rem' }}>
 				<h2>💰 Métricas Financeiras</h2>
                 <div className="charts-container">
                     <figure>
                         <FaturamentoAnualChart 
                             chartData={anualData} 
-                            onBarClick={(ano) => handleFilterChange({ ano: filters.ano === ano ? null : ano, mes: null })}
+                            onBarClick={(ano) => handleGraphClick({ ano: filters.ano === ano ? null : ano, mes: null })}
                         />
                     </figure>
                     <figure>
                         <FaturamentoMensalChart 
                             chartData={mensalData} 
-                            onBarClick={(mes) => handleFilterChange({ mes: filters.mes === mes ? null : mes })}
+                            onBarClick={(mes) => handleGraphClick({ mes: filters.mes === mes ? null : mes })}
                             selectedYear={filters.ano}
                         />
                     </figure>
@@ -278,14 +302,14 @@ export default function Dashboard() {
                 </div>
             </section>
 
-            {/* bloco 2 - produtos e clientes */}
+            {/* bloco produtos e clientes */}
             <section id="produtos-clientes-section" className="content-section" style={{ marginTop: '2rem' }}>
                 <h2>🛍️ Métricas de Produtos e Clientes</h2>
                 <div className="charts-container">
                     <figure>
                          <TopProdutosChart 
                             chartData={topProdutosData}
-                            onBarClick={(prodId) => handleFilterChange({ produtoId: filters.produtoId === prodId ? null : prodId })}
+                            onBarClick={(prodId) => handleGraphClick({ produtoId: filters.produtoId === prodId ? null : prodId })}
                         />
                     </figure>
                     <figure>
@@ -300,7 +324,7 @@ export default function Dashboard() {
                 </div>
             </section>
 
-             {/* bloco 3 - inventario (consulta anti-join) */}
+            {/* bloco inventario  */}
             <section id="inventario-section" className="content-section" style={{ marginTop: '2rem' }}>
                 <h2>📦 Métricas de Inventário</h2>
                  <div className="charts-container">
