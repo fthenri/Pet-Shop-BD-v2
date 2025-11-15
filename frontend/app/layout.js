@@ -1,5 +1,6 @@
 import './globals.css'; 
-import Header from '../components/Header'; 
+import Sidebar from '../components/Sidebar'; 
+import { ThemeProvider } from '../contexts/ThemeContext';
 
 export const metadata = {
   title: 'Sistema de Gerenciamento',
@@ -10,10 +11,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-br">
       <body>
-        <Header /> 
-        <main className="main-content">
-          {children} 
-        </main>
+        <ThemeProvider> 
+          <Sidebar /> 
+          <main className="main-content">
+            {children} 
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );
