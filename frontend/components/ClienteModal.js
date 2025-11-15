@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useNotification } from '../contexts/NotificationContext';
 
 export default function ClienteModal({ onClose, onSave, clienteParaEditar }) {
 	const API_URL = 'http://localhost:8080/api/clientes';
+	
+	const { showNotification } = useNotification();
 
 	const [formData, setFormData] = useState({
 		cpf: '',
@@ -86,11 +89,16 @@ export default function ClienteModal({ onClose, onSave, clienteParaEditar }) {
 				throw new Error(errorData.message || 'Erro ao salvar cliente');
 			}
 
-			alert(`Cliente ${isEditMode ? 'atualizado' : 'cadastrado'} com sucesso!`);
+			showNotification({ 
+                message: `Cliente ${isEditMode ? 'atualizado' : 'cadastrado'} com sucesso!`, 
+                type: 'success' 
+            }); 
 			onSave();
 		} catch (error) {
 			console.error('Falha ao salvar cliente:', error);
-			alert(`Não foi possível salvar o cliente: ${error.message}`);
+			showNotification({ 
+				message: `Não foi possível salvar o cliente: ${error.message}`, 
+				type: 'error', duration: 6000 });
 		}
 	};
 

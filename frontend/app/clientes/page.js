@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import ClienteModal from '../../components/ClienteModal'; 
+import { useNotification } from '../../contexts/NotificationContext';
 
 export default function GerenciarClientes() {
 	const [clientes, setClientes] = useState([]);
@@ -10,6 +11,8 @@ export default function GerenciarClientes() {
 	const [clienteEmEdicao, setClienteEmEdicao] = useState(null);
 	
     const [filtro, setFiltro] = useState('');
+
+	const { showNotification, showConfirmation } = useNotification();
 
 	const API_URL = 'http://localhost:8080/api/clientes';
 
@@ -46,26 +49,29 @@ export default function GerenciarClientes() {
 		setClienteEmEdicao(null); 
 	};
 
- 	const handleExcluir = async (cpf) => {
-		if (confirm(`Tem certeza que deseja excluir o cliente com CPF ${cpf}?`)) {
-			try {
-				const response = await fetch(`${API_URL}/${cpf}`, {
-					method: 'DELETE',
-				});
+ 	const handleExcluir = (cpf) => { 
+        showConfirmation({
+            message: `Tem certeza que deseja excluir o cliente com CPF ${cpf}?`,
+            onConfirm: async () => {
+                try {
+                    const response = await fetch(`${API_URL}/${cpf}`, {
+                        method: 'DELETE',
+                    });
 
-				if (!response.ok && response.status !== 204) {
-					const errorData = await response.json();
-					throw new Error(
-						errorData.message || 'Erro ao excluir cliente.'
-					);
-				}
-				alert('Cliente excluído com sucesso!');
-				carregarClientes(); 
-			} catch (error) {
-				console.error('Falha ao excluir cliente:', error);
-				alert(`Não foi possível excluir o cliente: ${error.message}`);
-			}
-		}
+                    if (!response.ok && response.status !== 204) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(
+                            errorData.message || 'Erro ao excluir cliente.'
+                        );
+                    }
+                    showNotification({ message: 'Cliente excluído com sucesso!', type: 'success' });
+                    carregarClientes(); 
+                } catch (error) {
+                    console.error('Falha ao excluir cliente:', error);
+                    showNotification({ message: `Não foi possível excluir o cliente: ${error.message}`, type: 'error', duration: 6000 }); 
+                }
+            }
+        });
 	};
 
     const clientesFiltrados = clientes.filter(cliente =>
