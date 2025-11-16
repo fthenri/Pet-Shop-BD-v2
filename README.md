@@ -150,15 +150,18 @@ Siga estes passos para configurar e executar o projeto localmente.
 
 ### 1. Banco de Dados (MySQL)
 
-Este é o coração do projeto.
+Este é o coração do projeto. O setup é simplificado e requer a execução de apenas um arquivo.
 
 1.  Crie um novo database (schema) no seu servidor MySQL (ex: `petshop_db`).
-2.  **IMPORTANTE:** Para facilitar os testes, estamos trabalhando em um script SQL unificado. Por enquanto, para ter a experiência completa (com dados robustos para o dashboard), execute os scripts SQL na seguinte ordem:
-    1.  `PetShop_Criacao_Insercao.sql` (Cria tabelas e insere dados)
-    2.  `Etapa04_Visoes.sql` (Cria as Views de BI)
-    3.  `3-Triggers.sql` (Adiciona os gatilhos de auditoria e estoque)
-    4.  `1-Funcoes.sql` (Adiciona as Funções de cálculo)
-    5.  `2-Procedimentos.sql` (Adiciona os Procedimentos de manutenção)
+2.  Navegue até a pasta `database/` na raiz deste projeto.
+3.  Execute o script **`full_schema.sql`** no seu banco de dados recém-criado.
+
+Este script único cuidará de tudo:
+* Criação de todas as tabelas.
+* Inserção de dados de teste (para popular o dashboard).
+* Criação das Funções, Procedimentos, Views de BI e Triggers.
+
+(Para fins de desenvolvimento e consulta, os scripts individuais também estão disponíveis nesta pasta.)
 
 ### 2. Backend (Java/Spring)
 
@@ -391,7 +394,7 @@ Representa as empresas que fornecem produtos para o Pet Shop.
 | :--- | :--- | :--- | :--- | :--- |
 | **cnpj** | VARCHAR | 14 | CNPJ do fornecedor (sem formatação). | PK (Chave Primária), Obrigatório, Único |
 | razao_social | VARCHAR | 200 | Nome empresarial do fornecedor. | Obrigatório |
-| contato_principal | VARCHAR | 100 | Nome da pessoa de contato no fornecedor. | Opcional |
+| contato_principal | VARCHAR | 15 | Telefone de contato do Fornecedor. | Obrigatório |
 
 <br>
 
