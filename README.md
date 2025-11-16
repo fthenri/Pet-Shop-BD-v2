@@ -203,11 +203,100 @@ Este é o coração do projeto.
 
 Este projeto foi desenvolvido usando uma abordagem *Database-First*. Todo o design do sistema foi planejado antes da primeira linha de código, usando artefatos de modelagem.
 
-Você pode encontrar todos os arquivos de design na raiz do projeto.
-
 ### 1. Definição do Minimundo
+
 A descrição textual que deu origem ao projeto, definindo as regras de negócio.
-* **Arquivo:** `Definição do Minimundo (1).pdf`
+
+<details>
+  <summary>Clique para expandir a Definição do Minimundo</summary>
+<br>
+
+**Descrição do Cenário:**<br> 
+> Um Pet Shop oferece uma variedade de serviços (como banho, tosa, consultas veterinárias) e vende produtos (como ração, brinquedos e acessórios). A empresa precisa de um sistema para gerenciar as informações de clientes e seus pets, registrar vendas de produtos e analisar o desempenho do negócio para tomar decisões mais informadas.<br>
+
+**Objetivos da Aplicação:**<br>
+* Centralizar e organizar as informações sobre clientes, seus pets e funcionários.<br>
+* Fornecer insights sobre as operações do negócio por meio de relatórios e um dashboard visual.<br>
+
+**Perguntas/Relatórios Importantes:**<br>
+* Quais são os serviços e produtos mais populares?<br>
+* Qual é a receita mensal proveniente de serviços em comparação com a de produtos?<br>
+* Qual é o perfil dos clientes mais frequentes?<br>
+
+---
+
+#### Entidades e Atributos
+
+1.  **Cliente:** A pessoa física responsável pelos pets e pelas transações.<br>
+    * **cpf** (chave primária)<br>
+    * nome<br>
+    * data_cadastro<br>
+    * endereco (composto: logradouro, numero, bairro, cidade, estado, cep)<br>
+    * telefone (multivalorado)<br>
+
+2.  **Pet (Entidade Fraca):** O animal de estimação atendido no Pet Shop. Depende de um Cliente.<br>
+    * **nome_pet** (chave parcial)<br>
+    * especie<br>
+    * raca<br>
+    * data_nascimento<br>
+    * observacoes (alergias, condições médicas)<br>
+
+3.  **Funcionário (Generalista):** Representa qualquer pessoa que trabalhe no Pet Shop.<br>
+    * **cod_funcionario** (chave primária)<br>
+    * nome<br>
+    * cpf<br>
+    * data_admissao<br>
+    * *Especializações: Veterinário, Atendente*<br>
+
+4.  **Fornecedor:** A empresa que fornece os produtos.<br>
+    * **cnpj** (chave primária)<br>
+    * razao_social<br>
+    * contato_principal<br>
+
+5.  **Produto:** Itens físicos vendidos na loja.<br>
+    * **cod_produto** (chave primária)<br>
+    * nome_produto<br>
+    * descricao<br>
+    * preco_venda<br>
+    * quantidade_estoque<br>
+
+6.  **Consulta:** Registro de um atendimento clínico.<br>
+    * **num_consulta** (chave primária)<br>
+    * data_hora<br>
+    * diagnostico<br>
+    * sintomas_relatados<br>
+
+7.  **Exame:** Exame solicitado durante uma consulta.<br>
+    * **nome_exame** (chave parcial)<br>
+    * data_solicitacao<br>
+    * resultado<br>
+
+8.  **Venda:** O registro mestre de uma transação comercial.<br>
+    * **num_venda** (chave primária)<br>
+    * data_hora<br>
+    * valor_total<br>
+    * forma_pagamento<br>
+
+9.  **Pesquisa:** Pesquisas de satisfação realizadas com clientes.<br>
+    * **id_pesquisa** (chave primária)<br>
+    * *(diversos atributos de perfil)*<br>
+    * id_client (chave estrangeira para Cliente)<br>
+
+---
+
+#### Relacionamentos e Cardinalidades
+
+* **Cliente e Pet (1:N):** "possui" (Relacionamento de Identificação).<br>
+* **Funcionário (1:N):** "supervisiona" (Auto-relacionamento).<br>
+* **Fornecedor e Produto (1:N):** "fornecer".<br>
+* **Venda e Produto (N:M):** "contem" (com atributo `quantidade`).<br>
+* **Veterinário, Pet e Consulta (Ternário):** "Atende".<br>
+* **Consulta e Exame (1:N):** "prescrever" (Relacionamento de Identificação).<br>
+* **Atendente e Venda (1:N):** "registra".<br>
+* **Cliente e Venda (1:N):** "efetua".<br>
+* **Cliente e Pesquisa (1:N):** (Relacionamento para pesquisa).<br>
+
+</details>
 
 ### 2. Modelo Conceitual (MER)
 O diagrama Entidade-Relacionamento de alto nível.
