@@ -310,10 +310,169 @@ A transição do modelo conceitual para um rascunho do esquema relacional.
 > **[IMAGEM DO MODELO LÓGICO]**
 <img width="1292" height="864" alt="Lógico_1" src="https://github.com/user-attachments/assets/ccd8e700-334f-4f9e-ba81-f4d97962a5ef" />
 
-### 4. Esquema Relacional e Dicionário de Dados
-Os documentos finais que descrevem as tabelas, colunas, tipos de dados e restrições.
-* **Esquema:** `Esquema Relacional.pdf`
-* **Dicionário:** `Dicionário de Dados - Sistema Pet Shop (2).pdf`
+### 4. Esquema Relacional
+
+O esquema relacional derivado do MER, mostrando as tabelas, atributos e chaves estrangeiras.
+
+> **[IMAGEM DO ESQUEMA RELACIONAL]**
+<img width="711" height="632" alt="image" src="https://github.com/user-attachments/assets/79c566e2-797c-4309-b1ba-361172ad279c" />
+
+<br>
+
+### 5. Dicionário de Dados
+
+A definição detalhada de cada atributo (tipo de dado, tamanho, restrições) para cada entidade do banco de dados.
+
+<details>
+  <summary>Clique para expandir o Dicionário de Dados</summary>
+
+<br>
+
+#### Entidade: Cliente
+Representa os clientes donos dos pets. 
+
+| Nome do Atributo | Tipo de Dado | Tamanho/Precisão | Descrição | Observações/Restrições |
+| :--- | :--- | :--- | :--- | :--- |
+| **cpf** | VARCHAR | 11 | CPF do cliente, usado para identificação única. | PK (Chave Primária), Obrigatório, Único |
+| nome | VARCHAR | 150 | Nome completo do cliente. | Obrigatório |
+| data_cadastro | DATE | | Data em que o cliente foi cadastrado no sistema. | Obrigatório |
+| logradouro | VARCHAR | 200 | Nome da rua/avenida do endereço do cliente. | Opcional |
+| numero | VARCHAR | 10 | Número do imóvel no endereço. | Opcional |
+| bairro | VARCHAR | 50 | Bairro do endereço. | Opcional |
+| cidade | VARCHAR | 50 | Cidade do endereço. | Opcional |
+| estado | CHAR | 2 | Sigla do estado (UF). | Opcional |
+| cep | VARCHAR | 8 | Código de Endereçamento Postal (sem formatação). | Opcional |
+| telefone | VARCHAR | 15 | Telefone de contato do cliente. | Multivalorado |
+
+<br>
+
+#### Entidade: Pet
+Representa os animais de estimação. É uma entidade fraca, dependente de Cliente. 
+
+| Nome do Atributo | Tipo de Dado | Tamanho/Precisão | Descrição | Observações/Restrições |
+| :--- | :--- | :--- | :--- | :--- |
+| **cpf_cliente** | VARCHAR | 11 | CPF do cliente dono do pet. | PK (parte), FK para Cliente |
+| **nome_pet** | VARCHAR | 50 | Nome do animal de estimação. | PK (parte), Chave Parcial |
+| especie | VARCHAR | 30 | Espécie do animal (ex: 'Cachorro', 'Gato'). | Obrigatório |
+| raca | VARCHAR | 50 | Raça do animal. | Obrigatório |
+| data_nascimento | DATE | | Data de nascimento aproximada do pet. | Opcional |
+| observacoes | TEXT | | Campo para informações relevantes (alergias, etc.). | Opcional |
+
+<br>
+
+#### Entidade: Funcionario
+Representa os funcionários do Pet Shop (superclasse). 
+
+| Nome do Atributo | Tipo de Dado | Tamanho/Precisão | Descrição | Observações/Restrições |
+| :--- | :--- | :--- | :--- | :--- |
+| **cod_funcionario** | INTEGER | | Código identificador único do funcionário. | PK. Auto-incremento |
+| nome | VARCHAR | 150 | Nome completo do funcionário. | Obrigatório |
+| cpf | VARCHAR | 11 | CPF do funcionário. | Obrigatório, Único |
+| data_admissao | DATE | | Data em que o funcionário foi admitido. | Obrigatório |
+| cod_supervisor | INTEGER | | Código do funcionário que o supervisiona. | FK para Funcionario, Opcional (Pode ser NULO) |
+
+<br>
+
+#### Entidades: Veterinario e Atendente
+Subclasses de Funcionario. Elas herdam todos os atributos acima. 
+
+| Entidade | Nome do Atributo | Tipo de Dado | Tamanho/Precisão | Descrição | Observações/Restrições |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Veterinario** | **cod_funcionario** | INTEGER | | Identificador herdado. | PK, FK para Funcionario |
+| | CRMV | VARCHAR | 10 | Registro no Conselho Regional de Med. Veterinária. | Obrigatório, Único |
+| **Atendente** | **cod_funcionario** | INTEGER | | Identificador herdado. | PK, FK para Funcionario |
+
+<br>
+
+#### Entidade: Fornecedor
+Representa as empresas que fornecem produtos para o Pet Shop. 
+
+| Nome do Atributo | Tipo de Dado | Tamanho/Precisão | Descrição | Observações/Restrições |
+| :--- | :--- | :--- | :--- | :--- |
+| **cnpj** | VARCHAR | 14 | CNPJ do fornecedor (sem formatação). | PK (Chave Primária), Obrigatório, Único |
+| razao_social | VARCHAR | 200 | Nome empresarial do fornecedor. | Obrigatório |
+| contato_principal | VARCHAR | 100 | Nome da pessoa de contato no fornecedor. | Opcional |
+
+<br>
+
+#### Entidade: Produto
+Representa os itens à venda. 
+
+| Nome do Atributo | Tipo de Dado | Tamanho/Precisão | Descrição | Observações/Restrições |
+| :--- | :--- | :--- | :--- | :--- |
+| **cod_produto** | INTEGER | | Código identificador único do produto. | PK. Auto-incremento |
+| nome_produto | VARCHAR | 100 | Nome/Título do produto. | Obrigatório |
+| descricao | TEXT | | Descrição detalhada do produto. | Opcional |
+| preco_venda | DECIMAL | 10, 2 | Preço unitário de venda do produto. | Obrigatório |
+| quantidade_estoque | INTEGER | | Quantidade atual do produto em estoque. | Obrigatório |
+| cod_fornecedor | INTEGER | | Código do fornecedor do produto. | FK para Fornecedor, Obrigatório |
+
+<br>
+
+#### Entidade: Venda
+Registra cada transação de venda. 
+
+| Nome do Atributo | Tipo de Dado | Tamanho/Precisão | Descrição | Observações/Restrições |
+| :--- | :--- | :--- | :--- | :--- |
+| **num_venda** | INTEGER | | Número identificador único da venda. | PK, Auto-incremento |
+| data_hora | TIMESTAMP | | Data e hora exatas da transação. | Obrigatório |
+| valor_total | DECIMAL | 10, 2 | Soma total dos itens da venda. | Obrigatório |
+| forma_pagamento | VARCHAR | 50 | Método de pagamento (ex: 'Cartão de Crédito'). | Obrigatório |
+| cpf_cliente | VARCHAR | 11 | Cliente que efetuou a compra. | FK para Cliente, Obrigatório |
+| cod_funcionario | INTEGER | | Funcionário que registrou a venda. | FK para Funcionario, Obrigatório |
+
+<br>
+
+#### Entidade: Consulta
+Registra os atendimentos veterinários. 
+
+| Nome do Atributo | Tipo de Dado | Tamanho/Precisão | Descrição | Observações/Restrições |
+| :--- | :--- | :--- | :--- | :--- |
+| **num_consulta** | INTEGER | | Número identificador único da consulta. | PK. Auto-incremento |
+| data_hora | TIMESTAMP | | Data e hora exatas da consulta. | Obrigatório |
+| sintomas_relatados | TEXT | | Sintomas descritos pelo dono do pet. | Opcional |
+| diagnostico | TEXT | | Diagnóstico fornecido pelo veterinário. | Opcional |
+| cpf_cliente_pet | VARCHAR | 11 | CPF do dono do pet atendido. | FK para Pet, Obrigatório |
+| nome_pet | VARCHAR | 50 | Nome do pet atendido. | FK para Pet, Obrigatório |
+| cod_veterinario | INTEGER | | Veterinário que realizou a consulta. | FK para Veterinario, Obrigatório |
+
+<br>
+
+#### Entidade: Exame
+Registra os exames solicitados em uma consulta. Entidade fraca, dependente de Consulta. 
+
+| Nome do Atributo | Tipo de Dado | Tamanho/Precisão | Descrição | Observações/Restrições |
+| :--- | :--- | :--- | :--- | :--- |
+| **num_consulta** | INTEGER | | Consulta que originou o pedido de exame. | PK (parte), FK para Consulta |
+| **nome_exame** | VARCHAR | 100 | Nome do exame solicitado (ex: 'Hemograma'). | PK (parte), Chave Parcial |
+| data_solicitacao | DATE | | Data em que o exame foi solicitado. | Obrigatório |
+| resultado | TEXT | | Laudo/Resultado do exame. | Opcional |
+
+<br>
+
+#### Entidade: Pesquisa
+Registra os hábitos de consumo dos clientes e características dos pets no petshop. 
+
+| Atributo | Descrição | Tipo de Dado | Observações |
+| :--- | :--- | :--- | :--- |
+| **Id_pesquisa** | Identificador único da pesquisa | INT (PK) | Chave primária da tabela |
+| Idade_Cliente | Idade do cliente que respondeu | INT | Valor em anos |
+| Genero | Gênero do cliente | VARCHAR(20) | Ex: "Masculino", "Feminino", "Outro" |
+| Distancia_km | Distância da residência do cliente até o local (em km) | DECIMAL(5,2) | Ex: 12.35 km |
+| Tipo_Pet_1 | Espécie do primeiro pet | VARCHAR(30) | Ex: "Cachorro", "Gato", "Ave" |
+| Idade_Pet_1 | Idade do primeiro pet | INT | Valor em anos |
+| Peso_kg_Pet_1 | Peso do primeiro pet | DECIMAL(5,2) | Ex: 8.50 kg |
+| Possui_Segundo_Pet | Indica se o cliente tem um segundo pet | BOOLEAN | 0 = Não, 1 = Sim |
+| Tipo_Pet_2 | Espécie do segundo pet | VARCHAR(30) | Preenchido apenas se Possui_Segundo_Pet = 1 |
+| Idade_Pet_2 | Idade do segundo pet | INT | Valor em anos |
+| Peso_kg_Pet_2 | Peso do segundo pet | DECIMAL(5,2) | Ex: 12.00 kg |
+| Gasto_Mensal_BRL | Gasto médio mensal do cliente com pets (em R$) | DECIMAL(10,2) | Ex: 350.75 |
+| Frequencia_Visitas | Frequência de visitas ao estabelecimento | VARCHAR(50) | Ex: "Semanal", "Mensal", "Trimestral" |
+| Servico_Principal | Serviço mais utilizado pelo cliente | VARCHAR(50) | Ex: "Banho", "Consulta veterinária", "Hotelzinho" |
+| Nota_Satisfacao | Nota de satisfação dada pelo cliente | INT | Escala de 0 a 10 (ou conforme definido) |
+| Id_Client | Identificador do cliente que respondeu | INT (FK) | Chave estrangeira (referencia a entidade Cliente) |
+
+</details>
 
 ---
 
