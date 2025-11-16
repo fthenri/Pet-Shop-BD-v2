@@ -211,29 +211,15 @@ A descrição textual que deu origem ao projeto, definindo as regras de negócio
 
 ### 2. Modelo Conceitual (MER)
 O diagrama Entidade-Relacionamento de alto nível.
-* **Arquivo:** `conceitual.png`
-* **Fonte (BRModelo):** `Modelo_Conceitual_PetShop.brM3.brm3`
 
 > **[IMAGEM DO MODELO CONCEITUAL]**
-
-<details>
-  <summary>Clique para expandir a imagem do Modelo Conceitual</summary>
-  
-  <img width="1382" height="495" alt="conceitual" src="https://github.com/user-attachments/assets/1ef56f21-f1a6-415f-b9de-1faed6386882" />
-</details>
+<img width="1382" height="495" alt="conceitual" src="https://github.com/user-attachments/assets/1ef56f21-f1a6-415f-b9de-1faed6386882" />
 
 ### 3. Modelo Lógico
 A transição do modelo conceitual para um rascunho do esquema relacional.
-* **Arquivo:** `Lógico_1.png`
-* **Fonte (BRModelo):** `Lógico_1.brM3.brm3`
 
 > **[IMAGEM DO MODELO LÓGICO]**
-
-<details>
-  <summary>Clique para expandir a imagem do Modelo Lógico</summary>
-  
-  <img width="1292" height="864" alt="Lógico_1" src="https://github.com/user-attachments/assets/ccd8e700-334f-4f9e-ba81-f4d97962a5ef" />
-</details>
+<img width="1292" height="864" alt="Lógico_1" src="https://github.com/user-attachments/assets/ccd8e700-334f-4f9e-ba81-f4d97962a5ef" />
 
 ### 4. Esquema Relacional e Dicionário de Dados
 Os documentos finais que descrevem as tabelas, colunas, tipos de dados e restrições.
