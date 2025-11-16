@@ -19,12 +19,32 @@ Nada vende melhor o projeto do que vê-lo funcionando. Aqui está o Dashboard de
 
 Este é um projeto full-stack completo que simula um sistema de gestão (ERP) para um Pet Shop. O diferencial deste repositório é que ele não foi apenas codificado, mas sim **projetado** seguindo um processo formal de modelagem de banco de dados.
 
-O objetivo é servir como um *boilerplate* robusto ou um projeto de estudo para desenvolvedores interessados em:
+O objetivo é servir como um *boilerplate* robusto ou um projeto de estudo para desenvolvedores interessados.
 
-* Conectar um backend **Java (Spring Boot com JDBC)** a um banco de dados **MySQL**.
-* Consumir uma API REST em um frontend moderno **React (Next.js)**.
-* Implementar um **Dashboard de BI** com gráficos dinâmicos (Chart.js).
-* Ver na prática como um **Esquema Relacional** bem definido se traduz em uma aplicação funcional.
+Este Projeto:
+* Conecta um backend **Java (Spring Boot com JDBC)** a um banco de dados **MySQL**.
+* Consume uma API REST em um frontend moderno **React (Next.js)**.
+* Implementa um **Dashboard de BI** com gráficos dinâmicos (Chart.js).
+* Ve na prática como um **Esquema Relacional** bem definido se traduz em uma aplicação funcional.
+
+---
+
+## 🧭 Sumário
+
+* [Sobre o Projeto](#-sobre-o-projeto)
+* [Funcionalidades](#-funcionalidades-features)
+    * [Dashboard de Business Intelligence (BI)](#-dashboard-de-business-intelligence-bi)
+    * [Módulos de Gerenciamento (CRUDs)](#️-módulos-de-gerenciamento-cruds)
+    * [Ferramentas de Admin e Auditoria](#️-ferramentas-de-admin-e-auditoria)
+* [Tecnologias Utilizadas](#️-tecnologias-utilizadas-tech-stack)
+* [Como Executar](#-como-executar-getting-started)
+    * [Pré-requisitos](#pré-requisitos)
+    * [1. Banco de Dados (MySQL)](#1-banco-de-dados-mysql)
+    * [2. Backend (Java/Spring)](#2-backend-javaspring)
+    * [3. Frontend (React/Next)](#3-frontend-reactnext)
+* [Design e Artefatos do Banco de Dados](#️-design-e-artefatos-do-banco-de-dados)
+* [Roadmap](#️-roadmap-próximas-features)
+* [Licença](#-licença)
 
 ---
 
@@ -42,15 +62,16 @@ A tela principal do sistema é um dashboard analítico que consome dados agregad
     * Novos Clientes por Mês.
     * E muito mais...
 
-> **[IMAGEM DO DASHBOARD COM FILTROS APLICADOS AQUI]**
-> 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c96a2088-3780-4e57-8ef7-a223015b9669" />
+> **[GALERIA DE IMAGENS DO DASHBOARD COM FILTROS APLICADOS]**
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5272b181-4ef7-4e6a-9d4a-d456c0631040" />
+<details>
+  <summary>Clique para expandir as imagens do Dashboard</summary>
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/aa4c7404-a186-4930-9b55-b90935f9abb8" />
-
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ece19f06-6020-4e27-b58d-7049712cc93c" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c96a2088-3780-4e57-8ef7-a223015b9669" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5272b181-4ef7-4e6a-9d4a-d456c0631040" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/aa4c7404-a186-4930-9b55-b90935f9abb8" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ece19f06-6020-4e27-b58d-7049712cc93c" />
+</details>
 
 ### 🗃️ Módulos de Gerenciamento (CRUDs)
 
@@ -64,27 +85,28 @@ O sistema possui módulos de gerenciamento completos (Criar, Ler, Atualizar, Exc
 
 > **[GALERIA DE IMAGENS DAS TELAS DE GERENCIAMENTO (CRUDs)]**
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/109fce09-07a7-4e8a-9520-d61a0f7c6716" />
+<details>
+  <summary>Clique para expandir as imagens dos CRUDs</summary>
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5d18af3d-b083-4b13-8d06-038d24ee7da9" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/931bf1ef-3272-41b0-aa1f-9f8707fb6ed7" />
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c8897d11-dc8c-4a9d-ac5e-b001f9c6c345" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/109fce09-07a7-4e8a-9520-d61a0f7c6716" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5d18af3d-b083-4b13-8d06-038d24ee7da9" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/931bf1ef-3272-41b0-aa1f-9f8707fb6ed7" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c8897d11-dc8c-4a9d-ac5e-b001f9c6c345" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6fa4446e-be84-47d8-9971-734b2e0eab68" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e19e0eac-c28e-41de-b393-5ed14ce44f30" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d4232685-19b0-480a-8ff7-460df774c3da" />
+</details>
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6fa4446e-be84-47d8-9971-734b2e0eab68" />
+> **[GALERIA DE IMAGENS DE UM MODAL DE EDIÇÃO/CRIAÇÃO ABERTO]**
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e19e0eac-c28e-41de-b393-5ed14ce44f30" />
+<details>
+  <summary>Clique para expandir as imagens dos Modais</summary>
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d4232685-19b0-480a-8ff7-460df774c3da" />
-
-> **[IMAGEM DE UM MODAL DE EDIÇÃO/CRIAÇÃO ABERTO AQUI]**
-
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/90d3f516-cead-4e7b-ad3a-e86a6488664d" />
-
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a46bb587-6117-49e5-bbd2-18ebf68a2f4e" />
-
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/34efdaa9-db23-41c1-8221-e869d0fc80bb" />
-
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e483ae9b-15c5-4de2-b5e8-fd01b7836963" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/90d3f516-cead-4e7b-ad3a-e86a6488664d" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a46bb587-6117-49e5-bbd2-18ebf68a2f4e" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/34efdaa9-db23-41c1-8221-e869d0fc80bb" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e483ae9b-15c5-4de2-b5e8-fd01b7836963" />
+</details>
 
 ### 🛠️ Ferramentas de Admin e Auditoria
 
@@ -93,9 +115,13 @@ Recursos avançados para gerenciamento e depuração do banco de dados.
 * **Executor de Consultas SQL:** Uma interface que permite executar queries `SELECT` (e outras consultas seguras) diretamente no banco de dados e ver o resultado em uma tabela dinâmica.
 * **Log de Auditoria:** Uma tela que exibe os logs de auditoria de alteração de preço, alimentada diretamente por uma `TRIGGER` no banco de dados.
 
-> **[IMAGEM DA TELA DO EXECUTOR SQL COM UMA QUERY E RESULTADO AQUI]**
+> **[IMAGEM DA TELA DO EXECUTOR SQL COM UMA QUERY E RESULTADO]**
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a910db28-7c47-488e-8036-c0700b3a48c3" />
+<details>
+  <summary>Clique para expandir a imagem do Executor SQL</summary>
+
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a910db28-7c47-488e-8036-c0700b3a48c3" />
+</details>
 
 ---
 
@@ -188,18 +214,26 @@ O diagrama Entidade-Relacionamento de alto nível.
 * **Arquivo:** `conceitual.png`
 * **Fonte (BRModelo):** `Modelo_Conceitual_PetShop.brM3.brm3`
 
-> **[IMAGEM DO MODELO CONCEITUAL AQUI (use o conceitual.png)]**
+> **[IMAGEM DO MODELO CONCEITUAL]**
 
-<img width="1382" height="495" alt="conceitual" src="https://github.com/user-attachments/assets/1ef56f21-f1a6-415f-b9de-1faed6386882" />
+<details>
+  <summary>Clique para expandir a imagem do Modelo Conceitual</summary>
+  
+  <img width="1382" height="495" alt="conceitual" src="https://github.com/user-attachments/assets/1ef56f21-f1a6-415f-b9de-1faed6386882" />
+</details>
 
 ### 3. Modelo Lógico
 A transição do modelo conceitual para um rascunho do esquema relacional.
 * **Arquivo:** `Lógico_1.png`
 * **Fonte (BRModelo):** `Lógico_1.brM3.brm3`
 
-> **[IMAGEM DO MODELO LÓGICO AQUI (use o Lógico_1.png)]**
+> **[IMAGEM DO MODELO LÓGICO]**
 
-<img width="1292" height="864" alt="Lógico_1" src="https://github.com/user-attachments/assets/ccd8e700-334f-4f9e-ba81-f4d97962a5ef" />
+<details>
+  <summary>Clique para expandir a imagem do Modelo Lógico</summary>
+  
+  <img width="1292" height="864" alt="Lógico_1" src="https://github.com/user-attachments/assets/ccd8e700-334f-4f9e-ba81-f4d97962a5ef" />
+</details>
 
 ### 4. Esquema Relacional e Dicionário de Dados
 Os documentos finais que descrevem as tabelas, colunas, tipos de dados e restrições.
