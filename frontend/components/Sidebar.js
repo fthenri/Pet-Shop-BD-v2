@@ -17,6 +17,8 @@ import {
     FaChevronRight,
     FaChevronDown,
     FaPaw,
+    FaUserFriends,
+    FaUsersCog
 } from 'react-icons/fa';
 
 
@@ -32,7 +34,7 @@ export default function Sidebar() {
     const isSubmenuActive = (paths) => paths.some(path => pathname.startsWith(path));
 
     useEffect(() => {
-        if (isSubmenuActive(['/clientes', '/produtos', '/fornecedores', '/pets'])) {
+        if (isSubmenuActive(['/clientes', '/produtos', '/fornecedores', '/pets', '/funcionarios'])) {
             setIsGestaoOpen(true);
         }
     }, [pathname]);
@@ -55,12 +57,14 @@ export default function Sidebar() {
                     {/* gestão (dropdown) */}
                     <li className="nav-item">
                         <a 
-                            className={`nav-link nav-toggle ${isSubmenuActive(['/clientes', '/produtos', '/fornecedores', '/pets']) ? 'active' : ''}`} 
+                            className={`nav-link nav-toggle ${isSubmenuActive(['/clientes', '/produtos', '/fornecedores', '/pets', '/funcionarios']) ? 'active' : ''}`} 
                             onClick={toggleGestao}
                             style={{ cursor: 'pointer' }}
                         >
-                            <FaBoxOpen />
-                            <span>Gestão</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <FaBoxOpen />
+                                <span>Gestão</span>
+                            </div>
                             
                             {/* seta */}
                             {isGestaoOpen ? <FaChevronDown /> : <FaChevronRight />}
@@ -70,6 +74,11 @@ export default function Sidebar() {
                             <li>
                                 <Link href="/clientes" className={isActive('/clientes') ? 'active-sub' : ''}>
                                     <FaUsers /> Gerenciar Clientes
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/funcionarios" className={isActive('/funcionarios') ? 'active-sub' : ''}>
+                                    <FaUsersCog /> Gerenciar Funcionários
                                 </Link>
                             </li>
                             <li>
