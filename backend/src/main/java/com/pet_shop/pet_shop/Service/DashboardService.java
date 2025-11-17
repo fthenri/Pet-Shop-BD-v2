@@ -1,12 +1,13 @@
 package com.pet_shop.pet_shop.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DashboardService {
@@ -323,5 +324,11 @@ public class DashboardService {
                      "WHERE YEAR(data_hora) = ? " +
                      "ORDER BY mes ASC";
         return jdbcTemplate.queryForList(sql, ano);
+    }
+
+    @Transactional
+    public void executarAuditoriaVendas() {
+        String sql = "CALL SP_AuditarECorrigirVenda()";
+        jdbcTemplate.update(sql);
     }
 }
