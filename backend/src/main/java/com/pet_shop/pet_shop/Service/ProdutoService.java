@@ -35,7 +35,7 @@ public class ProdutoService {
         produto.setQuantidade_estoque(produtoDTO.getQuantidade_estoque());
         produto.setCnpjFornecedor(produtoDTO.getCnpjFornecedor());
 
-        produtoRepository.update(produto);
+        produtoRepository.save(produto); // <-- CORREÇÃO
         return new ProdutoResponseDTO(produto);
     }
 
@@ -46,7 +46,11 @@ public class ProdutoService {
             produto.setPreco_venda(produtoDetails.getPreco_venda());
             produto.setQuantidade_estoque(produtoDetails.getQuantidade_estoque());
             produto.setCnpjFornecedor(produtoDetails.getCnpjFornecedor());
-            produtoRepository.save(produto);
+
+            // É preciso definir o ID no objeto antes de atualizar
+            produto.setCod_produto(id); // Adicione esta linha
+
+            produtoRepository.update(produto); // <-- CORREÇÃO
             return new ProdutoResponseDTO(produto);
         });
     }
