@@ -18,6 +18,7 @@ import com.pet_shop.pet_shop.DTO.VeterinarioResponseDTO;
 import com.pet_shop.pet_shop.Model.Atendente;
 import com.pet_shop.pet_shop.Model.Veterinario;
 import com.pet_shop.pet_shop.Repository.FuncionarioRepository;
+import com.pet_shop.pet_shop.exception.BusinessException; 
 import com.pet_shop.pet_shop.exception.ResourceNotFoundException;
 
 @Service
@@ -30,7 +31,7 @@ public class FuncionarioService {
     @Transactional
     public VeterinarioResponseDTO createVeterinario(VeterinarioRequestDTO dto) {
         funcionarioRepository.findByCpf(dto.cpf()).ifPresent(f -> {
-            throw new RuntimeException("CPF já cadastrado.");
+            throw new BusinessException("CPF já cadastrado.");
         });
 
         Veterinario vet = new Veterinario();
@@ -74,7 +75,7 @@ public class FuncionarioService {
     @Transactional
     public AtendenteResponseDTO createAtendente(AtendenteRequestDTO dto) {
         funcionarioRepository.findByCpf(dto.cpf()).ifPresent(f -> {
-            throw new RuntimeException("CPF já cadastrado.");
+            throw new BusinessException("CPF já cadastrado.");
         });
 
         Atendente atendente = new Atendente();
@@ -115,7 +116,7 @@ public class FuncionarioService {
     @Transactional
     public FuncionarioGeralResponseDTO createFuncionarioPuro(FuncionarioRequestDTO dto) {
         funcionarioRepository.findByCpf(dto.getCpf()).ifPresent(f -> {
-            throw new RuntimeException("CPF já cadastrado.");
+            throw new BusinessException("CPF já cadastrado.");
         });
 
         Funcionario func = new Funcionario();
@@ -171,7 +172,7 @@ public class FuncionarioService {
         try {
             funcionarioRepository.deleteById(id);
         } catch (Exception e) {
-            throw new RuntimeException("Não é possível excluir o funcionário, pois ele pode ser supervisor de outros ou possuir registros associados.", e);
+            throw new BusinessException("Não é possível excluir o funcionário, pois ele pode ser supervisor de outros ou possuir registros associados.", e);
         }
     }
 }

@@ -38,6 +38,17 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(BusinessException.class)
+    public final ResponseEntity<ErrorDetails> handleBusinessException(BusinessException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
+            LocalDateTime.now(),
+            ex.getMessage(), 
+            request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ErrorDetails> handleAllExceptions(Exception ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(
