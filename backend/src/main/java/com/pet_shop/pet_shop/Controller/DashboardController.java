@@ -4,6 +4,7 @@ import com.pet_shop.pet_shop.Service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Map;
@@ -147,4 +148,15 @@ public class DashboardController {
         List<Map<String, Object>> data = dashboardService.getFiltroMeses(ano);
         return ResponseEntity.ok(data);
     }
+
+    @PostMapping("/executar-auditoria-vendas")
+public ResponseEntity<?> executarAuditoriaVendas() {
+try {
+dashboardService.executarAuditoriaVendas();
+return ResponseEntity.ok().body("Auditoria de vendas executada com sucesso.");
+} catch (Exception e) {
+return ResponseEntity.internalServerError().body("Erro ao executar auditoria:" + e.getMessage());
+}
+}
+
 }
