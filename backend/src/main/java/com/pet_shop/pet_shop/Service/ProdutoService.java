@@ -3,7 +3,10 @@ package com.pet_shop.pet_shop.Service;
 import com.pet_shop.pet_shop.DTO.ProdutoRequestDTO;
 import com.pet_shop.pet_shop.DTO.ProdutoResponseDTO;
 import com.pet_shop.pet_shop.Model.Produto;
+import com.pet_shop.pet_shop.Repository.FornecedorRepository; 
 import com.pet_shop.pet_shop.Repository.ProdutoRepository;
+import com.pet_shop.pet_shop.exception.BusinessException; 
+import com.pet_shop.pet_shop.exception.ResourceNotFoundException; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,15 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
+    @Autowired
+    private FornecedorRepository fornecedorRepository;
+
+    private void validarFornecedor(String cnpj) {
+        if (cnpj == null || fornecedorRepository.findByCnpj(cnpj).isEmpty()) {
+            throw new BusinessException("Fornecedor com CNPJ '" + cnpj + "' não encontrado.");
+        }
+    }
+
     public List<ProdutoResponseDTO> getAllProdutos() {
         return produtoRepository.findAll().stream()
                 .map(ProdutoResponseDTO::new)
@@ -28,6 +40,8 @@ public class ProdutoService {
     }
 
     public ProdutoResponseDTO createProduto(ProdutoRequestDTO produtoDTO) {
+        validarFornecedor(produtoDTO.getCnpjFornecedor());
+
         Produto produto = new Produto();
         produto.setNome_produto(produtoDTO.getNome_produto());
         produto.setDescricao(produtoDTO.getDescricao());
@@ -35,30 +49,34 @@ public class ProdutoService {
         produto.setQuantidade_estoque(produtoDTO.getQuantidade_estoque());
         produto.setCnpjFornecedor(produtoDTO.getCnpjFornecedor());
 
-        produtoRepository.save(produto); // <-- CORREÇÃO
-        return new ProdutoResponseDTO(produto);
+        Produto produtoSalvo = produtoRepository.save(produto);
+        return new ProdutoResponseDTO(produtoSalvo);
     }
 
     public Optional<ProdutoResponseDTO> updateProduto(int id, ProdutoRequestDTO produtoDetails) {
+        validarFornecedor(produtoDetails.getCnpjFornecedor());
+
         return produtoRepository.findById(id).map(produto -> {
             produto.setNome_produto(produtoDetails.getNome_produto());
             produto.setDescricao(produtoDetails.getDescricao());
             produto.setPreco_venda(produtoDetails.getPreco_venda());
             produto.setQuantidade_estoque(produtoDetails.getQuantidade_estoque());
             produto.setCnpjFornecedor(produtoDetails.getCnpjFornecedor());
-
-            // É preciso definir o ID no objeto antes de atualizar
-            produto.setCod_produto(id); // Adicione esta linha
-
-            produtoRepository.update(produto); // <-- CORREÇÃO
+            
+            produtoRepository.update(produto);
             return new ProdutoResponseDTO(produto);
-        });
+        }).map(Optional::of) 
+          .orElseThrow(() -> new ResourceNotFoundException("Produto com código '" + id + "' não encontrado."));
     }
 
     public boolean deleteProduto(int id) {
         if (produtoRepository.findById(id).isPresent()) {
-            produtoRepository.deleteById(id);
-            return true;
+            try {
+                produtoRepository.deleteById(id);
+                return true;
+            } catch (Exception e) {
+                throw new BusinessException("Não é possível excluir o produto, pois ele está associado a vendas existentes.");
+            }
         }
         return false;
     }
