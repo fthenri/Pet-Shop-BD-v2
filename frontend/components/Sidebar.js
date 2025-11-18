@@ -19,7 +19,8 @@ import {
     FaPaw,
     FaUserFriends,
     FaUsersCog,
-    FaCashRegister 
+    FaCashRegister,
+    FaStethoscope 
 } from 'react-icons/fa';
 
 
@@ -32,7 +33,6 @@ export default function Sidebar() {
     };
 
     const isActive = (path) => pathname === path;
-    
     const isSubmenuActive = (paths) => paths.some(path => pathname.startsWith(path));
 
     useEffect(() => {
@@ -55,12 +55,20 @@ export default function Sidebar() {
                             <span>Dashboard</span>
                         </Link>
                     </li>
-
-                    {/* pdv vendas */}
+                    
+                    {/* vendas */}
                     <li className="nav-item">
                         <Link href="/vendas" className={`nav-link ${isActive('/vendas') ? 'active' : ''}`}>
                             <FaCashRegister />
-                            <span>PDV (Vendas)</span>
+                            <span>Caixa (Produtos)</span>
+                        </Link>
+                    </li>
+                    
+                    {/* consultas e serviços */}
+                    <li className="nav-item">
+                        <Link href="/consultas-servicos" className={`nav-link ${isActive('/consultas-servicos') ? 'active' : ''}`}>
+                            <FaStethoscope />
+                            <span>Registrar Serviço</span>
                         </Link>
                     </li>
 
@@ -76,7 +84,6 @@ export default function Sidebar() {
                                 <span>Gestão</span>
                             </div>
                             
-                            {/* seta */}
                             {isGestaoOpen ? <FaChevronDown /> : <FaChevronRight />}
                         </a>
                         

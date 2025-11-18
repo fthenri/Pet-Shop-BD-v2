@@ -8,8 +8,7 @@ public class ConsultaResponseDTO {
     private LocalDateTime dataHora;
     private String sintomasRelatados;
     private String diagnostico;
-    private String cpfClientePet;
-    private String nomePet;
+    private Integer codPet;
     private Integer codVeterinario;
 
     public Integer getNumConsulta() {
@@ -44,20 +43,12 @@ public class ConsultaResponseDTO {
         this.diagnostico = diagnostico;
     }
 
-    public String getCpfClientePet() {
-        return cpfClientePet;
+    public Integer getCodPet() {
+        return codPet;
     }
 
-    public void setCpfClientePet(String cpfClientePet) {
-        this.cpfClientePet = cpfClientePet;
-    }
-
-    public String getNomePet() {
-        return nomePet;
-    }
-
-    public void setNomePet(String nomePet) {
-        this.nomePet = nomePet;
+    public void setCodPet(Integer codPet) {
+        this.codPet = codPet;
     }
 
     public Integer getCodVeterinario() {

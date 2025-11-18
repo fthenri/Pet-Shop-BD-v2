@@ -165,7 +165,7 @@ export default function VendasPage() {
     return (
         <section id="vendas-section" className="content-section">
             <div className="section-header">
-                <h2>Registrar Venda (PDV)</h2>
+                <h2>Caixa da Loja (Venda de Produtos)</h2>
             </div>
             
             <form onSubmit={handleSubmitVenda} className="pdv-form">

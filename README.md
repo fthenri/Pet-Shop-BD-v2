@@ -500,7 +500,9 @@ Registra os hábitos de consumo dos clientes e características dos pets no pets
 O sistema de gestão (CRUDs e BI) está completo, mas a fundação do banco de dados permite a implementação de módulos operacionais:
 
 * [X] **Módulo de Ponto de Venda (PDV):** Uma interface para registrar `Vendas` e `Consultas` em tempo real, interagindo com as tabelas transacionais (`Venda`, `contem`, `Consulta_Atende`).
-* [ ] **Módulo de Agenda e Prontuário:** Uma tela para veterinários visualizarem a agenda e preencherem diagnósticos (`Consulta_Atende`) e solicitarem `Exames`.
+* [X] **Módulo de Registro de Serviços:** Interface para registrar `Consultas` em tempo real, interagindo com a tabela `Consulta_Atende`.
+* [ ] **Adicionar Faturamento a Serviços:** Refatorar o banco de dados para adicionar uma coluna `valor` na tabela `Consulta_Atende`, permitindo que o módulo "Registrar Serviço" se torne também um fluxo financeiro.
+* [ ] **Módulo de Agenda:** Uma tela de calendário para veterinários visualizarem e gerenciarem seus horários (`Consulta_Atende`).
 
 ---
 

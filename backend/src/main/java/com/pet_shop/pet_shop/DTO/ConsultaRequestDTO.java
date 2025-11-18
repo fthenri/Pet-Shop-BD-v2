@@ -4,20 +4,11 @@ import java.time.LocalDateTime;
 
 public class ConsultaRequestDTO {
 
-    private LocalDateTime dataHora;
     private String sintomasRelatados;
     private String diagnostico;
-    private String cpfClientePet;
-    private String nomePet;
+    private Integer codPet;
     private Integer codVeterinario;
 
-    public LocalDateTime getDataHora() {
-        return dataHora;
-    }
-
-    public void setDataHora(LocalDateTime dataHora) {
-        this.dataHora = dataHora;
-    }
 
     public String getSintomasRelatados() {
         return sintomasRelatados;
@@ -35,20 +26,12 @@ public class ConsultaRequestDTO {
         this.diagnostico = diagnostico;
     }
 
-    public String getCpfClientePet() {
-        return cpfClientePet;
+    public Integer getCodPet() {
+        return codPet;
     }
 
-    public void setCpfClientePet(String cpfClientePet) {
-        this.cpfClientePet = cpfClientePet;
-    }
-
-    public String getNomePet() {
-        return nomePet;
-    }
-
-    public void setNomePet(String nomePet) {
-        this.nomePet = nomePet;
+    public void setCodPet(Integer codPet) {
+        this.codPet = codPet;
     }
 
     public Integer getCodVeterinario() {

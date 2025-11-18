@@ -7,20 +7,21 @@ public class Consulta {
     private LocalDateTime dataHora;
     private String sintomasRelatados;
     private String diagnostico;
-    private String cpfClientePet;
-    private String nomePet;
+    
+    private Integer codPet; 
+
+    
     private Integer codVeterinario;
 
     public Consulta() {
     }
 
-    public Consulta(Integer numConsulta, LocalDateTime dataHora, String sintomasRelatados, String diagnostico, String cpfClientePet, String nomePet, Integer codVeterinario) {
+    public Consulta(Integer numConsulta, LocalDateTime dataHora, String sintomasRelatados, String diagnostico, Integer codPet, Integer codVeterinario) {
         this.numConsulta = numConsulta;
         this.dataHora = dataHora;
         this.sintomasRelatados = sintomasRelatados;
         this.diagnostico = diagnostico;
-        this.cpfClientePet = cpfClientePet;
-        this.nomePet = nomePet;
+        this.codPet = codPet;
         this.codVeterinario = codVeterinario;
     }
 
@@ -56,22 +57,14 @@ public class Consulta {
         this.diagnostico = diagnostico;
     }
 
-    public String getCpfClientePet() {
-        return cpfClientePet;
+    public Integer getCodPet() {
+        return codPet;
     }
 
-    public void setCpfClientePet(String cpfClientePet) {
-        this.cpfClientePet = cpfClientePet;
+    public void setCodPet(Integer codPet) {
+        this.codPet = codPet;
     }
-
-    public String getNomePet() {
-        return nomePet;
-    }
-
-    public void setNomePet(String nomePet) {
-        this.nomePet = nomePet;
-    }
-
+    
     public Integer getCodVeterinario() {
         return codVeterinario;
     }
