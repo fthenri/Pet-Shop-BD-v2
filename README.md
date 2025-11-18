@@ -11,7 +11,7 @@ Um sistema de gerenciamento de Pet Shop full-stack (Java/Spring + React/Next.js)
 
 Nada vende melhor o projeto do que vê-lo funcionando. Aqui está o Dashboard de Business Intelligence em ação:
 
-![Dashboard](https://github.com/user-attachments/assets/749c61d4-f091-4fca-a23a-50f28394813f)
+![SistemadeGerenciamento](https://github.com/user-attachments/assets/880bf3ef-435a-483d-bf80-8704cab5da76)
 
 ---
 
@@ -50,6 +50,8 @@ Este Projeto:
 
 ## ✨ Funcionalidades (Features)
 
+
+
 ### 📊 Dashboard de Business Intelligence (BI)
 
 A tela principal do sistema é um dashboard analítico que consome dados agregados diretamente do banco de dados para fornecer insights sobre o negócio.
@@ -73,6 +75,38 @@ A tela principal do sistema é um dashboard analítico que consome dados agregad
   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ece19f06-6020-4e27-b58d-7049712cc93c" />
 </details>
 
+### 🛒 Frente de Caixa (PDV) & Vendas
+
+O módulo de Ponto de Venda oferece uma interface ágil e segura para o registro de saídas de produtos, garantindo a consistência do estoque em tempo real através de transações ACID.
+
+* **Fluxo de Caixa Dinâmico:** Seleção rápida de produtos com busca inteligente, montagem de carrinho e cálculo automático de subtotais e troco.
+* **Controle de Estoque em Tempo Real:** O sistema valida a disponibilidade dos itens instantaneamente (via Triggers no banco), impedindo a venda de produtos sem saldo e baixando o estoque automaticamente após a confirmação.
+* **Rastreabilidade Completa:** Cada venda é vinculada obrigatoriamente a um Cliente e ao Atendente responsável, gerando dados para relatórios de fidelidade e comissões.
+* **Múltiplos Pagamentos:** Suporte nativo para registro de diferentes formas de pagamento (Crédito, Débito, PIX, Dinheiro).
+
+> [GALERIA DE IMAGENS DA TELA DE CAIXA / PDV]
+
+<details>
+  <summary>Clique para expandir a imagem do PVD</summary>
+   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/abb3349b-a9b8-486c-abef-36fad36e4484" />
+
+</details>
+
+🩺 Gestão Clínica & Registro de Serviços
+Um módulo dedicado ao fluxo de atendimento veterinário, permitindo o registro ágil e detalhado de consultas, exames e procedimentos realizados.
+
+* **Busca Inteligente de Pacientes:** Sistema de autocomplete que permite localizar o animal rapidamente pelo nome, pelo nome do tutor ou pelo CPF, agilizando o início do atendimento na recepção ou consultório.
+* **Prontuário Digital Simplificado:** Ao selecionar um paciente, o sistema exibe instantaneamente um "Card de Resumo" com dados vitais do pet (espécie, raça) e contato do dono, garantindo a identificação correta antes do registro.
+* **Registro Clínico Estruturado:** Formulário padronizado para documentação de Sintomas Relatados e Diagnóstico/Descrição do Serviço, vinculando cada atendimento obrigatoriamente a um Veterinário responsável (validado via banco de dados).
+* **Histórico Unificado:** Cada registro alimenta a tabela Consulta_Atende, construindo um histórico clínico permanente e acessível para o animal.
+
+> [GALERIA DE IMAGENS DA TELA DE REGISTRO DE SERVIÇOS]
+
+<details>
+  <summary>Clique para expandir a imagem do Registro de Serviços</summary>
+   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ddef17d4-fe26-4bbf-805f-ada3aadb1d10" />
+</details>details>
+
 ### 🗃️ Módulos de Gerenciamento (CRUDs)
 
 O sistema possui módulos de gerenciamento completos (Criar, Ler, Atualizar, Excluir) para todas as entidades de "dados mestres" do negócio.
@@ -87,14 +121,13 @@ O sistema possui módulos de gerenciamento completos (Criar, Ler, Atualizar, Exc
 
 <details>
   <summary>Clique para expandir as imagens dos CRUDs</summary>
+   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f315d6b5-d4e8-4ed8-b018-8a2e56fad676" />
+   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cef113d2-b2d8-4a51-8e6f-3f1944aecab5" />
+   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/72a018e6-a8a9-4d99-b397-c54ddfe33ecd" />
+   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/bea0c3d1-47fd-4581-9f0c-3e359785bef0" />
+   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4188c4ec-551a-46f2-93d8-21ed434fc161" />
 
-  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/109fce09-07a7-4e8a-9520-d61a0f7c6716" />
-  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5d18af3d-b083-4b13-8d06-038d24ee7da9" />
-  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/931bf1ef-3272-41b0-aa1f-9f8707fb6ed7" />
-  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c8897d11-dc8c-4a9d-ac5e-b001f9c6c345" />
-  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6fa4446e-be84-47d8-9971-734b2e0eab68" />
-  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e19e0eac-c28e-41de-b393-5ed14ce44f30" />
-  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d4232685-19b0-480a-8ff7-460df774c3da" />
+
 </details>
 
 > **[GALERIA DE IMAGENS DE UM MODAL DE EDIÇÃO/CRIAÇÃO ABERTO]**
@@ -120,23 +153,8 @@ Recursos avançados para gerenciamento e depuração do banco de dados.
 <details>
   <summary>Clique para expandir a imagem do Executor SQL</summary>
 
-  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a910db28-7c47-488e-8036-c0700b3a48c3" />
-</details>
-
-### 💰 Módulo de Ponto de Venda (PDV)
-
-Uma interface transacional para o registro de vendas em tempo real, conectada diretamente aos gatilhos (triggers) de estoque do banco de dados.
-
-* **Interface de Caixa:** Seleção de cliente, atendente e adição de produtos a um "carrinho".
-* **Controle de Estoque Real-Time:** A interface bloqueia vendas de produtos sem estoque, graças ao `TRG_VerificarEstoqueAntesDaVenda`.
-* **Baixa Automática:** Após uma venda bem-sucedida, o `TRG_AtualizarEstoqueAposVenda` é disparado para atualizar o inventário.
-
-> **[IMAGEM DA TELA DO PDV]**
-
-<details>
-  <summary>Clique para expandir a imagem do PDV</summary>
-
-   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a45537ec-d56e-43fe-bcfc-0de249ebc933" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/28080ea1-334d-42fd-89ad-b3d74385d541" />
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/87a345a4-ae35-4b53-8820-e966d1c1d37a" />
 </details>
 
 ---
