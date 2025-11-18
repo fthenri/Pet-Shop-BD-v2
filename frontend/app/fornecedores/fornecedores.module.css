@@ -1,0 +1,61 @@
+/* ============================ */
+/* ========= TOOLBAR ========== */
+/* ============================ */
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--table-border);
+    border-radius: 8px;
+}
+
+.filtroInput {
+    width: 100%;
+    max-width: 400px;
+    margin: 0;
+}
+
+/* ============================ */
+/* ===== TABELA E AÇÕES ====== */
+/* ============================ */
+
+.actionsCell {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.actionButton {
+    font-size: 1rem;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+
+.actionButton:last-child {
+    margin-right: 0;
+}
+
+.actionButton:hover {
+    background-color: var(--table-hover);
+    border-color: var(--table-border);
+}
+
+.editButton {
+    color: var(--primary-color);
+}
+.editButton:hover {
+    color: var(--primary-color-dark);
+}
+
+.deleteButton {
+    color: var(--danger-color);
+}
+.deleteButton:hover {
+    color: var(--danger-color-dark);
+}

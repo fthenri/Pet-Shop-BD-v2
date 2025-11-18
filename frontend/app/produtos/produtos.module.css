@@ -1,0 +1,150 @@
+/* ============================ */
+/* ===== KPIS (PROPOSTA 1) ==== */
+/* ============================ */
+
+.kpiContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.kpiCard {
+    background: var(--secondary-color);
+    border: 1px solid var(--table-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-left: 5px solid var(--card-color, var(--primary-color));
+    box-shadow: var(--shadow-sm);
+}
+
+.iconWrapper {
+    font-size: 2rem;
+    color: var(--card-color, var(--primary-color));
+    background-color: color-mix(in srgb, var(--card-color, var(--primary-color)) 15%, transparent);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.kpiInfo {
+    overflow: hidden;
+}
+
+.kpiTitle {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color-muted);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kpiValue {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ============================ */
+/* == TOOLBAR (PROPOSTA 2) ==== */
+/* ============================ */
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--table-border);
+    border-radius: 8px;
+}
+
+.filtroInput {
+    width: 100%;
+    max-width: 400px;
+    margin: 0;
+}
+
+
+/* ============================ */
+/* === TABELA (PROPOSTA 3) ==== */
+/* ============================ */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.badgeOk {
+    background-color: #2b5c32;
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+.badgeBaixo {
+    background-color: #6a5e2f;
+    color: #ffd700;
+    border: 1px solid #ffd700;
+}
+
+.badgeEsgotado {
+    background-color: #5a2a2a;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.actionsCell {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.actionButton {
+    font-size: 1rem;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+
+.actionButton:last-child {
+    margin-right: 0;
+}
+
+.actionButton:hover {
+    background-color: var(--table-hover);
+    border-color: var(--table-border);
+}
+
+.editButton {
+    color: var(--primary-color);
+}
+.editButton:hover {
+    color: var(--primary-color-dark);
+}
+
+.deleteButton {
+    color: var(--danger-color);
+}
+.deleteButton:hover {
+    color: var(--danger-color-dark);
+}
