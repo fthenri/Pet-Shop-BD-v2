@@ -1,0 +1,204 @@
+/* ============================ */
+/* ===== LAYOUT PDV (GRID) ==== */
+/* ============================ */
+
+.pdvContainer {
+    display: grid;
+    /* Duas colunas: a da esquerda (carrinho) é maior que a da direita (ações) */
+    grid-template-columns: 3fr 2fr;
+    gap: 2rem;
+    align-items: flex-start; /* Alinha o topo das colunas */
+}
+
+.colunaCarrinho {
+    display: flex;
+    flex-direction: column;
+    /* Garante que a coluna ocupe a altura disponível */
+    height: 100%; 
+    min-height: 70vh; /* Altura mínima para manter o layout */
+    background-color: var(--secondary-color);
+    border: 1px solid var(--table-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.colunaAcoes {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Espaço entre os fieldsets */
+    position: sticky; /* Coluna de ações fica fixa ao rolar */
+    top: 2rem; 
+}
+
+/* ============================ */
+/* ===== COLUNA DO CARRINHO ==== */
+/* ============================ */
+
+/* Container da tabela para permitir scroll interno */
+.tabelaContainer {
+    flex-grow: 1; /* Faz a tabela ocupar o espaço disponível */
+    overflow-y: auto; /* Adiciona scroll se os itens transbordarem */
+    max-height: 50vh; /* Altura máxima antes do scroll */
+    border-top: 1px solid var(--table-border);
+    border-bottom: 1px solid var(--table-border);
+    margin-top: 1rem;
+}
+
+.tabelaCarrinho th:nth-child(3), .tabelaCarrinho td:nth-child(3) {
+    text-align: center; /* Centraliza Qtd. */
+    width: 90px;
+}
+.tabelaCarrinho th:nth-child(5), .tabelaCarrinho td:nth-child(5) {
+    width: 50px;
+    text-align: center;
+}
+
+.carrinhoVazio {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-color-muted);
+    font-style: italic;
+}
+
+/* PROPOSTA 2: Estilo do input de quantidade */
+.qtyInput {
+    width: 70px;
+    padding: 0.5rem;
+    font-size: 1rem;
+    text-align: center;
+    border: 1px solid var(--form-input-border);
+    background-color: var(--form-input-bg);
+    color: var(--text-color);
+    border-radius: 4px;
+    -moz-appearance: textfield; /* Esconde setas no Firefox */
+}
+.qtyInput::-webkit-outer-spin-button,
+.qtyInput::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Esconde setas no Chrome/Safari */
+    margin: 0;
+}
+
+/* PROPOSTA 2: Estilo do botão de lixeira */
+.deleteBtn {
+    padding: 0.5rem 0.75rem;
+    line-height: 1;
+    font-size: 0.9rem;
+}
+
+/* Footer do Carrinho (Pagamento e Total) */
+.footerCarrinho {
+    margin-top: auto; /* Empurra para o final da coluna */
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+/* PROPOSTA 3: Display de Total Destacado */
+.totalDisplay {
+    flex-grow: 1;
+    background: var(--primary-color);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    text-align: right;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.totalDisplay span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.totalDisplay h2 {
+    margin: 0;
+    font-size: 2.25rem;
+    line-height: 1.1;
+}
+
+
+/* ============================ */
+/* ====== COLUNA DE AÇÕES ===== */
+/* ============================ */
+
+/* PROPOSTA 1: Autocomplete de Produto */
+.autocompleteWrapper {
+    position: relative; /* Contexto para a lista flutuante */
+}
+
+.autocompleteList {
+    position: absolute;
+    top: 100%; /* Aparece logo abaixo do input */
+    left: 0;
+    right: 0;
+    background-color: var(--content-bg);
+    border: 1px solid var(--table-border);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    z-index: 1000;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: var(--shadow);
+}
+
+.autocompleteItem {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--table-border);
+}
+
+.autocompleteItem:last-child {
+    border-bottom: none;
+}
+
+.autocompleteItem:hover {
+    background-color: var(--table-hover);
+}
+
+.itemInfo {
+    font-size: 0.8rem;
+    color: var(--text-color-muted);
+    display: block;
+    margin-top: 2px;
+}
+
+/* Botão de finalizar movido para o final da coluna */
+.finalizarBtn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem; /* Espaço extra no topo */
+}
+
+
+/* ============================ */
+/* ======== RESPONSIVO ======== */
+/* ============================ */
+
+@media (max-width: 900px) {
+    .pdvContainer {
+        /* Empilha as colunas em telas menores */
+        grid-template-columns: 1fr;
+    }
+    
+    .colunaAcoes {
+        position: static; /* Remove o "sticky" */
+        top: auto;
+    }
+
+    .footerCarrinho {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .totalDisplay {
+        text-align: center;
+    }
+
+    .totalDisplay h2 {
+        font-size: 2rem;
+    }
+}
