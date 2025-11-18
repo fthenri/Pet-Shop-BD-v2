@@ -152,9 +152,8 @@ Siga estes passos para configurar e executar o projeto localmente.
 
 Este é o coração do projeto. O setup é simplificado e requer a execução de apenas um arquivo.
 
-1.  Crie um novo database (schema) no seu servidor MySQL (ex: `petshop_db`).
-2.  Navegue até a pasta `database/` na raiz deste projeto.
-3.  Execute o script **`full_schema.sql`** no seu banco de dados recém-criado.
+1.  Navegue até a pasta `database/` na raiz deste projeto.
+2.  Execute o script **`full_schema.sql`** no seu banco de dados recém-criado.
 
 Este script único cuidará de tudo:
 * Criação de todas as tabelas.
@@ -173,7 +172,7 @@ Este script único cuidará de tudo:
 2.  **Configure o Acesso ao BD:**
     Crie o arquivo `backend/src/main/resources/application.properties` (se não existir) e adicione suas credenciais do MySQL:
     ```properties
-    spring.datasource.url=jdbc:mysql://localhost:3306/petshop_db
+    spring.datasource.url=jdbc:mysql://localhost:3306/PetShop
     spring.datasource.username=seu_usuario_mysql
     spring.datasource.password=sua_senha_mysql
     spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
