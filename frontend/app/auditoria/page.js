@@ -1,13 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useNotification } from '@/app/contexts/NotificationContext'; // Importar o contexto de notificação
 
 export default function AuditoriaPage() {
     const [logs, setLogs] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [erro, setErro] = useState(null);
-    const [isAuditing, setIsAuditing] = useState(false); // Novo estado para controlar o clique do botão
-    const { showNotification } = useNotification(); // Usar o contexto de notificação
 
     const API_URL = 'http://localhost:8080/api/consultas/executar';
     
@@ -40,58 +37,10 @@ export default function AuditoriaPage() {
         carregarLogs();
     }, []);
 
-    // Nova função para executar auditoria de vendas
-    const handleExecutarAuditoriaVendas = async () => {
-        setIsAuditing(true);
-        showNotification('Iniciando auditoria de vendas...', 'info');
-
-        try {
-            const response = await fetch('http://localhost:8080/api/dashboard/executar-auditoria-vendas', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'Erro ao executar auditoria de vendas.');
-            }
-
-            const resultado = await response.json();
-            showNotification('Auditoria de vendas executada com sucesso!', 'success');
-            
-            // Recarregar os logs após executar a auditoria
-            const reloadResponse = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: QUERY }),
-            });
-            
-            if (reloadResponse.ok) {
-                const data = await reloadResponse.json();
-                setLogs(data);
-            }
-            
-        } catch (error) {
-            console.error('Falha ao executar auditoria de vendas:', error);
-            showNotification(`Erro ao executar auditoria: ${error.message}`, 'error');
-        } finally {
-            setIsAuditing(false);
-        }
-    };
-
     return (
         <section id="auditoria-section" className="content-section">
             <div className="section-header">
                 <h2>Auditoria de Preços de Produtos</h2>
-                {/* Novo botão para executar auditoria de vendas */}
-                <button 
-                    onClick={handleExecutarAuditoriaVendas}
-                    disabled={isAuditing}
-                    className="btn-primary"
-                    style={{ marginLeft: 'auto' }}
-                >
-                    {isAuditing ? 'Executando...' : 'Executar Auditoria de Vendas (SP)'}
-                </button>
             </div>
             <p>
                 Esta página exibe o log de todas as alterações de preços.
