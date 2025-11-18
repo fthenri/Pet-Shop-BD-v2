@@ -123,6 +123,22 @@ Recursos avançados para gerenciamento e depuração do banco de dados.
   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a910db28-7c47-488e-8036-c0700b3a48c3" />
 </details>
 
+### 💰 Módulo de Ponto de Venda (PDV)
+
+Uma interface transacional para o registro de vendas em tempo real, conectada diretamente aos gatilhos (triggers) de estoque do banco de dados.
+
+* **Interface de Caixa:** Seleção de cliente, atendente e adição de produtos a um "carrinho".
+* **Controle de Estoque Real-Time:** A interface bloqueia vendas de produtos sem estoque, graças ao `TRG_VerificarEstoqueAntesDaVenda`.
+* **Baixa Automática:** Após uma venda bem-sucedida, o `TRG_AtualizarEstoqueAposVenda` é disparado para atualizar o inventário.
+
+> **[IMAGEM DA TELA DO PDV]**
+
+<details>
+  <summary>Clique para expandir a imagem do PDV</summary>
+
+   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a45537ec-d56e-43fe-bcfc-0de249ebc933" />
+</details>
+
 ---
 
 ## 🛠️ Tecnologias Utilizadas (Tech Stack)
@@ -483,7 +499,7 @@ Registra os hábitos de consumo dos clientes e características dos pets no pets
 
 O sistema de gestão (CRUDs e BI) está completo, mas a fundação do banco de dados permite a implementação de módulos operacionais:
 
-* [ ] **Módulo de Ponto de Venda (PDV):** Uma interface para registrar `Vendas` e `Consultas` em tempo real, interagindo com as tabelas transacionais (`Venda`, `contem`, `Consulta_Atende`).
+* [X] **Módulo de Ponto de Venda (PDV):** Uma interface para registrar `Vendas` e `Consultas` em tempo real, interagindo com as tabelas transacionais (`Venda`, `contem`, `Consulta_Atende`).
 * [ ] **Módulo de Agenda e Prontuário:** Uma tela para veterinários visualizarem a agenda e preencherem diagnósticos (`Consulta_Atende`) e solicitarem `Exames`.
 
 ---
