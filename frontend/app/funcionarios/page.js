@@ -1,25 +1,49 @@
 'use client'; 
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import FuncionarioModal from '../../components/FuncionarioModal'; 
 import { useNotification } from '../../contexts/NotificationContext';
-import { FaUserMd, FaUserFriends, FaUsersCog } from 'react-icons/fa';
+import { 
+    FaUserMd, 
+    FaUserFriends, 
+    FaUsersCog,
+    FaEdit,
+    FaTrash
+} from 'react-icons/fa';
+import styles from './funcionarios.module.css';
+
+const BadgeCargo = ({ tipo }) => {
+    if (tipo === 'Veterinário') {
+        return (
+            <span className={`${styles.badge} ${styles.badgeVet}`}>
+                <FaUserMd /> {tipo}
+            </span>
+        );
+    }
+    if (tipo === 'Atendente') {
+        return (
+            <span className={`${styles.badge} ${styles.badgeAtendente}`}>
+                <FaUserFriends /> {tipo}
+            </span>
+        );
+    }
+    return (
+        <span className={`${styles.badge} ${styles.badgeFunc}`}>
+            <FaUsersCog /> {tipo}
+        </span>
+    );
+};
 
 export default function GerenciarFuncionarios() {
-    const [veterinarios, setVeterinarios] = useState([]);
-    const [atendentes, setAtendentes] = useState([]);
     const [funcionariosGeral, setFuncionariosGeral] = useState([]);
-    
     const [listaSupervisores, setListaSupervisores] = useState([]);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [funcionarioEmEdicao, setFuncionarioEmEdicao] = useState(null);
     const [tipoEmEdicao, setTipoEmEdicao] = useState('funcionario'); 
-
     const [abaAtiva, setAbaAtiva] = useState('geral'); 
+    const [filtro, setFiltro] = useState('');
 
     const { showNotification, showConfirmation } = useNotification();
-
     const API_URL = 'http://localhost:8080/api';
 
     const carregarFuncionariosGeral = async () => {
@@ -34,9 +58,6 @@ export default function GerenciarFuncionarios() {
                 .sort((a, b) => a.nome.localeCompare(b.nome));
             setListaSupervisores(supervisores);
             
-            setVeterinarios(data.filter(f => f.tipo === 'Veterinário'));
-            setAtendentes(data.filter(f => f.tipo === 'Atendente'));
-
         } catch (error) {
             console.error('Falha ao carregar funcionários:', error);
             showNotification({ message: 'Não foi possível carregar os funcionários.', type: 'error' });
@@ -46,6 +67,10 @@ export default function GerenciarFuncionarios() {
     useEffect(() => {
         carregarFuncionariosGeral();
     }, []);
+
+    const supervisorMap = useMemo(() => {
+        return new Map(listaSupervisores.map(sup => [sup.codFuncionario, sup.nome]));
+    }, [listaSupervisores]);
 
     const handleAbrirModalNovo = () => {
         setFuncionarioEmEdicao(null);
@@ -102,6 +127,30 @@ export default function GerenciarFuncionarios() {
         return new Date(dateString + 'T00:00:00-03:00').toLocaleDateString('pt-BR');
     };
 
+    const funcionariosFiltrados = useMemo(() => {
+        const termoBusca = filtro.toLowerCase();
+        if (!termoBusca) return funcionariosGeral;
+
+        return funcionariosGeral.filter(func => 
+            (func.nome && func.nome.toLowerCase().includes(termoBusca)) ||
+            (func.cpf && func.cpf.includes(termoBusca)) ||
+            (func.tipo && func.tipo.toLowerCase().includes(termoBusca))
+        );
+    }, [filtro, funcionariosGeral]);
+
+    const veterinarios = funcionariosFiltrados.filter(f => f.tipo === 'Veterinário');
+    const atendentes = funcionariosFiltrados.filter(f => f.tipo === 'Atendente');
+    
+    const getTabelaAtiva = () => {
+        switch(abaAtiva) {
+            case 'vet': return veterinarios;
+            case 'atendente': return atendentes;
+            case 'geral':
+            default:
+                return funcionariosFiltrados;
+        }
+    };
+    
     return (
         <section id="funcionarios-section" className="content-section">
             <div className="section-header">
@@ -109,37 +158,45 @@ export default function GerenciarFuncionarios() {
                     <FaUsersCog style={{ fontSize: '1.75rem', color: 'var(--primary-color)' }} />
                     <h2>Gerenciamento de Funcionários</h2>
                 </div>
+            </div>
+
+            <div className={styles.tabContainer}>
+                <button 
+                    className={`${styles.tabButton} ${abaAtiva === 'geral' ? styles.activeTab : ''}`} 
+                    onClick={() => setAbaAtiva('geral')}
+                >
+                    <FaUsersCog /> Todos ({funcionariosGeral.length})
+                </button>
+                <button 
+                    className={`${styles.tabButton} ${abaAtiva === 'vet' ? styles.activeTab : ''}`} 
+                    onClick={() => setAbaAtiva('vet')}
+                >
+                    <FaUserMd /> Veterinários ({funcionariosGeral.filter(f => f.tipo === 'Veterinário').length})
+                </button>
+                <button 
+                    className={`${styles.tabButton} ${abaAtiva === 'atendente' ? styles.activeTab : ''}`} 
+                    onClick={() => setAbaAtiva('atendente')}
+                >
+                    <FaUserFriends /> Atendentes ({funcionariosGeral.filter(f => f.tipo === 'Atendente').length})
+                </button>
+            </div>
+
+            <div className={styles.toolbar}>
+                <div className="form-group" style={{ flexGrow: 1, margin: 0 }}>
+                    <input
+                        type="text"
+                        placeholder="Filtrar por Nome, CPF ou Cargo..."
+                        value={filtro}
+                        onChange={(e) => setFiltro(e.target.value)}
+                        className={styles.filtroInput}
+                    />
+                </div>
                 <button className="btn btn-primary" onClick={handleAbrirModalNovo}>
                     Novo Funcionário
                 </button>
             </div>
 
-            <div style={{ display: 'flex', borderBottom: '1px solid var(--table-border)', marginBottom: '1.5rem' }}>
-                <button 
-                    className={`btn ${abaAtiva === 'geral' ? 'btn-primary' : 'btn-secondary'}`} 
-                    onClick={() => setAbaAtiva('geral')}
-                    style={{ borderRadius: '4px 4px 0 0', marginRight: '5px' }}
-                >
-                    <FaUsersCog /> Todos ({funcionariosGeral.length})
-                </button>
-                <button 
-                    className={`btn ${abaAtiva === 'vet' ? 'btn-primary' : 'btn-secondary'}`} 
-                    onClick={() => setAbaAtiva('vet')}
-                    style={{ borderRadius: '4px 4px 0 0', marginRight: '5px' }}
-                >
-                    <FaUserMd /> Veterinários ({veterinarios.length})
-                </button>
-                <button 
-                    className={`btn ${abaAtiva === 'atendente' ? 'btn-primary' : 'btn-secondary'}`} 
-                    onClick={() => setAbaAtiva('atendente')}
-                    style={{ borderRadius: '4px 4px 0 0' }}
-                >
-                    <FaUserFriends /> Atendentes ({atendentes.length})
-                </button>
-            </div>
-
             <div className="table-container" style={{ display: abaAtiva === 'geral' ? 'block' : 'none' }}>
-                <h3>Todos os Funcionários</h3>
                 <table className="data-table">
                     <thead>
                         <tr>
@@ -148,24 +205,34 @@ export default function GerenciarFuncionarios() {
                             <th>Cargo</th>
                             <th>CPF</th>
                             <th>Data Admissão</th>
-                            <th>Supervisor (Cód.)</th>
+                            <th>Supervisor</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {funcionariosGeral.map((func) => (
+                        {funcionariosFiltrados.map((func) => (
                             <tr key={func.codFuncionario}>
                                 <td>{func.codFuncionario}</td>
                                 <td>{func.nome}</td>
-                                <td>{func.tipo}</td>
+                                <td><BadgeCargo tipo={func.tipo} /></td>
                                 <td>{func.cpf}</td>
                                 <td>{formatDate(func.dataAdmissao)}</td>
-                                <td>{func.codSupervisor || '-'}</td>
-                                <td>
-                                    <div className="action-buttons">
-                                        <button className="btn-edit" onClick={() => handleAbrirModalEditar(func)}>Editar</button>
-                                        <button className="btn-delete" onClick={() => handleExcluir(func)}>Excluir</button>
-                                    </div>
+                                <td>{supervisorMap.get(func.codSupervisor) || '-'}</td>
+                                <td className={styles.actionsCell}>
+                                    <button 
+                                        className={`${styles.actionButton} ${styles.editButton}`} 
+                                        onClick={() => handleAbrirModalEditar(func)}
+                                        title="Editar Funcionário"
+                                    >
+                                        <FaEdit />
+                                    </button>
+                                    <button 
+                                        className={`${styles.actionButton} ${styles.deleteButton}`} 
+                                        onClick={() => handleExcluir(func)}
+                                        title="Excluir Funcionário"
+                                    >
+                                        <FaTrash />
+                                    </button>
                                 </td>
                             </tr>
                         ))}
@@ -174,7 +241,6 @@ export default function GerenciarFuncionarios() {
             </div>
 
             <div className="table-container" style={{ display: abaAtiva === 'vet' ? 'block' : 'none' }}>
-                <h3>Veterinários</h3>
                 <table className="data-table">
                     <thead>
                         <tr>
@@ -183,7 +249,7 @@ export default function GerenciarFuncionarios() {
                             <th>CRMV</th>
                             <th>CPF</th>
                             <th>Data Admissão</th>
-                            <th>Supervisor (Cód.)</th>
+                            <th>Supervisor</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -195,12 +261,22 @@ export default function GerenciarFuncionarios() {
                                 <td>{vet.crmv}</td>
                                 <td>{vet.cpf}</td>
                                 <td>{formatDate(vet.dataAdmissao)}</td>
-                                <td>{vet.codSupervisor || '-'}</td>
-                                <td>
-                                    <div className="action-buttons">
-                                        <button className="btn-edit" onClick={() => handleAbrirModalEditar(vet)}>Editar</button>
-                                        <button className="btn-delete" onClick={() => handleExcluir(vet)}>Excluir</button>
-                                    </div>
+                                <td>{supervisorMap.get(vet.codSupervisor) || '-'}</td>
+                                <td className={styles.actionsCell}>
+                                    <button 
+                                        className={`${styles.actionButton} ${styles.editButton}`} 
+                                        onClick={() => handleAbrirModalEditar(vet)}
+                                        title="Editar Veterinário"
+                                    >
+                                        <FaEdit />
+                                    </button>
+                                    <button 
+                                        className={`${styles.actionButton} ${styles.deleteButton}`} 
+                                        onClick={() => handleExcluir(vet)}
+                                        title="Excluir Veterinário"
+                                    >
+                                        <FaTrash />
+                                    </button>
                                 </td>
                             </tr>
                         ))}
@@ -209,7 +285,6 @@ export default function GerenciarFuncionarios() {
             </div>
 
             <div className="table-container" style={{ display: abaAtiva === 'atendente' ? 'block' : 'none' }}>
-                <h3>Atendentes</h3>
                 <table className="data-table">
                     <thead>
                         <tr>
@@ -217,7 +292,7 @@ export default function GerenciarFuncionarios() {
                             <th>Nome</th>
                             <th>CPF</th>
                             <th>Data Admissão</th>
-                            <th>Supervisor (Cód.)</th>
+                            <th>Supervisor</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -228,12 +303,22 @@ export default function GerenciarFuncionarios() {
                                 <td>{ate.nome}</td>
                                 <td>{ate.cpf}</td>
                                 <td>{formatDate(ate.dataAdmissao)}</td>
-                                <td>{ate.codSupervisor || '-'}</td>
-                                <td>
-                                    <div className="action-buttons">
-                                        <button className="btn-edit" onClick={() => handleAbrirModalEditar(ate)}>Editar</button>
-                                        <button className="btn-delete" onClick={() => handleExcluir(ate)}>Excluir</button>
-                                    </div>
+                                <td>{supervisorMap.get(ate.codSupervisor) || '-'}</td>
+                                <td className={styles.actionsCell}>
+                                    <button 
+                                        className={`${styles.actionButton} ${styles.editButton}`} 
+                                        onClick={() => handleAbrirModalEditar(ate)}
+                                        title="Editar Atendente"
+                                    >
+                                        <FaEdit />
+                                    </button>
+                                    <button 
+                                        className={`${styles.actionButton} ${styles.deleteButton}`} 
+                                        onClick={() => handleExcluir(ate)}
+                                        title="Excluir Atendente"
+                                    >
+                                        <FaTrash />
+                                    </button>
                                 </td>
                             </tr>
                         ))}

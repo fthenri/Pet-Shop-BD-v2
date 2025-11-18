@@ -1,0 +1,126 @@
+/* ============================ */
+/* ========= ABAS (TABS) ====== */
+/* ============================ */
+
+.tabContainer {
+    display: flex;
+    border-bottom: 2px solid var(--table-border);
+    margin-bottom: 1.5rem;
+}
+
+.tabButton {
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-color-muted);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: -2px; 
+    
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tabButton:hover {
+    color: var(--text-color);
+    background-color: var(--table-hover);
+}
+
+.activeTab {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    font-weight: 600;
+}
+
+/* ============================ */
+/* ========= TOOLBAR ========== */
+/* ============================ */
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--table-border);
+    border-radius: 8px;
+}
+
+.filtroInput {
+    width: 100%;
+    max-width: 400px;
+    margin: 0;
+}
+
+/* ============================ */
+/* ===== TABELA E BADGES ====== */
+/* ============================ */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+.badgeVet {
+    background-color: #3b3a61;
+    color: #a9a7ff;
+    border: 1px solid #a9a7ff;
+}
+
+.badgeAtendente {
+    background-color: #2b5c32;
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+.badgeFunc {
+    background-color: #495057;
+    color: #ced4da;
+    border: 1px solid #6c757d;
+}
+
+.actionsCell {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.actionButton {
+    font-size: 1rem;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+
+.actionButton:last-child {
+    margin-right: 0;
+}
+
+.actionButton:hover {
+    background-color: var(--table-hover);
+    border-color: var(--table-border);
+}
+
+.editButton {
+    color: var(--primary-color);
+}
+.editButton:hover {
+    color: var(--primary-color-dark);
+}
+
+.deleteButton {
+    color: var(--danger-color);
+}
+.deleteButton:hover {
+    color: var(--danger-color-dark);
+}
