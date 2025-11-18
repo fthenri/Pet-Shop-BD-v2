@@ -10,6 +10,7 @@ import com.pet_shop.pet_shop.DTO.FornecedorRequestDTO;
 import com.pet_shop.pet_shop.DTO.FornecedorResponseDTO;
 import com.pet_shop.pet_shop.Model.Fornecedor;
 import com.pet_shop.pet_shop.Repository.FornecedorRepository;
+import com.pet_shop.pet_shop.exception.BusinessException;
 import com.pet_shop.pet_shop.exception.ResourceNotFoundException;
 
 @Service
@@ -39,6 +40,10 @@ public class FornecedorService {
     }
 
     public FornecedorResponseDTO createFornecedor(FornecedorRequestDTO fornecedorDTO) {
+        fornecedorRepository.findByCnpj(fornecedorDTO.getCnpj()).ifPresent(f -> {
+            throw new BusinessException("CNPJ já cadastrado.");
+        });
+
         Fornecedor fornecedor = new Fornecedor();
         fornecedor.setCnpj(fornecedorDTO.getCnpj());
         fornecedor.setRazaoSocial(fornecedorDTO.getRazaoSocial());

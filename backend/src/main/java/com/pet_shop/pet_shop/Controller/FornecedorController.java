@@ -3,6 +3,7 @@ package com.pet_shop.pet_shop.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus; 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pet_shop.pet_shop.DTO.FornecedorRequestDTO;
 import com.pet_shop.pet_shop.DTO.FornecedorResponseDTO;
 import com.pet_shop.pet_shop.Service.FornecedorService;
+import com.pet_shop.pet_shop.exception.BusinessException;
 import com.pet_shop.pet_shop.exception.ResourceNotFoundException;
 
 @RestController
@@ -28,9 +30,14 @@ public class FornecedorController {
     private FornecedorService fornecedorService;
 
     @PostMapping
-    public ResponseEntity<FornecedorResponseDTO> createFornecedor(@RequestBody FornecedorRequestDTO fornecedorDTO) {
-        FornecedorResponseDTO novoFornecedor = fornecedorService.createFornecedor(fornecedorDTO);
-        return ResponseEntity.ok(novoFornecedor);
+    public ResponseEntity<?> createFornecedor(@RequestBody FornecedorRequestDTO fornecedorDTO) {
+        try {
+            FornecedorResponseDTO novoFornecedor = fornecedorService.createFornecedor(fornecedorDTO);
+            return ResponseEntity.ok(novoFornecedor);
+        } catch (BusinessException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        }
     }
 
     @GetMapping
