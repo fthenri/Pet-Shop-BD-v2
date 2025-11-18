@@ -4,18 +4,16 @@
 
 .pdvContainer {
     display: grid;
-    /* Duas colunas: a da esquerda (carrinho) é maior que a da direita (ações) */
     grid-template-columns: 3fr 2fr;
     gap: 2rem;
-    align-items: flex-start; /* Alinha o topo das colunas */
+    align-items: flex-start; 
 }
 
 .colunaCarrinho {
     display: flex;
     flex-direction: column;
-    /* Garante que a coluna ocupe a altura disponível */
     height: 100%; 
-    min-height: 70vh; /* Altura mínima para manter o layout */
+    min-height: 70vh;
     background-color: var(--secondary-color);
     border: 1px solid var(--table-border);
     border-radius: 8px;
@@ -25,27 +23,26 @@
 .colunaAcoes {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* Espaço entre os fieldsets */
-    position: sticky; /* Coluna de ações fica fixa ao rolar */
+    gap: 1.5rem; 
+    position: sticky; 
     top: 2rem; 
 }
 
 /* ============================ */
-/* ===== COLUNA DO CARRINHO ==== */
+/* ==== COLUNA DO CARRINHO ==== */
 /* ============================ */
 
-/* Container da tabela para permitir scroll interno */
 .tabelaContainer {
-    flex-grow: 1; /* Faz a tabela ocupar o espaço disponível */
-    overflow-y: auto; /* Adiciona scroll se os itens transbordarem */
-    max-height: 50vh; /* Altura máxima antes do scroll */
+    flex-grow: 1; 
+    overflow-y: auto; 
+    max-height: 50vh; 
     border-top: 1px solid var(--table-border);
     border-bottom: 1px solid var(--table-border);
     margin-top: 1rem;
 }
 
 .tabelaCarrinho th:nth-child(3), .tabelaCarrinho td:nth-child(3) {
-    text-align: center; /* Centraliza Qtd. */
+    text-align: center;
     width: 90px;
 }
 .tabelaCarrinho th:nth-child(5), .tabelaCarrinho td:nth-child(5) {
@@ -60,7 +57,6 @@
     font-style: italic;
 }
 
-/* PROPOSTA 2: Estilo do input de quantidade */
 .qtyInput {
     width: 70px;
     padding: 0.5rem;
@@ -70,24 +66,22 @@
     background-color: var(--form-input-bg);
     color: var(--text-color);
     border-radius: 4px;
-    -moz-appearance: textfield; /* Esconde setas no Firefox */
+    -moz-appearance: textfield; 
 }
 .qtyInput::-webkit-outer-spin-button,
 .qtyInput::-webkit-inner-spin-button {
-    -webkit-appearance: none; /* Esconde setas no Chrome/Safari */
+    -webkit-appearance: none;
     margin: 0;
 }
 
-/* PROPOSTA 2: Estilo do botão de lixeira */
 .deleteBtn {
     padding: 0.5rem 0.75rem;
     line-height: 1;
     font-size: 0.9rem;
 }
 
-/* Footer do Carrinho (Pagamento e Total) */
 .footerCarrinho {
-    margin-top: auto; /* Empurra para o final da coluna */
+    margin-top: auto;
     padding-top: 1.5rem;
     display: flex;
     justify-content: space-between;
@@ -95,7 +89,6 @@
     gap: 1rem;
 }
 
-/* PROPOSTA 3: Display de Total Destacado */
 .totalDisplay {
     flex-grow: 1;
     background: var(--primary-color);
@@ -123,14 +116,13 @@
 /* ====== COLUNA DE AÇÕES ===== */
 /* ============================ */
 
-/* PROPOSTA 1: Autocomplete de Produto */
 .autocompleteWrapper {
-    position: relative; /* Contexto para a lista flutuante */
+    position: relative;
 }
 
 .autocompleteList {
     position: absolute;
-    top: 100%; /* Aparece logo abaixo do input */
+    top: 100%; 
     left: 0;
     right: 0;
     background-color: var(--content-bg);
@@ -164,13 +156,12 @@
     margin-top: 2px;
 }
 
-/* Botão de finalizar movido para o final da coluna */
 .finalizarBtn {
     width: 100%;
     padding: 1rem;
     font-size: 1.25rem;
     font-weight: 600;
-    margin-top: 1.5rem; /* Espaço extra no topo */
+    margin-top: 1.5rem; 
 }
 
 
@@ -180,12 +171,11 @@
 
 @media (max-width: 900px) {
     .pdvContainer {
-        /* Empilha as colunas em telas menores */
         grid-template-columns: 1fr;
     }
     
     .colunaAcoes {
-        position: static; /* Remove o "sticky" */
+        position: static;
         top: auto;
     }
 

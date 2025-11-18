@@ -1,0 +1,207 @@
+/* ============================ */
+/* ====== LAYOUT CONSULTA ===== */
+/* ============================ */
+
+.container {
+    display: grid;
+    grid-template-columns: 2fr 3fr; 
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.colunaProntuario {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 2rem; 
+}
+
+.colunaRegistro {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ============================ */
+/* ===== BUSCA (Prontuário) === */
+/* ============================ */
+
+.inputIcon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inputIcon > svg {
+    position: absolute;
+    left: 12px;
+    color: var(--text-color-muted);
+}
+
+.inputIcon > input {
+    padding-left: 2.5rem !important;
+    width: 100%;
+}
+
+.autocompleteWrapper {
+    position: relative;
+}
+
+.autocompleteList {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--content-bg);
+    border: 1px solid var(--table-border);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: var(--shadow);
+}
+
+.autocompleteItem {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--table-border);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.autocompleteItem > svg {
+    color: var(--primary-color);
+}
+
+.autocompleteItem:last-child {
+    border-bottom: none;
+}
+
+.autocompleteItem:hover {
+    background-color: var(--table-hover);
+}
+
+.itemInfo {
+    font-size: 0.8rem;
+    color: var(--text-color-muted);
+    display: block;
+    margin-top: 2px;
+}
+
+/* ============================ */
+/* === CARD PRONTUÁRIO (UI) === */
+/* ============================ */
+
+.prontuarioCard {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.prontuarioCard h4 {
+    margin: 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--table-border);
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.cardInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.cardInfo:last-child {
+    margin-bottom: 0;
+}
+
+.cardInfo > svg {
+    font-size: 1.5rem;
+    color: var(--text-color-muted);
+    min-width: 24px;
+}
+
+.cardInfo div {
+    display: flex;
+    flex-direction: column;
+}
+.cardInfo div strong {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+.cardInfo div span {
+    font-size: 0.9rem;
+    color: var(--text-color-muted);
+}
+
+.limparBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--text-color-muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.25rem;
+}
+.limparBtn:hover {
+    color: var(--text-color);
+}
+
+/* ============================ */
+/* ===== REGISTRO CLÍNICO ===== */
+/* ============================ */
+
+.registroField {
+    margin-top: 1rem;
+}
+
+.registroField label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+}
+
+.registroField textarea {
+    min-height: 120px;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.finalizarBtn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* ============================ */
+/* ======== RESPONSIVO ======== */
+/* ============================ */
+
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+    
+    .colunaProntuario {
+        position: static; 
+        top: auto;
+    }
+}

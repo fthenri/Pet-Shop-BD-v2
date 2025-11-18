@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, useMemo, useCallback } from 'react'; 
 import { useNotification } from '../../contexts/NotificationContext';
-import { FaTrash } from 'react-icons/fa'; // Importar o ícone de lixeira
-import styles from './vendas.module.css'; // Importar o novo CSS Module
+import { FaTrash } from 'react-icons/fa'; 
+import styles from './vendas.module.css'; 
 
 const API_URL_VENDAS = 'http://localhost:8080/api/vendas';
 const API_URL_CLIENTES = 'http://localhost:8080/api/clientes';
@@ -12,21 +12,17 @@ const API_URL_PRODUTOS = 'http://localhost:8080/api/produtos';
 export default function VendasPage() {
     const { showNotification } = useNotification();
 
-    // Estados para dados principais
     const [clientes, setClientes] = useState([]);
     const [funcionarios, setFuncionarios] = useState([]);
     const [produtos, setProdutos] = useState([]);
     
-    // Estados da Venda
     const [carrinho, setCarrinho] = useState([]);
     const [selectedCliente, setSelectedCliente] = useState('');
     const [selectedFuncionario, setSelectedFuncionario] = useState('');
     const [formaPagamento, setFormaPagamento] = useState('Cartão de Crédito');
     
-    // Novo estado para a busca de produtos
     const [buscaProduto, setBuscaProduto] = useState('');
     
-    // Estados de UI
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(true);
 
@@ -73,19 +69,15 @@ export default function VendasPage() {
         carregarDadosIniciais();
     }, [showNotification, carregarProdutos]);
 
-    // --- LÓGICA DO CARRINHO ATUALIZADA ---
-
-    // 1. Memo para filtrar produtos na busca (Autocomplete)
     const produtosFiltrados = useMemo(() => {
         if (!buscaProduto) return [];
         return produtos
             .filter(p => 
                 p.nome_produto.toLowerCase().includes(buscaProduto.toLowerCase())
             )
-            .slice(0, 7); // Limitar a 7 resultados para performance
+            .slice(0, 7); 
     }, [buscaProduto, produtos]);
 
-    // 2. Nova função para ATUALIZAR quantidade (chamada pelo input no carrinho)
     const handleAtualizarQuantidade = useCallback((codProduto, quantidadeStr) => {
         const quantidade = parseInt(quantidadeStr, 10);
 
@@ -93,7 +85,7 @@ export default function VendasPage() {
             carrinhoAtual.map(item => {
                 if (item.cod_produto === codProduto) {
                     if (isNaN(quantidade) || quantidade < 1) {
-                        return { ...item, quantidadeVenda: 1 }; // Reseta para 1 se inválido
+                        return { ...item, quantidadeVenda: 1 }; 
                     }
                     
                     const produtoEstoque = produtos.find(p => p.cod_produto === codProduto)?.quantidade_estoque || 0;
@@ -104,7 +96,7 @@ export default function VendasPage() {
                             type: 'error', 
                             duration: 2000 
                         });
-                        return { ...item, quantidadeVenda: produtoEstoque }; // Capa no estoque
+                        return { ...item, quantidadeVenda: produtoEstoque }; 
                     }
                     
                     return { ...item, quantidadeVenda: quantidade };
@@ -114,7 +106,6 @@ export default function VendasPage() {
         );
     }, [produtos, showNotification]);
 
-    // 3. Nova função para ADICIONAR produto (chamada pelo clique no autocomplete)
     const handleAdicionarProduto = (produto) => {
         const itemExistente = carrinho.find(item => item.cod_produto === produto.cod_produto);
         const produtoEstoque = produto.quantidade_estoque || 0;
@@ -136,7 +127,7 @@ export default function VendasPage() {
                 }]);
             }
         }
-        setBuscaProduto(''); // Limpa a busca
+        setBuscaProduto(''); 
     };
 
 
@@ -149,7 +140,7 @@ export default function VendasPage() {
             const preco = typeof item.preco_venda === 'string' 
                 ? parseFloat(item.preco_venda.replace(',', '.')) 
                 : item.preco_venda;
-            return total + (preco * (item.quantidadeVenda || 1)); // Garante que não é NaN
+            return total + (preco * (item.quantidadeVenda || 1)); 
         }, 0);
     }, [carrinho]);
 
@@ -189,14 +180,13 @@ export default function VendasPage() {
             const valorTotalFormatado = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(responseData.valorTotal);
             showNotification({ message: `Venda N° ${responseData.numVenda} registrada! Total: ${valorTotalFormatado}`, type: 'success' });
             
-            // Limpa o formulário
             setCarrinho([]);
             setSelectedCliente('');
             setSelectedFuncionario('');
             setFormaPagamento('Cartão de Crédito');
             setBuscaProduto('');
 
-            await carregarProdutos(); // Recarrega o estoque
+            await carregarProdutos();
 
         } catch (error) {
             console.error('Falha ao registrar venda:', error);
@@ -216,10 +206,8 @@ export default function VendasPage() {
                 <h2>Caixa da Loja (Venda de Produtos)</h2>
             </div>
             
-            {/* O layout principal agora é um grid de 2 colunas */}
             <form onSubmit={handleSubmitVenda} className={styles.pdvContainer}>
                 
-                {/* COLUNA ESQUERDA - CARRINHO E TOTAL */}
                 <div className={styles.colunaCarrinho}>
                     <h3>Itens da Venda</h3>
                     <div className={styles.tabelaContainer}>
@@ -248,7 +236,6 @@ export default function VendasPage() {
                                                 <td>{item.nome_produto}</td>
                                                 <td>{preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                                                 <td>
-                                                    {/* PROPOSTA 2: Input de quantidade */}
                                                     <input
                                                         type="number"
                                                         className={styles.qtyInput}
@@ -277,7 +264,6 @@ export default function VendasPage() {
                         )}
                     </div>
                     
-                    {/* Footer da Coluna do Carrinho: Pagamento e Total */}
                     <div className={styles.footerCarrinho}>
                         <div className="form-group" style={{ maxWidth: '300px' }}>
                             <label htmlFor="pagamento">Forma de Pagamento</label>
@@ -289,7 +275,6 @@ export default function VendasPage() {
                             </select>
                         </div>
 
-                        {/* PROPOSTA 3: Display de Total destacado */}
                         <div className={styles.totalDisplay}>
                             <span>TOTAL</span>
                             <h2>
@@ -300,7 +285,6 @@ export default function VendasPage() {
                 </div>
 
 
-                {/* COLUNA DIREITA - AÇÕES E FINALIZAÇÃO */}
                 <div className={styles.colunaAcoes}>
                     <fieldset className="form-fieldset">
                         <legend>1. Informações da Venda</legend>
@@ -327,7 +311,6 @@ export default function VendasPage() {
 
                     <fieldset className="form-fieldset">
                         <legend>2. Adicionar Produto</legend>
-                        {/* PROPOSTA 1: Busca Autocomplete */}
                         <div className={`form-group ${styles.autocompleteWrapper}`}>
                             <label htmlFor="produto">Buscar Produto*</label>
                             <input
@@ -338,7 +321,6 @@ export default function VendasPage() {
                                 onChange={e => setBuscaProduto(e.target.value)}
                                 autoComplete="off"
                             />
-                            {/* Lista de resultados */}
                             {produtosFiltrados.length > 0 && (
                                 <div className={styles.autocompleteList}>
                                     {produtosFiltrados.map(p => (
