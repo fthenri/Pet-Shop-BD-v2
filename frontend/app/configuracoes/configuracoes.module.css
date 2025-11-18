@@ -1,61 +1,51 @@
-/* ============================ */
-/* ========= LAYOUT =========== */
-/* ============================ */
-
-.header {
+.settingsCard {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--table-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    max-width: 500px;
+    box-shadow: var(--shadow-sm);
+    
     display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 1rem;
 }
 
-.header svg {
-    font-size: 1.75rem;
-    color: var(--primary-color);
-}
-
-.card {
-    background-color: var(--secondary-color);
-    border: 1px solid var(--table-border);
-    border-radius: 8px;
-    padding: 1.5rem 2rem;
-    margin-top: 1.5rem;
-    max-width: 500px;
-    box-shadow: var(--shadow-sm);
-}
-
-.settingRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.settingInfo label {
-    font-size: 1.1rem;
+.label {
+    margin: 0;
     font-weight: 500;
     color: var(--text-color);
-    display: block;
-    margin-bottom: 0.25rem;
-    cursor: pointer;
+    flex-grow: 1;
 }
 
-.settingInfo p {
+.label span {
+    font-weight: normal;
     font-size: 0.9rem;
     color: var(--text-color-muted);
-    margin: 0;
+    display: block;
+    margin-top: 2px;
 }
 
-/* ============================ */
-/* ====== TOGGLE SWITCH ======= */
-/* ============================ */
+.themeSwitchWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
 
-.switch {
+.themeSwitchWrapper svg {
+    color: var(--text-color-muted);
+    font-size: 1.25rem;
+}
+
+.themeSwitch {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 34px;
+    width: 50px;
+    height: 28px;
 }
 
-.switch input {
+.themeSwitch input {
     opacity: 0;
     width: 0;
     height: 0;
@@ -70,14 +60,14 @@
     bottom: 0;
     background-color: #ccc;
     transition: .4s;
-    border-radius: 34px;
+    border-radius: 28px;
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 26px;
-    width: 26px;
+    height: 20px;
+    width: 20px;
     left: 4px;
     bottom: 4px;
     background-color: white;
@@ -85,14 +75,10 @@
     border-radius: 50%;
 }
 
-.switch input:checked + .slider {
+input:checked + .slider {
     background-color: var(--primary-color);
 }
 
-.switch input:focus + .slider {
-    box-shadow: 0 0 1px var(--primary-color);
-}
-
-.switch input:checked + .slider:before {
-    transform: translateX(26px);
+input:checked + .slider:before {
+    transform: translateX(22px);
 }
