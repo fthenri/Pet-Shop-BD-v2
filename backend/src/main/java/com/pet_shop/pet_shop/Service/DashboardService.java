@@ -49,7 +49,6 @@ public class DashboardService {
         List<Object> params = new ArrayList<>();
         List<String> whereConditions = new ArrayList<>();
 
-        // Filtro base obrigatório
         whereConditions.add("YEAR(v.data_hora) = ?");
         params.add(ano);
 
@@ -77,7 +76,6 @@ public class DashboardService {
         List<Object> params = new ArrayList<>();
         List<String> whereConditions = new ArrayList<>();
 
-        // Filtro base obrigatório
         whereConditions.add("DATE_FORMAT(v.data_hora, '%Y-%m') = ?");
         params.add(mes);
 
@@ -186,6 +184,70 @@ public class DashboardService {
     public Map<String, Object> getTicketMedio(Integer ano, String mes, Integer produtoId, Integer atendenteId) {
          StringBuilder sql = new StringBuilder(
             "SELECT AVG(v.valor_total) as ticket_medio " +
+            "FROM Venda v "
+        );
+        List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
+
+        if (produtoId != null) {
+            sql.append("JOIN contem co ON v.num_venda = co.num_venda ");
+            whereConditions.add("co.cod_produto = ?");
+            params.add(produtoId);
+        }
+        if (mes != null) {
+            whereConditions.add("DATE_FORMAT(v.data_hora, '%Y-%m') = ?");
+            params.add(mes);
+        } else if (ano != null) {
+            whereConditions.add("YEAR(v.data_hora) = ?");
+            params.add(ano);
+        }
+        if (atendenteId != null) {
+            whereConditions.add("v.cod_funcionario = ?");
+            params.add(atendenteId);
+        }
+        
+        if (!whereConditions.isEmpty()) {
+            sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        }
+        
+        return jdbcTemplate.queryForMap(sql.toString(), params.toArray());
+    }
+
+    public Map<String, Object> getFaturamentoTotal(Integer ano, String mes, Integer produtoId, Integer atendenteId) {
+        StringBuilder sql = new StringBuilder(
+            "SELECT SUM(v.valor_total) as faturamento_total " +
+            "FROM Venda v "
+        );
+        List<Object> params = new ArrayList<>();
+        List<String> whereConditions = new ArrayList<>();
+
+        if (produtoId != null) {
+            sql.append("JOIN contem co ON v.num_venda = co.num_venda ");
+            whereConditions.add("co.cod_produto = ?");
+            params.add(produtoId);
+        }
+        if (mes != null) {
+            whereConditions.add("DATE_FORMAT(v.data_hora, '%Y-%m') = ?");
+            params.add(mes);
+        } else if (ano != null) {
+            whereConditions.add("YEAR(v.data_hora) = ?");
+            params.add(ano);
+        }
+        if (atendenteId != null) {
+            whereConditions.add("v.cod_funcionario = ?");
+            params.add(atendenteId);
+        }
+        
+        if (!whereConditions.isEmpty()) {
+            sql.append("WHERE ").append(String.join(" AND ", whereConditions));
+        }
+        
+        return jdbcTemplate.queryForMap(sql.toString(), params.toArray());
+    }
+
+    public Map<String, Object> getTotalVendas(Integer ano, String mes, Integer produtoId, Integer atendenteId) {
+        StringBuilder sql = new StringBuilder(
+            "SELECT COUNT(DISTINCT v.num_venda) as total_vendas " +
             "FROM Venda v "
         );
         List<Object> params = new ArrayList<>();

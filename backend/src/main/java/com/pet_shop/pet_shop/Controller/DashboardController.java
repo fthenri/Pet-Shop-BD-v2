@@ -21,7 +21,7 @@ public class DashboardController {
     public ResponseEntity<List<Map<String, Object>>> getFaturamentoAnual(
             @RequestParam(required = false) Integer produtoId,
             @RequestParam(required = false) Integer atendenteId) {
-        
+
         List<Map<String, Object>> data = dashboardService.getFaturamentoAnual(produtoId, atendenteId);
         return ResponseEntity.ok(data);
     }
@@ -31,7 +31,7 @@ public class DashboardController {
             @RequestParam("ano") int ano,
             @RequestParam(required = false) Integer produtoId,
             @RequestParam(required = false) Integer atendenteId) {
-        
+
         List<Map<String, Object>> data = dashboardService.getFaturamentoMensal(ano, produtoId, atendenteId);
         return ResponseEntity.ok(data);
     }
@@ -41,7 +41,7 @@ public class DashboardController {
             @RequestParam("mes") String mes,
             @RequestParam(required = false) Integer produtoId,
             @RequestParam(required = false) Integer atendenteId) {
-        
+
         List<Map<String, Object>> data = dashboardService.getFaturamentoDiario(mes, produtoId, atendenteId);
         return ResponseEntity.ok(data);
     }
@@ -51,7 +51,7 @@ public class DashboardController {
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) String mes,
             @RequestParam(required = false) Integer atendenteId) {
-        
+
         List<Map<String, Object>> data = dashboardService.getTopProdutosPorReceita(ano, mes, atendenteId);
         return ResponseEntity.ok(data);
     }
@@ -61,7 +61,7 @@ public class DashboardController {
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) String mes,
             @RequestParam(required = false) Integer produtoId) {
-        
+
         List<Map<String, Object>> data = dashboardService.getTopClientesPorGasto(ano, mes, produtoId);
         return ResponseEntity.ok(data);
     }
@@ -71,7 +71,7 @@ public class DashboardController {
         List<Map<String, Object>> data = dashboardService.getNovosClientesPorMes();
         return ResponseEntity.ok(data);
     }
-    
+
     @GetMapping("/pets-por-idade")
     public ResponseEntity<List<Map<String, Object>>> getPetsPorCategoriaIdade() {
         List<Map<String, Object>> data = dashboardService.getPetsPorCategoriaIdade();
@@ -90,8 +90,30 @@ public class DashboardController {
             @RequestParam(required = false) String mes,
             @RequestParam(required = false) Integer produtoId,
             @RequestParam(required = false) Integer atendenteId) {
-        
+
         Map<String, Object> data = dashboardService.getTicketMedio(ano, mes, produtoId, atendenteId);
+        return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/faturamento-total")
+    public ResponseEntity<Map<String, Object>> getFaturamentoTotal(
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(required = false) String mes,
+            @RequestParam(required = false) Integer produtoId,
+            @RequestParam(required = false) Integer atendenteId) {
+
+        Map<String, Object> data = dashboardService.getFaturamentoTotal(ano, mes, produtoId, atendenteId);
+        return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/total-vendas")
+    public ResponseEntity<Map<String, Object>> getTotalVendas(
+            @RequestParam(required = false) Integer ano,
+            @RequestParam(required = false) String mes,
+            @RequestParam(required = false) Integer produtoId,
+            @RequestParam(required = false) Integer atendenteId) {
+
+        Map<String, Object> data = dashboardService.getTotalVendas(ano, mes, produtoId, atendenteId);
         return ResponseEntity.ok(data);
     }
 
@@ -100,7 +122,7 @@ public class DashboardController {
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) String mes,
             @RequestParam(required = false) Integer atendenteId) {
-        
+
         List<Map<String, Object>> data = dashboardService.getTopProdutosPorQuantidade(ano, mes, atendenteId);
         return ResponseEntity.ok(data);
     }
@@ -110,7 +132,7 @@ public class DashboardController {
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) String mes,
             @RequestParam(required = false) Integer produtoId) {
-        
+
         List<Map<String, Object>> data = dashboardService.getVendasPorAtendente(ano, mes, produtoId);
         return ResponseEntity.ok(data);
     }
@@ -119,11 +141,10 @@ public class DashboardController {
     public ResponseEntity<List<Map<String, Object>>> getConsultasPorVeterinario(
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) String mes) {
-        
+
         List<Map<String, Object>> data = dashboardService.getConsultasPorVeterinario(ano, mes);
         return ResponseEntity.ok(data);
     }
-
 
     @GetMapping("/filtros/produtos")
     public ResponseEntity<List<Map<String, Object>>> getFiltroProdutos() {
@@ -150,13 +171,13 @@ public class DashboardController {
     }
 
     @PostMapping("/executar-auditoria-vendas")
-public ResponseEntity<?> executarAuditoriaVendas() {
-try {
-dashboardService.executarAuditoriaVendas();
-return ResponseEntity.ok().body("Auditoria de vendas executada com sucesso.");
-} catch (Exception e) {
-return ResponseEntity.internalServerError().body("Erro ao executar auditoria:" + e.getMessage());
-}
-}
+    public ResponseEntity<?> executarAuditoriaVendas() {
+        try {
+            dashboardService.executarAuditoriaVendas();
+            return ResponseEntity.ok().body("Auditoria de vendas executada com sucesso.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Erro ao executar auditoria:" + e.getMessage());
+        }
+    }
 
 }
