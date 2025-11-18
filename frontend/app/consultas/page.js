@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 const consultasPredefinidas = [
+	// === 4 Consultas da Versão Atual (Etapa 04) ===
 	{
 		nome: 'Veterinários e Atendentes (Simul. Full Join)',
 		query:
@@ -11,17 +12,39 @@ const consultasPredefinidas = [
 	{
 		nome: 'Clientes que Nunca Compraram (NOT IN)',
 		query:
-			"SELECT \n    cpf, \n    nome, \n    telefone1,\n    data_cadastro\nFROM \n    Cliente\nWHERE \n    cpf NOT IN (SELECT DISTINCT cpfCliente FROM Venda);",
+			'SELECT \n    cpf, \n    nome, \n    telefone1,\n    data_cadastro\nFROM \n    Cliente\nWHERE \n    cpf NOT IN (SELECT DISTINCT cpfCliente FROM Venda);',
 	},
 	{
 		nome: 'Vendas com Estoque Baixo (EXISTS)',
 		query:
-			"SELECT \n    V.num_venda, \n    V.data_hora, \n    C.nome AS nome_cliente,\n    V.valor_total\nFROM \n    Venda V\nJOIN \n    Cliente C ON V.cpfCliente = C.cpf\nWHERE \n    EXISTS (\n        SELECT 1 \n        FROM contem co\n        JOIN Produto P ON co.cod_produto = P.cod_produto\n        WHERE \n            co.num_venda = V.num_venda \n            AND P.quantidade_estoque < 20\n    );",
+			'SELECT \n    V.num_venda, \n    V.data_hora, \n    C.nome AS nome_cliente,\n    V.valor_total\nFROM \n    Venda V\nJOIN \n    Cliente C ON V.cpfCliente = C.cpf\nWHERE \n    EXISTS (\n        SELECT 1 \n        FROM contem co\n        JOIN Produto P ON co.cod_produto = P.cod_produto\n        WHERE \n            co.num_venda = V.num_venda \n            AND P.quantidade_estoque < 20\n    );',
 	},
 	{
-        nome: 'Produtos Encalhados (Anti-Join)',
+		nome: 'Produtos Encalhados (Anti-Join)',
 		query:
-			"SELECT\n  P.cod_produto,\n  P.nome_produto,\n  P.preco_venda,\n  P.quantidade_estoque,\n  F.razao_social AS nome_fornecedor\nFROM\n  Produto P\nLEFT JOIN\n  contem co ON P.cod_produto = co.cod_produto\nJOIN\n  Fornecedor F ON P.cnpjFornecedor = F.cnpj\nWHERE\n  co.num_venda IS NULL \nORDER BY\n  P.nome_produto;",
+			'SELECT\n  P.cod_produto,\n  P.nome_produto,\n  P.preco_venda,\n  P.quantidade_estoque,\n  F.razao_social AS nome_fornecedor\nFROM\n  Produto P\nLEFT JOIN\n  contem co ON P.cod_produto = co.cod_produto\nJOIN\n  Fornecedor F ON P.cnpjFornecedor = F.cnpj\nWHERE\n  co.num_venda IS NULL \nORDER BY\n  P.nome_produto;',
+	},
+
+	// === 4 Consultas da Versão Antiga (Adicionadas) ===
+	{
+		nome: 'Produtos com Estoque Baixo (< 10)',
+		query:
+			'SELECT \n    cod_produto, \n    nome_produto, \n    quantidade_estoque \nFROM \n    Produto \nWHERE \n    quantidade_estoque < 10;',
+	},
+	{
+		nome: 'Animais por Cliente (JOIN)',
+		query:
+			"SELECT \n    P.nome_pet AS nome_animal, \n    P.especie, \n    C.nome AS nome_dono \nFROM \n    Pet AS P \nJOIN \n    Cliente AS C ON P.cpfCliente = C.cpf \nWHERE \n    C.cpf = '11122233344';",
+	},
+	{
+		nome: 'Contagem de Consultas por Veterinário',
+		query:
+			'SELECT \n    cod_funcionario, \n    COUNT(*) AS quantidade \nFROM \n    Consulta_Atende \nGROUP BY \n    cod_funcionario;',
+	},
+	{
+		nome: 'Buscar Cliente por Nome (Exemplo)',
+		query:
+			"SELECT \n    cpf, \n    nome, \n    cidade \nFROM \n    Cliente \nWHERE \n    nome LIKE '%Silva%';",
 	},
 ];
 
