@@ -172,7 +172,7 @@ public class FuncionarioService {
         try {
             funcionarioRepository.deleteById(id);
         } catch (Exception e) {
-            throw new BusinessException("Não é possível excluir o funcionário, pois ele pode ser supervisor de outros ou possuir registros associados.", e);
+            throw new BusinessException("Não é possível excluir o funcionário, pois ele pode ser supervisor de outros ou possuir registros associados.");
         }
     }
 }
