@@ -26,18 +26,18 @@ export default function ClientesPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [clienteEditando, setClienteEditando] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const { showNotification } = useNotification();
+    const { showNotification, showConfirmation } = useNotification();
 
     const carregarClientes = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`${API_URL_CLIENTES}/detalhes`);
+            const response = await fetch(API_URL_CLIENTES);
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(errorText || 'Falha ao carregar clientes');
             }
             const data = await response.json();
-            setClientes(data.sort((a, b) => b.totalGasto - a.totalGasto));
+            setClientes(data.sort((a, b) => (b.totalGasto || 0) - (a.totalGasto || 0)));
         } catch (error) {
             console.error('Erro ao carregar clientes:', error);
             showNotification({ message: `Erro ao carregar clientes: ${error.message}`, type: 'error' });
@@ -60,64 +60,45 @@ export default function ClientesPage() {
         setClienteEditando(null);
     };
 
-    const handleSaveCliente = async (clienteData) => {
-        const method = clienteEditando ? 'PUT' : 'POST';
-        const url = clienteEditando ? `${API_URL_CLIENTES}/${clienteEditando.cpf}` : API_URL_CLIENTES;
-
-        try {
-            const response = await fetch(url, {
-                method: method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(clienteData)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `Falha ao ${clienteEditando ? 'atualizar' : 'cadastrar'} cliente`);
-            }
-            
-            showNotification({ message: `Cliente ${clienteEditando ? 'atualizado' : 'cadastrado'} com sucesso!`, type: 'success' });
-            handleCloseModal();
-            carregarClientes();
-        } catch (error) {
-            console.error('Erro ao salvar cliente:', error);
-            showNotification({ message: error.message, type: 'error' });
-        }
+    const handleSave = () => {
+        handleCloseModal();
+        carregarClientes(); 
     };
 
-    const handleDeleteCliente = async (cpf) => {
-        if (!window.confirm('Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.')) {
-            return;
-        }
+ 	const handleDeleteCliente = (cpf, nome) => {
+        showConfirmation({
+            message: `Tem certeza que deseja excluir o cliente ${nome} (CPF: ${cpf})?`,
+            onConfirm: async () => {
+                try {
+                    const response = await fetch(`${API_URL_CLIENTES}/${cpf}`, {
+                        method: 'DELETE',
+                    });
 
-        try {
-            const response = await fetch(`${API_URL_CLIENTES}/${cpf}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Falha ao excluir cliente.');
+                    if (!response.ok && response.status !== 204) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(
+                            errorData.message || 'Erro ao excluir cliente.'
+                        );
+                    }
+                    showNotification({ message: 'Cliente excluído com sucesso!', type: 'success' });
+                    carregarClientes(); 
+                } catch (error) {
+                    console.error('Falha ao excluir cliente:', error);
+                    showNotification({ message: `Não foi possível excluir o cliente: ${error.message}`, type: 'error', duration: 6000 }); 
+                }
             }
-
-            showNotification({ message: 'Cliente excluído com sucesso!', type: 'success' });
-            carregarClientes(); // Recarrega a lista
-        } catch (error) {
-            console.error('Erro ao excluir cliente:', error);
-            showNotification({ message: error.message, type: 'error' });
-        }
-    };
+        });
+	};
 
     const clientesFiltrados = useMemo(() => {
         const termoBusca = filtro.toLowerCase();
         if (!termoBusca) return clientes;
         
         return clientes.filter(cliente =>
-            cliente.nome.toLowerCase().includes(termoBusca) ||
-            cliente.cpf.includes(termoBusca)
+            (cliente.nome && cliente.nome.toLowerCase().includes(termoBusca)) ||
+            (cliente.cpf && cliente.cpf.includes(termoBusca))
         );
     }, [clientes, filtro]);
-
 
     const kpiData = useMemo(() => {
         const totalClientes = clientes.length;
@@ -132,23 +113,24 @@ export default function ClientesPage() {
         const clienteMaisValioso = clientes[0];
         
         const gastoTotal = clientes.reduce((acc, c) => acc + (c.totalGasto || 0), 0);
-        const gastoMedio = gastoTotal / totalClientes;
+        const gastoMedio = gastoTotal > 0 ? gastoTotal / totalClientes : 0;
 
         return {
             total: totalClientes,
-            maisValioso: { nome: clienteMaisValioso.nome, valor: clienteMaisValioso.totalGasto },
+            maisValioso: { nome: clienteMaisValioso.nome, valor: (clienteMaisValioso.totalGasto || 0) },
             gastoMedio: gastoMedio
         };
     }, [clientes]);
     
     const renderBadges = (cliente) => {
-        const isVip = cliente.totalGasto > 500; 
+        const totalGastoCliente = cliente.totalGasto || 0; 
+        const isVip = totalGastoCliente > 500;
         
         const dataCadastro = new Date(cliente.dataCadastro);
         const hoje = new Date();
         const diffTempo = Math.abs(hoje.getTime() - dataCadastro.getTime());
         const diffDias = Math.ceil(diffTempo / (1000 * 60 * 60 * 24));
-        const isNew = diffDias <= 30; 
+        const isNew = diffDias <= 30;
 
         return (
             <>
@@ -170,10 +152,12 @@ export default function ClientesPage() {
     return (
         <section id="clientes-section" className="content-section">
             <div className="section-header">
-                <h2>Gerenciamento de Clientes</h2>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> 
+					<FaUsers style={{ fontSize: '1.75rem', color: 'var(--primary-color)' }}/>
+					<h2>Gerenciamento de Clientes</h2>
+				</div>
             </div>
             
-            {/* PROPOSTA 1: KPIs */}
             <div className={styles.kpiContainer}>
                 <KpiCard 
                     title="Total de Clientes" 
@@ -183,7 +167,7 @@ export default function ClientesPage() {
                 />
                 <KpiCard 
                     title="Cliente Mais Valioso" 
-                    value={`${kpiData.maisValioso.nome} (${kpiData.maisValioso.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})`} 
+                    value={`${kpiData.maisValioso.nome} (${(kpiData.maisValioso.valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })})`} 
                     icon={<FaCrown />}
                     color="#f0b429"
                 />
@@ -213,65 +197,69 @@ export default function ClientesPage() {
             {isLoading ? (
                 <p>Carregando clientes...</p>
             ) : (
-                <table className="data-table">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>CPF</th>
-                            <th>Telefone 1</th>
-                            <th>Cidade</th>
-                            <th>Total Gasto</th>
-                            <th>Data Cadastro</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {clientesFiltrados.length > 0 ? (
-                            clientesFiltrados.map(cliente => (
-                                <tr key={cliente.cpf}>
-                                    <td>
-                                        <Link href={`/clientes/${cliente.cpf}`} className="table-link">
-                                            {cliente.nome}
-                                        </Link>
-                                        {renderBadges(cliente)}
-                                    </td>
-                                    <td>{cliente.cpf}</td>
-                                    <td>{cliente.telefone1}</td>
-                                    <td>{cliente.cidade}</td>
-                                    <td>{cliente.totalGasto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-                                    <td>{new Date(cliente.dataCadastro).toLocaleDateString('pt-BR')}</td>
-                                    <td className="actions-cell">
-                                        <button 
-                                            className={`btn-icon ${styles.actionButton} ${styles.editButton}`} 
-                                            onClick={() => handleOpenModal(cliente)}
-                                            title="Editar Cliente"
-                                        >
-                                            <FaEdit />
-                                        </button>
-                                        <button 
-                                            className={`btn-icon ${styles.actionButton} ${styles.deleteButton}`} 
-                                            onClick={() => handleDeleteCliente(cliente.cpf)}
-                                            title="Excluir Cliente"
-                                        >
-                                            <FaTrash />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
+                <div className="table-container">
+                    <table className="data-table">
+                        <thead>
                             <tr>
-                                <td colSpan="7">Nenhum cliente encontrado.</td>
+                                <th>Nome</th>
+                                <th>CPF</th>
+                                <th>Telefone 1</th>
+                                <th>Cidade</th>
+                                <th>Total Gasto</th>
+                                <th>Data Cadastro</th>
+                                <th>Ações</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {clientesFiltrados.length > 0 ? (
+                                clientesFiltrados.map(cliente => (
+                                    <tr key={cliente.cpf}>
+                                        <td>
+                                            <Link href={`/clientes/${cliente.cpf}`} className={styles.tableLink}>
+                                                {cliente.nome}
+                                            </Link>
+                                            {renderBadges(cliente)}
+                                        </td>
+                                        <td>{cliente.cpf}</td>
+                                        <td>{cliente.telefone1}</td>
+                                        <td>{cliente.cidade || '-'}</td>
+                                        <td>
+                                            {(cliente.totalGasto || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                        </td>
+                                        <td>{new Date(cliente.dataCadastro).toLocaleDateString('pt-BR')}</td>
+                                        <td className={styles.actionsCell}>
+                                            <button 
+                                                className={`${styles.actionButton} ${styles.editButton}`} 
+                                                onClick={() => handleOpenModal(cliente)}
+                                                title="Editar Cliente"
+                                            >
+                                                <FaEdit />
+                                            </button>
+                                            <button 
+                                                className={`${styles.actionButton} ${styles.deleteButton}`} 
+                                                onClick={() => handleDeleteCliente(cliente.cpf, cliente.nome)}
+                                                title="Excluir Cliente"
+                                            >
+                                                <FaTrash />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="7" style={{ textAlign: 'center' }}>Nenhum cliente encontrado.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             )}
 
             {isModalOpen && (
                 <ClienteModal
-                    cliente={clienteEditando}
+                    clienteParaEditar={clienteEditando}
                     onClose={handleCloseModal}
-                    onSave={handleSaveCliente}
+                    onSave={handleSave}
                 />
             )}
         </section>

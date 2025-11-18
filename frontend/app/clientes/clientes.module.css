@@ -34,7 +34,7 @@
 }
 
 .kpiInfo {
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 .kpiTitle {
@@ -76,12 +76,23 @@
 .filtroInput {
     width: 100%;
     max-width: 400px;
-    margin: 0; 
+    margin: 0;
 }
 
 /* ============================ */
 /* === TABELA (PROPOSTA 3) ==== */
 /* ============================ */
+
+.tableLink {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.tableLink:hover {
+    text-decoration: underline;
+    color: var(--primary-color-dark);
+}
 
 .badge {
     display: inline-flex;
@@ -97,26 +108,32 @@
 }
 
 .badgeVip {
-    background-color: color-mix(in srgb, #f0b429 20%, transparent);
-    color: #f0b429;
-    border: 1px solid #f0b429;
+    background-color: #6a5e2f;
+    color: #ffd700;
+    border: 1px solid #ffd700;
 }
 
 .badgeNew {
-    background-color: color-mix(in srgb, #28a745 20%, transparent);
-    color: #28a745;
-    border: 1px solid #28a745;
+    background-color: #2b5c32;
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+.actionsCell {
+    text-align: center;
+    white-space: nowrap;
 }
 
 .actionButton {
     font-size: 1rem;
     padding: 0.5rem;
     margin-right: 0.5rem;
-}
-
-.actionButton {
     background-color: transparent;
     border: 1px solid transparent;
+}
+
+.actionButton:last-child {
+    margin-right: 0;
 }
 
 .actionButton:hover {
