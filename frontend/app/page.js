@@ -8,14 +8,18 @@ import {
     FaMoneyBillWave, 
     FaBoxes, 
     FaClipboardList, 
-    FaArchive 
+    FaArchive,
+    FaDollarSign,
+    FaShoppingCart,
+    FaChartLine,
+    FaFileInvoiceDollar
 } from 'react-icons/fa';
 
 import DashboardGlobalFilters from '../components/charts/DashboardGlobalFilters';
 import FaturamentoAnualChart from '../components/charts/FaturamentoAnualChart';
 import FaturamentoMensalChart from '../components/charts/FaturamentoMensalChart';
 import FaturamentoDiarioChart from '../components/charts/FaturamentoDiarioChart';
-import KpiCard from '../components/charts/KpiCard'; 
+import KpiCard from '../components/charts/KpiCard';
 import TopProdutosChart from '../components/charts/TopProdutosChart';
 import ProdutosEncalhadosTable from '../components/charts/ProdutosEncalhadosTable';
 import TopClientesChart from '../components/charts/TopClientesChart';
@@ -23,7 +27,6 @@ import NovosClientesChart from '../components/charts/NovosClientesChart';
 import PetsPorIdadeChart from '../components/charts/PetsPorIdadeChart';
 import VendasPorAtendenteChart from '../components/charts/VendasPorAtendenteChart';
 import ConsultasPorVetChart from '../components/charts/ConsultasPorVetChart';
-
 
 export default function Dashboard() {
     const API_URL = 'http://localhost:8080/api/dashboard';
@@ -35,10 +38,14 @@ export default function Dashboard() {
       atendenteId: null,
     });
 
+    // Estados de Dados
     const [anualData, setAnualData] = useState([]);
     const [mensalData, setMensalData] = useState([]);
     const [diarioData, setDiarioData] = useState([]);
-    const [ticketMedioData, setTicketMedioData] = useState(null); 
+    const [ticketMedioData, setTicketMedioData] = useState(null);
+    const [faturamentoTotal, setFaturamentoTotal] = useState(null); // Novo KPI
+    const [totalVendas, setTotalVendas] = useState(null); // Novo KPI
+    
     const [topProdutosReceita, setTopProdutosReceita] = useState(null);
     const [topClientesData, setTopClientesData] = useState(null);
     const [novosClientesData, setNovosClientesData] = useState(null);
@@ -58,7 +65,6 @@ export default function Dashboard() {
         if (params.atendenteId) query.append('atendenteId', params.atendenteId);
         return query.toString();
     };
-
 
     const fetchLatestData = useCallback(async () => {
         setIsLoadingDefaults(true);
@@ -86,7 +92,6 @@ export default function Dashboard() {
         }
     }, [setFilters]); 
 
-
     useEffect(() => {
         if (isLoadingDefaults) return;
 
@@ -98,12 +103,19 @@ export default function Dashboard() {
 
         const fetchFinanceData = async () => {
             try {
+                // Novos KPIs
+                const [resFatTotal, resTotalVendas, resTicket] = await Promise.all([
+                    fetch(`${API_URL}/faturamento-total?${financeQuery}`),
+                    fetch(`${API_URL}/total-vendas?${financeQuery}`),
+                    fetch(`${API_URL}/ticket-medio?${financeQuery}`)
+                ]);
+                if (resFatTotal.ok) setFaturamentoTotal((await resFatTotal.json()).faturamento_total);
+                if (resTotalVendas.ok) setTotalVendas((await resTotalVendas.json()).total_vendas);
+                if (resTicket.ok) setTicketMedioData((await resTicket.json()).ticket_medio);
+
                 const qAnual = buildQueryString({ produtoId: filters.produtoId, atendenteId: filters.atendenteId });
                 const resAnual = await fetch(`${API_URL}/faturamento-anual?${qAnual}`);
                 if (resAnual.ok) setAnualData(await resAnual.json());
-
-                const resTicket = await fetch(`${API_URL}/ticket-medio?${financeQuery}`);
-                if (resTicket.ok) setTicketMedioData((await resTicket.json()).ticket_medio);
 
                 if (filters.ano) {
                     const qMensal = buildQueryString({ ano: filters.ano, produtoId: filters.produtoId, atendenteId: filters.atendenteId });
@@ -187,7 +199,6 @@ export default function Dashboard() {
         }
     }, [fetchLatestData]); 
 
-	    
     const handleGraphClick = (newFilters) => {
         setFilters(prev => {
             const updated = { ...prev };
@@ -230,8 +241,38 @@ export default function Dashboard() {
         return <p>Carregando dashboard...</p>;
     }
 
-	return (
-		<>
+    return (
+        <>
+            {/* NOVA SEÇÃO DE KPIs NO TOPO */}
+            <section className="content-section">
+                <div className={styles.sectionHeader}>
+                    <FaChartLine />
+                    <h2>Resumo do Período</h2>
+                </div>
+                <div className={styles.kpiContainer}>
+                    <KpiCard
+                        title="Faturamento Total"
+                        value={faturamentoTotal}
+                        icon={<FaDollarSign />}
+                        color="#28a745"
+                        formatAsCurrency={true}
+                    />
+                    <KpiCard
+                        title="Total de Vendas"
+                        value={totalVendas}
+                        icon={<FaShoppingCart />}
+                        color="var(--primary-color)"
+                    />
+                    <KpiCard
+                        title="Ticket Médio"
+                        value={ticketMedioData}
+                        icon={<FaFileInvoiceDollar />}
+                        color="#f0b429"
+                        formatAsCurrency={true}
+                    />
+                </div>
+            </section>
+
             <section className="content-section">
                 <div className={styles.sectionHeader}>
                     <h2>Filtros Globais</h2>
@@ -243,20 +284,13 @@ export default function Dashboard() {
                 />
             </section>
 
-			<section id="financeiro-section" className="content-section">
+            <section id="financeiro-section" className="content-section">
                 <div className={styles.sectionHeader}>
                     <FaMoneyBillWave />
-				    <h2>Métricas Financeiras</h2>
+                    <h2>Métricas Financeiras</h2>
                 </div>
                 
                 <div className={`${styles.chartsGrid} ${styles.financeGrid}`}>
-                    <div className={styles.chartCard}>
-                        <KpiCard
-                            title="Ticket Médio"
-                            value={ticketMedioData}
-                            formatAsCurrency={true}
-                        />
-                    </div>
                     <div className={styles.chartCard}>
                         <div className={styles.chartContentWrapper}>
                             <FaturamentoAnualChart 
@@ -292,7 +326,6 @@ export default function Dashboard() {
                 </div>
                 
                 <div className={`${styles.chartsGrid} ${styles.productGrid}`}>
-                    
                     <div className={styles.chartCard}>
                         <div className={styles.chartContentWrapper}>
                             <TopProdutosChart 
@@ -305,7 +338,6 @@ export default function Dashboard() {
                             />
                         </div>
                     </div>
-
                     <div className={styles.chartCard}>
                         <div className={styles.chartContentWrapper}>
                             <TopProdutosChart 
@@ -318,13 +350,11 @@ export default function Dashboard() {
                             />
                         </div>
                     </div>
-
                     <div className={styles.chartCard}>
                         <div className={styles.chartContentWrapper}>
                             <TopClientesChart chartData={topClientesData} />
                         </div>
                     </div>
-
                     <div className={styles.chartCard}>
                         <div className={styles.chartContentWrapper}>
                             <PetsPorIdadeChart chartData={petsPorIdadeData} />
@@ -372,6 +402,6 @@ export default function Dashboard() {
                     </div>
                 </div>
             </section>
-		</>
-	);
+        </>
+    );
 }
