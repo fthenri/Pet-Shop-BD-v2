@@ -1,6 +1,8 @@
 'use client';
 
 import { useTheme } from '../../contexts/ThemeContext';
+import { FaCog } from 'react-icons/fa'; 
+import styles from './configuracoes.module.css'; 
 
 export default function Configuracoes() {
 	
@@ -9,25 +11,34 @@ export default function Configuracoes() {
 	return (
 		<section id="configuracoes-section" className="content-section">
 			<div className="section-header">
-				<h2>Configurações do Sistema</h2>
+				<div className={styles.header}>
+                    <FaCog />
+				    <h2>Configurações do Sistema</h2>
+                </div>
 			</div>
 
-			<div className="form-group" style={{ maxWidth: '400px' }}>
-                <label htmlFor="theme-toggle" style={{ marginBottom: '0.5rem' }}>
-                    Tema do Aplicativo
-                </label>
-                <p style={{ margin: '0.5rem 0', color: 'var(--text-color-muted)', fontSize: '0.9rem' }}>
-                    Tema atual: <strong>{theme === 'light' ? 'Claro' : 'Escuro'}</strong>
-                </p>
-                <button
-                    id="theme-toggle"
-                    className="btn btn-secondary"
-                    onClick={toggleTheme}
-                >
-                    Mudar para {theme === 'light' ? 'Escuro' : 'Claro'}
-                </button>
+            <div className={styles.card}>
+                <div className={styles.settingRow}>
+                    <div className={styles.settingInfo}>
+                        <label htmlFor="theme-toggle">
+                            Tema do Aplicativo
+                        </label>
+                        <p>
+                            Modo atual: <strong>{theme === 'light' ? 'Claro' : 'Escuro'}</strong>
+                        </p>
+                    </div>
+
+                    <label className={styles.switch} htmlFor="theme-toggle">
+                        <input
+                            id="theme-toggle"
+                            type="checkbox"
+                            checked={theme === 'dark'}
+                            onChange={toggleTheme}
+                        />
+                        <span className={styles.slider}></span>
+                    </label>
+                </div>
             </div>
-            
 		</section>
 	);
 }
