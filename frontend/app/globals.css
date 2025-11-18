@@ -348,7 +348,8 @@ body {
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
     padding: 0.75rem;
     border: 1px solid var(--form-input-border);
     background-color: var(--form-input-bg);
