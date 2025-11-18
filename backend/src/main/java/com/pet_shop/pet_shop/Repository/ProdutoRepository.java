@@ -1,6 +1,7 @@
 package com.pet_shop.pet_shop.Repository;
 
 import com.pet_shop.pet_shop.Model.Produto;
+import com.pet_shop.pet_shop.exception.BusinessException; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal; 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -65,9 +67,25 @@ public class ProdutoRepository {
         return produto;
     }
 
+    public void updatePrecoProduto(int cod_produto, BigDecimal preco_venda) {
+        final String sql = "CALL SP_AtualizarPrecoProduto(?, ?)";
+        try {
+            jdbcTemplate.update(sql, cod_produto, preco_venda);
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage()); 
+        }
+    }
+
+    // MÉTODO MODIFICADO
     public int update(Produto produto) {
-        final String sql = "UPDATE Produto SET nome_produto = ?, descricao = ?, preco_venda = ?, quantidade_estoque = ?, cnpjFornecedor = ? WHERE cod_produto = ?";
-        return jdbcTemplate.update(sql, produto.getNome_produto(), produto.getDescricao(), produto.getPreco_venda(), produto.getQuantidade_estoque(), produto.getCnpjFornecedor(), produto.getCod_produto());
+        final String sql = "UPDATE Produto SET nome_produto = ?, descricao = ?, quantidade_estoque = ?, cnpjFornecedor = ? WHERE cod_produto = ?";
+        return jdbcTemplate.update(sql, 
+            produto.getNome_produto(), 
+            produto.getDescricao(), 
+            produto.getQuantidade_estoque(), 
+            produto.getCnpjFornecedor(), 
+            produto.getCod_produto()
+        );
     }
 
     public int deleteById(int cod_produto) {

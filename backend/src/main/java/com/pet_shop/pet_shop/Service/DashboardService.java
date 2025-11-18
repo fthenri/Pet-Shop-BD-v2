@@ -328,7 +328,7 @@ public class DashboardService {
 
     @Transactional
     public void executarAuditoriaVendas() {
-        String sql = "CALL SP_AuditarECorrigirVenda()";
+        String sql = "CALL SP_AuditarECorrigirTotaisVenda()";
         jdbcTemplate.update(sql);
     }
 }

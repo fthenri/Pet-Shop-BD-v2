@@ -57,13 +57,19 @@ public class ProdutoService {
         validarFornecedor(produtoDetails.getCnpjFornecedor());
 
         return produtoRepository.findById(id).map(produto -> {
+            
+            if (produtoDetails.getPreco_venda().compareTo(produto.getPreco_venda()) != 0) {
+                produtoRepository.updatePrecoProduto(id, produtoDetails.getPreco_venda());
+                produto.setPreco_venda(produtoDetails.getPreco_venda()); 
+            }
+
             produto.setNome_produto(produtoDetails.getNome_produto());
             produto.setDescricao(produtoDetails.getDescricao());
-            produto.setPreco_venda(produtoDetails.getPreco_venda());
             produto.setQuantidade_estoque(produtoDetails.getQuantidade_estoque());
             produto.setCnpjFornecedor(produtoDetails.getCnpjFornecedor());
             
             produtoRepository.update(produto);
+            
             return new ProdutoResponseDTO(produto);
         }).map(Optional::of) 
           .orElseThrow(() -> new ResourceNotFoundException("Produto com código '" + id + "' não encontrado."));
