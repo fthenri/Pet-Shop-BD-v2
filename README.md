@@ -176,6 +176,7 @@ Este script único cuidará de tudo:
     spring.datasource.url=jdbc:mysql://localhost:3306/petshop_db
     spring.datasource.username=seu_usuario_mysql
     spring.datasource.password=sua_senha_mysql
+    spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
     ```
 3.  Navegue até a pasta do backend e execute:
     ```bash
