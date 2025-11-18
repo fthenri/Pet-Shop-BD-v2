@@ -1,9 +1,35 @@
 'use client';
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation'; 
 import PetModal from '../../../components/PetModal'; 
 import Link from 'next/link';
+import { useNotification } from '../../../contexts/NotificationContext';
+import { 
+    FaUser, 
+    FaPhone, 
+    FaMapMarkerAlt, 
+    FaDollarSign, 
+    FaBirthdayCake, 
+    FaPaw, 
+    FaDog, 
+    FaCat,
+    FaPlus,
+    FaEdit,
+    FaTrash
+} from 'react-icons/fa';
+import styles from './perfil.module.css'; 
+
+const KpiCard = ({ title, value, icon, color }) => (
+    <div className={styles.kpiCard} style={{ '--card-color': color }}>
+        <div className={styles.iconWrapper}>
+            {icon}
+        </div>
+        <div className={styles.kpiInfo}>
+            <span className={styles.kpiTitle}>{title}</span>
+            <span className={styles.kpiValue}>{value}</span>
+        </div>
+    </div>
+);
 
 export default function ClientePerfil() {
     const params = useParams(); 
@@ -17,6 +43,7 @@ export default function ClientePerfil() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentPet, setCurrentPet] = useState(null);
 
+    const { showNotification, showConfirmation } = useNotification();
     const API_URL = 'http://localhost:8080/api';
 
     const fetchData = async () => {
@@ -61,35 +88,44 @@ export default function ClientePerfil() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(petData),
             });
+
             if (!response.ok) {
-                 const errorText = await response.text();
-                 throw new Error(errorText || 'Falha ao salvar pet');
+                 const errorBody = await response.json().catch(() => response.text());
+                 throw new Error(errorBody.message || errorBody || 'Falha ao salvar pet');
             }
             
+            showNotification({ 
+                message: `Pet ${currentPet ? 'atualizado' : 'cadastrado'} com sucesso!`, 
+                type: 'success' 
+            });
             fetchData(); 
             handleCloseModal();
         } catch (err) {
             console.error(err);
-            alert(`Erro ao salvar: ${err.message}`);
+            showNotification({ message: `Erro ao salvar: ${err.message}`, type: 'error', duration: 6000 });
         }
     };
 
-    const handleDeletePet = async (codPet) => {
-        if (confirm('Tem certeza que deseja excluir este pet?')) {
-            try {
-                const response = await fetch(`${API_URL}/pets/${codPet}`, {
-                    method: 'DELETE',
-                });
-                if (!response.ok) {
-                     const errorText = await response.text();
-                     throw new Error(errorText || 'Falha ao excluir pet');
+    const handleDeletePet = async (codPet, nomePet) => {
+        showConfirmation({
+            message: `Tem certeza que deseja excluir o pet ${nomePet} (Cód. ${codPet})?`,
+            onConfirm: async () => {
+                try {
+                    const response = await fetch(`${API_URL}/pets/${codPet}`, {
+                        method: 'DELETE',
+                    });
+                    if (!response.ok) {
+                         const errorBody = await response.json().catch(() => response.text());
+                         throw new Error(errorBody.message || errorBody || 'Falha ao excluir pet');
+                    }
+                    showNotification({ message: 'Pet excluído com sucesso!', type: 'success' });
+                    fetchData(); 
+                } catch (err) {
+                    console.error(err);
+                    showNotification({ message: err.message, type: 'error', duration: 6000 }); 
                 }
-                fetchData(); 
-            } catch (err) {
-                console.error(err);
-                alert(err.message); 
             }
-        }
+        });
     };
 
     const handleOpenModal = (pet = null) => {
@@ -101,6 +137,35 @@ export default function ClientePerfil() {
         setIsModalOpen(false);
         setCurrentPet(null);
     };
+
+    const getPetIcon = (especie) => {
+        const esp = especie.toLowerCase();
+        if (esp.includes('cachorro')) return <FaDog />;
+        if (esp.includes('gato')) return <FaCat />;
+        return <FaPaw />;
+    };
+
+    const formatPetBirthdate = (dateString) => {
+        if (!dateString) return 'Nascimento: N/A';
+        try {
+            const date = new Date(dateString + 'T00:00:00-03:00');
+            const age = new Date().getFullYear() - date.getFullYear();
+            const formattedDate = date.toLocaleDateString('pt-BR');
+            return `${formattedDate} (${age} anos)`;
+        } catch (e) {
+            return 'Data Inválida';
+        }
+    };
+    
+    const kpiData = useMemo(() => {
+        if (!cliente) return { totalGasto: '...', clienteDesde: '...', totalPets: '...' };
+        
+        const totalGasto = (cliente.totalGasto || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const clienteDesde = new Date(cliente.dataCadastro).toLocaleDateString('pt-BR');
+        const totalPets = pets.length;
+
+        return { totalGasto, clienteDesde, totalPets };
+    }, [cliente, pets]);
 
     if (isLoading) return <p style={{ padding: '2rem' }}>Carregando perfil...</p>;
     if (error) return <p style={{ padding: '2rem', color: 'red' }}>Erro: {error}</p>;
@@ -114,73 +179,77 @@ export default function ClientePerfil() {
                     <Link href="/clientes" className="btn btn-secondary" style={{ textDecoration: 'none' }}>Voltar</Link>
                 </div>
 
-                <div className="form-container">
-                    <fieldset className="form-fieldset">
-                        <legend>Dados Pessoais</legend>
-                        <div className="form-grid">
-                            <div className="form-group">
-                                <label>Nome</label>
-                                <input type="text" value={cliente.nome} readOnly disabled />
-                            </div>
-                            <div className="form-group">
-                                <label>CPF</label>
-                                <input type="text" value={cliente.cpf} readOnly disabled />
-                            </div>
-                            <div className="form-group">
-                                <label>Telefone 1</label>
-                                <input type="text" value={cliente.telefone1} readOnly disabled />
-                            </div>
-                             <div className="form-group">
-                                <label>Cidade</label>
-                                <input type="text" value={`${cliente.cidade} - ${cliente.estado}`} readOnly disabled />
-                            </div>
+                <div className={styles.profileHeader}>
+                    <h2 className={styles.clientName}>{cliente.nome}</h2>
+                    <div className={styles.headerInfo}>
+                        <div className={styles.infoItem}>
+                            <FaUser />
+                            <span>{cliente.cpf}</span>
                         </div>
-                    </fieldset>
+                        <div className={styles.infoItem}>
+                            <FaPhone />
+                            <span>{cliente.telefone1}</span>
+                        </div>
+                        <div className={styles.infoItem}>
+                            <FaMapMarkerAlt />
+                            <span>{cliente.cidade} - {cliente.estado}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div className={styles.kpiContainer}>
+                    <KpiCard 
+                        title="Total Gasto"
+                        value={kpiData.totalGasto}
+                        icon={<FaDollarSign />}
+                        color="#28a745"
+                    />
+                    <KpiCard 
+                        title="Total de Pets"
+                        value={kpiData.totalPets}
+                        icon={<FaPaw />}
+                        color="var(--primary-color)"
+                    />
+                    <KpiCard 
+                        title="Cliente Desde"
+                        value={kpiData.clienteDesde}
+                        icon={<FaBirthdayCake />}
+                        color="#ffc107"
+                    />
                 </div>
             </section>
 
             <section className="content-section">
-                <div className="table-header">
+                <div className="section-header">
                     <h2>Pets de {cliente.nome.split(' ')[0]}</h2>
-                    <button onClick={() => handleOpenModal()} className="btn btn-primary">
-                        Adicionar Pet
-                    </button>
                 </div>
                 
-                <div className="table-container">
-                    <table className="data-table">
-                        <thead>
-                            <tr>
-                                <th>Cód.</th>
-                                <th>Nome do Pet</th>
-                                <th>Espécie</th>
-                                <th>Raça</th>
-                                <th>Nascimento</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {pets.length > 0 ? (
-                                pets.map(pet => (
-                                    <tr key={pet.cod_pet}>
-                                        <td>{pet.cod_pet}</td>
-                                        <td>{pet.nomePet}</td>
-                                        <td>{pet.especie}</td>
-                                        <td>{pet.raca}</td>
-                                        <td>{pet.dataNascimento ? new Date(pet.dataNascimento + 'T00:00:00-03:00').toLocaleDateString('pt-BR') : 'N/A'}</td>
-                                        <td className="action-buttons">
-                                            <button onClick={() => handleOpenModal(pet)} className="btn-edit">Editar</button>
-                                            <button onClick={() => handleDeletePet(pet.cod_pet)} className="btn-delete">Excluir</button>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="6" style={{ textAlign: 'center' }}>Nenhum pet cadastrado.</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                <div className={styles.petGrid}>
+                    {pets.map(pet => (
+                        <div className={styles.petCard} key={pet.cod_pet}>
+                            <div className={styles.petCardSpeciesIcon}>
+                                {getPetIcon(pet.especie)}
+                            </div>
+                            <div className={styles.petCardInfo}>
+                                <span className={styles.petName}>{pet.nomePet} (Cód: {pet.cod_pet})</span>
+                                <span className={styles.petDetails}>{pet.especie} / {pet.raca}</span>
+                                <span className={styles.petDetails}>{formatPetBirthdate(pet.dataNascimento)}</span>
+                            </div>
+                            <div className={styles.petCardActions}>
+                                <button onClick={() => handleOpenModal(pet)} className={`${styles.actionButton} ${styles.editButton}`} title="Editar Pet">
+                                    <FaEdit />
+                                </button>
+                                <button onClick={() => handleDeletePet(pet.cod_pet, pet.nomePet)} className={`${styles.actionButton} ${styles.deleteButton}`} title="Excluir Pet">
+                                    <FaTrash />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                    
+                    <button className={styles.addPetCard} onClick={() => handleOpenModal()}>
+                        <FaPlus />
+                        <span>Adicionar Novo Pet</span>
+                    </button>
                 </div>
             </section>
 
@@ -189,6 +258,7 @@ export default function ClientePerfil() {
                     pet={currentPet}
                     onClose={handleCloseModal}
                     onSave={handleSavePet}
+                    cpfClientePadrao={cpf}
                 />
             )}
         </>

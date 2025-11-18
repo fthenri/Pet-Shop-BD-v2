@@ -1,0 +1,219 @@
+/* ============================ */
+/* ==== CABEÇALHO (PLANO 1) === */
+/* ============================ */
+.profileHeader {
+    background: var(--secondary-color);
+    border: 1px solid var(--table-border);
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+}
+
+.clientName {
+    margin: 0;
+    font-size: 1.75rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.headerInfo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.infoItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--text-color-muted);
+}
+
+.infoItem svg {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+}
+
+.infoItem span {
+    font-weight: 500;
+}
+
+
+/* ============================ */
+/* ======= KPIS (PLANO 2) ===== */
+/* ============================ */
+.kpiContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.kpiCard {
+    background: var(--secondary-color);
+    border: 1px solid var(--table-border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-left: 5px solid var(--card-color, var(--primary-color));
+}
+
+.iconWrapper {
+    font-size: 1.75rem;
+    color: var(--card-color, var(--primary-color));
+    background-color: color-mix(in srgb, var(--card-color, var(--primary-color)) 15%, transparent);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.kpiInfo {
+    overflow: hidden;
+}
+
+.kpiTitle {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color-muted);
+    display: block;
+}
+
+.kpiValue {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-color);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ============================ */
+/* ==== PETS GRID (PLANO 3) === */
+/* ============================ */
+.petGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.petCard {
+    background: var(--secondary-color);
+    border: 1px solid var(--table-border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.petCard:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.petCardSpeciesIcon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    background-color: color-mix(in srgb, var(--primary-color) 15%, transparent);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+}
+
+.petCardInfo {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.petName {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.petDetails {
+    font-size: 0.9rem;
+    color: var(--text-color-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.petCardActions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.actionButton {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+
+.actionButton:hover {
+    background-color: var(--table-hover);
+    border-color: var(--table-border);
+}
+
+.editButton {
+    color: var(--primary-color);
+}
+.editButton:hover {
+    color: var(--primary-color-dark);
+}
+
+.deleteButton {
+    color: var(--danger-color);
+}
+.deleteButton:hover {
+    color: var(--danger-color-dark);
+}
+
+.addPetCard {
+    background: transparent;
+    border: 2px dashed var(--table-border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 120px;
+    color: var(--text-color-muted);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.addPetCard:hover {
+    background: var(--secondary-color);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.addPetCard svg {
+    font-size: 2rem;
+}
