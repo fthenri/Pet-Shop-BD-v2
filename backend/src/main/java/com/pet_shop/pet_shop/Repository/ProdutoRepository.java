@@ -4,10 +4,14 @@ import com.pet_shop.pet_shop.Model.Produto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +21,6 @@ public class ProdutoRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // RowMapper para mapear o resultado da consulta para um objeto Produto
     private final RowMapper<Produto> rowMapper = (rs, rowNum) -> {
         Produto produto = new Produto();
         produto.setCod_produto(rs.getInt("cod_produto"));
@@ -29,17 +32,11 @@ public class ProdutoRepository {
         return produto;
     };
 
-    /**
-     * Retorna todos os produtos do banco de dados.
-     */
     public List<Produto> findAll() {
         final String sql = "SELECT * FROM Produto";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    /**
-     * Busca um produto pelo seu código.
-     */
     public Optional<Produto> findById(int cod_produto) {
         final String sql = "SELECT * FROM Produto WHERE cod_produto = ?";
         try {
@@ -50,25 +47,29 @@ public class ProdutoRepository {
         }
     }
 
-    /**
-     * Salva um novo produto no banco de dados (inserção).
-     */
-    public int save(Produto produto) {
+    public Produto save(Produto produto) {
         final String sql = "INSERT INTO Produto (nome_produto, descricao, preco_venda, quantidade_estoque, cnpjFornecedor) VALUES (?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql, produto.getNome_produto(), produto.getDescricao(), produto.getPreco_venda(), produto.getQuantidade_estoque(), produto.getCnpjFornecedor());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, produto.getNome_produto());
+            ps.setString(2, produto.getDescricao());
+            ps.setBigDecimal(3, produto.getPreco_venda());
+            ps.setInt(4, produto.getQuantidade_estoque());
+            ps.setString(5, produto.getCnpjFornecedor());
+            return ps;
+        }, keyHolder);
+
+        produto.setCod_produto(keyHolder.getKey().intValue());
+        return produto;
     }
 
-    /**
-     * Atualiza um produto existente no banco de dados.
-     */
     public int update(Produto produto) {
         final String sql = "UPDATE Produto SET nome_produto = ?, descricao = ?, preco_venda = ?, quantidade_estoque = ?, cnpjFornecedor = ? WHERE cod_produto = ?";
         return jdbcTemplate.update(sql, produto.getNome_produto(), produto.getDescricao(), produto.getPreco_venda(), produto.getQuantidade_estoque(), produto.getCnpjFornecedor(), produto.getCod_produto());
     }
 
-    /**
-     * Deleta um produto do banco de dados pelo seu código.
-     */
     public int deleteById(int cod_produto) {
         final String sql = "DELETE FROM Produto WHERE cod_produto = ?";
         return jdbcTemplate.update(sql, cod_produto);
