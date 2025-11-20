@@ -1,7 +1,7 @@
 'use client'; 
 import { useState, useEffect, useMemo } from 'react';
 import ProdutoModal from '../../components/ProdutoModal'; 
-import { useNotification } from '../../contexts/NotificationContext';
+import { useNotification } from 'ft-ui-react';
 import { 
     FaStore,
     FaEdit,

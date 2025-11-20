@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation'; 
 import PetModal from '../../../components/PetModal'; 
 import Link from 'next/link';
-import { useNotification } from '../../../contexts/NotificationContext';
+import { useNotification } from 'ft-ui-react';
 import { 
     FaUser, 
     FaPhone, 

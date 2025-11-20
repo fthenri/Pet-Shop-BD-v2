@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useMemo, useCallback } from 'react'; 
-import { useNotification } from '../../contexts/NotificationContext';
+import { useNotification } from 'ft-ui-react';
 import { FaTrash } from 'react-icons/fa'; 
 import styles from './vendas.module.css'; 
 

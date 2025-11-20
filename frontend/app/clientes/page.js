@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import ClienteModal from '../../components/ClienteModal';
-import { useNotification } from '../../contexts/NotificationContext';
+import { useNotification } from 'ft-ui-react';
 import { FaEdit, FaTrash, FaStar, FaSeedling, FaUsers, FaCrown, FaDollarSign } from 'react-icons/fa';
 import styles from './clientes.module.css';
 

@@ -1,7 +1,7 @@
 'use client'; 
 
 import { useState } from 'react';
-import { useNotification } from '../../contexts/NotificationContext';
+import { useNotification } from 'ft-ui-react';
 import styles from './consultas.module.css'; 
 import { 
     FaDatabase, 

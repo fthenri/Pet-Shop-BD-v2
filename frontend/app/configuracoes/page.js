@@ -2,7 +2,7 @@
 
 import { useTheme } from '../../contexts/ThemeContext';
 import { FaSun, FaMoon } from 'react-icons/fa';
-import styles from './configuracoes.module.css'; // Importar o CSS Module
+import styles from './configuracoes.module.css'; 
 
 export default function Configuracoes() {
 	
@@ -14,7 +14,6 @@ export default function Configuracoes() {
 				<h2>Configurações do Sistema</h2>
 			</div>
 
-            {/* Card de Configuração de Tema */}
 			<div className={styles.settingsCard}>
                 <div className={styles.label}>
                     Tema do Aplicativo

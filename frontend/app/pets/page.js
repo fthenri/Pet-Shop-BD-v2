@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useState, useEffect, useMemo } from 'react';
 import PetModal from '../../components/PetModal'; 
-import { useNotification } from '../../contexts/NotificationContext'; 
+import { useNotification } from 'ft-ui-react';
 import { 
     FaPaw, 
     FaEdit, 

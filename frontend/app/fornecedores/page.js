@@ -1,7 +1,7 @@
 'use client'; 
 import { useState, useEffect, useMemo } from 'react';
 import FornecedorModal from '../../components/FornecedorModal'; 
-import { useNotification } from '../../contexts/NotificationContext';
+import { useNotification } from 'ft-ui-react';
 import { FaTruck, FaEdit, FaTrash } from 'react-icons/fa';
 import styles from './fornecedores.module.css';
 

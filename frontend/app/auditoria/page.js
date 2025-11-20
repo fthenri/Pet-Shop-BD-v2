@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
-import { useNotification } from '../../contexts/NotificationContext'; 
+import { useNotification } from 'ft-ui-react'; 
 import { 
     FaHistory, 
     FaSearch, 

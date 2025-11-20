@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import FuncionarioModal from '../../components/FuncionarioModal'; 
-import { useNotification } from '../../contexts/NotificationContext';
+import { useNotification } from 'ft-ui-react';
 import { 
     FaUserMd, 
     FaUserFriends, 

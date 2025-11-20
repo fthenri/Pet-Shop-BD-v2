@@ -1,8 +1,8 @@
 import './globals.css'; 
 import Sidebar from '../components/Sidebar'; 
 import { ThemeProvider } from '../contexts/ThemeContext';
-import { NotificationProvider } from '../contexts/NotificationContext'; 
-import NotificationToast from '../components/NotificationToast'; 
+
+import { NotificationProvider, NotificationToast } from 'ft-ui-react';
 
 export const metadata = {
   title: 'Sistema de Gerenciamento',
