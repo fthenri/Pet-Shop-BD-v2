@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useNotification } from '../contexts/NotificationContext';
+import { useNotification } from 'ft-ui-react';
 
 export default function FuncionarioModal({ onClose, onSave, funcionarioParaEditar, tipoInicial, listaSupervisores }) {
     const API_URL = 'http://localhost:8080/api';

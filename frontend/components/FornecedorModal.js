@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useNotification } from '../contexts/NotificationContext';
+import { useNotification } from 'ft-ui-react';
 
 export default function FornecedorModal({ onClose, onSave, fornecedorParaEditar }) {
 	const API_URL = 'http://localhost:8080/api/fornecedores';

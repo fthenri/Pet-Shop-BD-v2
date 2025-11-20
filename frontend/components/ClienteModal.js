@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useNotification } from '../contexts/NotificationContext';
+import { useNotification } from 'ft-ui-react';
 
 export default function ClienteModal({ onClose, onSave, clienteParaEditar }) {
 	const API_URL = 'http://localhost:8080/api/clientes';
