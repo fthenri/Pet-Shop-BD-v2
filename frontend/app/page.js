@@ -1,6 +1,8 @@
 'use client'; 
 
 import { useState, useEffect, useCallback } from 'react';
+import { KpiCard } from 'ft-ui-react';
+
 import { useLocalStorage } from '../hooks/useLocalStorage'; 
 import styles from './page.module.css';
 
@@ -19,7 +21,6 @@ import DashboardGlobalFilters from '../components/charts/DashboardGlobalFilters'
 import FaturamentoAnualChart from '../components/charts/FaturamentoAnualChart';
 import FaturamentoMensalChart from '../components/charts/FaturamentoMensalChart';
 import FaturamentoDiarioChart from '../components/charts/FaturamentoDiarioChart';
-import KpiCard from '../components/charts/KpiCard';
 import TopProdutosChart from '../components/charts/TopProdutosChart';
 import ProdutosEncalhadosTable from '../components/charts/ProdutosEncalhadosTable';
 import TopClientesChart from '../components/charts/TopClientesChart';
